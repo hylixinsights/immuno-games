@@ -3,343 +3,250 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>immuno.games · Aprender imunologia jogando</title>
-<meta name="description" content="Jogos gratuitos para ensinar e aprender imunologia. Rodam direto no navegador, sem instalar nada.">
-<meta name="theme-color" content="#EDEDE7">
-
+<title>immuno.games · Imunologia para jogar</title>
+<meta name="description" content="Jogos gratuitos para ensinar e aprender imunologia. Direto no navegador, sem cadastro e sem instalar nada.">
+<meta name="theme-color" content="#F4F1E9">
 <meta property="og:type" content="website">
-<meta property="og:title" content="immuno.games">
+<meta property="og:title" content="immuno.games · Imunologia para jogar">
 <meta property="og:description" content="Jogos gratuitos para ensinar e aprender imunologia.">
 <meta property="og:url" content="https://immuno.games/">
 <meta property="og:image" content="https://immuno.games/capas/imunotropa.webp">
 <meta name="twitter:card" content="summary_large_image">
-
+<link rel="canonical" href="https://immuno.games/">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "immuno.games",
+  "url": "https://immuno.games/",
+  "description": "Jogos gratuitos para ensinar e aprender imunologia, direto no navegador.",
+  "inLanguage": "pt-BR",
+  "creator": { "@type": "Person", "name": "Helder Nakaya" }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ---------------------------------------------------------------
-   immuno.games
-   Paleta tirada de corantes de bancada: azul de metileno e eosina,
-   sobre papel. Cores CHAPADAS — nenhum gradiente em lugar nenhum.
-   Tipografia IBM Plex: mono para dados e coordenadas, sans para texto.
-   --------------------------------------------------------------- */
 :root{
-  --papel:#EDEDE7;
-  --papel-alto:#F8F8F4;
-  --tinta:#15202A;
-  --tinta-fraca:#5A6670;
-  --azul:#10558C;
-  --azul-claro:#E3EBF2;
-  --eosina:#BC3A4C;
-  --linha:#CBCEC4;
-  --linha-forte:#A9AEA2;
-  --raio:3px;
-  --max:1080px;
+  --paper:#f4f1e9;--paper-light:#fbfaf6;--ink:#17231f;--muted:#616b65;
+  --green:#174d3c;--green-dark:#0f352a;--mint:#dce9df;--red:#bf4633;
+  --line:#cfd4ca;--max:1180px;--radius:18px;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0; background:var(--papel); color:var(--tinta);
-  font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-  font-size:16px; line-height:1.55;
-}
-a{color:var(--azul)}
-:focus-visible{outline:2px solid var(--eosina); outline-offset:2px}
-.env{max-width:var(--max); margin:0 auto; padding:0 20px}
-.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 Manrope,system-ui,sans-serif}
+button,input{font:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.wrap{width:min(calc(100% - 40px),var(--max));margin-inline:auto}
+.eyebrow{margin:0 0 12px;font:500 11px/1.2 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--green)}
 
-/* ---------- cabeçalho ---------- */
-header{border-bottom:1px solid var(--linha); padding:22px 0 0}
-.marca{margin:0; font-size:23px; font-weight:600; line-height:1.2}
-.marca a{
-  font-family:'IBM Plex Mono',monospace; font-weight:600;
-  letter-spacing:-.02em; color:var(--tinta); text-decoration:none; display:inline-block;
-}
-.marca span{color:var(--eosina)}
-.lema{margin:6px 0 0; font-size:15px; color:var(--tinta-fraca); max-width:46ch}
+.topbar{height:72px;border-bottom:1px solid var(--line)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font:500 20px/1 "DM Mono",monospace;text-decoration:none;letter-spacing:-.04em}
+.brand i{font-style:normal;color:var(--red)}
+.navlinks{display:flex;align-items:center;gap:24px;font-size:13px;font-weight:600}
+.navlinks a{text-decoration:none}.navlinks a:hover{text-decoration:underline;text-underline-offset:4px}
+.navlinks .suggest{border:1px solid var(--ink);border-radius:999px;padding:8px 14px}
 
-/* ---------- placa de 96 poços: o elemento-assinatura ----------
-   Cada poço é uma vaga no catálogo. Poço marcado = jogo publicado.
-   Mostra sem rodeios quantos jogos existem e quanto espaço sobra. */
-.placa-bloco{display:flex; flex-wrap:wrap; align-items:flex-end; gap:26px; padding:26px 0 24px}
-.placa{border:1px solid var(--linha-forte); background:var(--papel-alto); padding:9px 10px 10px; border-radius:var(--raio)}
-.placa table{border-collapse:collapse}
-.placa th{
-  font-family:'IBM Plex Mono',monospace; font-weight:400; font-size:8px;
-  color:var(--tinta-fraca); padding:0 0 3px; text-align:center; line-height:1;
-}
-.placa th.lin{padding:0 4px 0 0; text-align:right; vertical-align:middle}
-.placa td{padding:1.5px}
-.poco{
-  display:block; width:11px; height:11px; border-radius:50%;
-  border:1px solid var(--linha-forte); background:transparent; padding:0;
-}
-.poco.cheio{background:var(--eosina); border-color:var(--eosina); cursor:pointer}
-.poco.cheio:hover{background:var(--tinta); border-color:var(--tinta)}
-.placa-leg{flex:1 1 210px; min-width:210px; font-size:13px; color:var(--tinta-fraca); padding-bottom:2px}
-.placa-leg b{display:block; font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; color:var(--tinta); line-height:1.1}
-.placa-leg .marca-poco{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--eosina); vertical-align:0}
+.hero{padding:76px 0 68px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(360px,.82fr);gap:72px;align-items:center}
+.hero h1{max-width:760px;margin:0;font-size:clamp(46px,6.4vw,82px);line-height:.98;letter-spacing:-.065em;font-weight:700}
+.hero h1 em{font-style:normal;color:var(--green)}
+.lead{max-width:590px;margin:26px 0 30px;font-size:18px;color:var(--muted)}
+.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.primary{display:inline-flex;align-items:center;gap:14px;background:var(--green);color:#fff;text-decoration:none;border-radius:999px;padding:13px 19px;font-weight:700}
+.primary:hover{background:var(--green-dark)}
+.primary span{display:grid;place-items:center;width:27px;height:27px;background:#fff;color:var(--green);border-radius:50%}
+.promise{font:400 12px/1.4 "DM Mono",monospace;color:var(--muted)}
 
-/* ---------- filtros ---------- */
-.filtros{border-top:1px solid var(--linha); padding:16px 0 18px}
-.rot{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--tinta-fraca); margin:0 0 8px}
-.busca{
-  width:100%; max-width:340px; font:inherit; font-size:15px; color:var(--tinta);
-  background:var(--papel-alto); border:1px solid var(--linha-forte); border-radius:var(--raio);
-  padding:9px 11px; margin-bottom:14px;
-}
-.busca::placeholder{color:#727C72}
-.chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px}
-.chip{
-  font:inherit; font-size:13px; line-height:1; cursor:pointer;
-  background:transparent; color:var(--tinta); border:1px solid var(--linha-forte);
-  border-radius:var(--raio); padding:7px 11px;
-}
-.chip:hover{border-color:var(--tinta)}
-.chip[aria-pressed="true"]{background:var(--azul); border-color:var(--azul); color:#fff}
-.contagem{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--tinta-fraca)}
+.lab-card{background:var(--paper-light);border:1px solid var(--ink);border-radius:24px;padding:22px;box-shadow:8px 8px 0 var(--mint);transform:rotate(1deg)}
+.lab-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}
+.lab-head strong{font-size:15px}.lab-head span{font:400 10px/1.4 "DM Mono",monospace;color:var(--muted);text-align:right}
+.plate{overflow-x:auto}
+.plate table{border-collapse:collapse;margin:auto}.plate th{font:400 8px "DM Mono",monospace;color:var(--muted);padding:0 0 4px;text-align:center}
+.plate th.row{padding-right:7px}.plate td{padding:3px}
+.well{display:block;width:18px;height:18px;border:1px solid #adb6ac;border-radius:50%;background:#eef0e9;padding:0}
+button.well{cursor:pointer;background:var(--red);border-color:#933b2e;box-shadow:inset 0 0 0 3px #e98b78}
+button.well:hover{transform:scale(1.18)}
+.lab-foot{display:flex;align-items:end;justify-content:space-between;gap:18px;border-top:1px solid var(--line);margin-top:20px;padding-top:17px}
+.counter{font:500 42px/1 "DM Mono",monospace;color:var(--green)}
+.counter-copy{max-width:190px;font-size:12px;color:var(--muted);text-align:right}
 
-/* ---------- cartões ---------- */
-main{padding:24px 0 8px}
-.grade{display:grid; gap:20px; grid-template-columns:1fr; margin:0; padding:0; list-style:none}
-@media(min-width:640px){ .grade{grid-template-columns:repeat(2,1fr)} }
-@media(min-width:940px){ .grade{grid-template-columns:repeat(3,1fr)} }
-.cartao{
-  background:var(--papel-alto); border:1px solid var(--linha-forte); border-radius:var(--raio);
-  display:flex; flex-direction:column; overflow:hidden;
-}
-.capa-env{position:relative; background:#12181E; border-bottom:1px solid var(--linha-forte)}
-.capa{display:block; width:100%; aspect-ratio:3/2; object-fit:cover; object-position:center top}
-.coord{
-  position:absolute; top:9px; left:9px; font-family:'IBM Plex Mono',monospace;
-  font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--tinta);
-  background:var(--papel-alto); border:1px solid var(--tinta); border-radius:2px; padding:2px 6px;
-}
-.corpo{padding:15px 16px 16px; display:flex; flex-direction:column; flex:1}
-.cartao h2{margin:0; font-size:20px; font-weight:700; letter-spacing:-.01em}
-.sub{margin:1px 0 0; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--tinta-fraca)}
-.resumo{margin:10px 0 0; font-size:14.5px}
-.aprende{margin:13px 0 0; padding:11px 12px; background:var(--azul-claro); border-radius:var(--raio)}
-.aprende p{margin:0 0 5px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--azul)}
-.aprende ul{margin:0; padding-left:16px; font-size:13.5px; line-height:1.5}
-.aprende li{margin:2px 0}
-.temas{display:flex; flex-wrap:wrap; gap:5px; margin:13px 0 0}
-.tema{font-size:12px; color:var(--azul); border:1px solid #B9CBDA; border-radius:var(--raio); padding:3px 7px}
-.ficha{
-  margin:12px 0 0; padding-top:11px; border-top:1px solid var(--linha);
-  font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--tinta-fraca);
-  display:flex; flex-wrap:wrap; gap:4px 10px;
-}
-.jogar{
-  margin-top:14px; display:block; text-align:center; text-decoration:none;
-  background:var(--eosina); color:#fff; font-weight:600; font-size:15px;
-  border-radius:var(--raio); padding:11px 14px;
-}
-.jogar:hover{background:#9E2C3D}
-.vazio{padding:34px 0; color:var(--tinta-fraca)}
+.catalog{padding:70px 0 84px}
+.section-head{display:flex;justify-content:space-between;gap:40px;align-items:end;margin-bottom:30px}
+.section-head h2{margin:0;font-size:clamp(34px,4vw,52px);line-height:1;letter-spacing:-.045em}
+.section-head p:last-child{max-width:430px;margin:0;color:var(--muted);font-size:14px}
+.tools{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:18px;align-items:start;padding:18px;background:var(--paper-light);border:1px solid var(--line);border-radius:16px;margin-bottom:26px}
+.search-wrap{position:relative}
+.search-wrap label{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search{width:100%;height:48px;padding:0 15px 0 46px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px 14px;max-width:620px}
+#chipsTema,#chipsNivel{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer;border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:600;color:var(--muted)}
+.chip:hover{border-color:var(--green);color:var(--green)}
+.chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+.results{margin:0 0 16px;font:400 11px "DM Mono",monospace;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;list-style:none;margin:0;padding:0}
+.card{display:grid;grid-template-columns:45% 55%;min-height:430px;background:var(--paper-light);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(23,35,31,.09)}
+.cover-wrap{position:relative;background:var(--green);min-height:280px}
+.cover{width:100%;height:100%;object-fit:cover;display:block}
+.coordinate{position:absolute;top:13px;left:13px;background:var(--paper-light);border-radius:999px;padding:5px 9px;font:500 10px "DM Mono",monospace}
+.card-body{padding:25px;display:flex;flex-direction:column}
+.card h3{margin:0;font-size:27px;line-height:1.1;letter-spacing:-.035em}
+.subtitle{margin:4px 0 0;font:400 11px "DM Mono",monospace;color:var(--red)}
+.summary{margin:18px 0;color:var(--muted);font-size:14px}
+.learn{margin:0 0 17px;padding-top:15px;border-top:1px solid var(--line)}
+.learn p{margin:0 0 7px;font:500 9px "DM Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--green)}
+.learn ul{margin:0;padding-left:17px;font-size:12px}.learn li{margin:4px 0}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.tag{font-size:10px;background:var(--mint);color:var(--green);border-radius:999px;padding:4px 8px}
+.meta{display:flex;flex-wrap:wrap;gap:7px 12px;margin:14px 0;font:400 10px "DM Mono",monospace;color:var(--muted)}
+.play{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;background:var(--green);border-radius:10px;padding:11px 13px;font-size:13px;font-weight:700}
+.play:hover{background:var(--green-dark)}
+.empty{padding:40px;border:1px dashed var(--line);border-radius:16px;color:var(--muted)}
+.warning{display:none;margin-top:20px;padding:16px;border-left:3px solid var(--red);background:#fff}
 
-/* ---------- rodapé ---------- */
-footer{border-top:1px solid var(--linha); margin-top:34px; padding:22px 0 40px; font-size:14px; color:var(--tinta-fraca)}
-footer a{color:var(--azul)}
-.rodape-linhas{display:flex; flex-wrap:wrap; gap:8px 26px}
-.aviso{
-  margin:20px 0 0; padding:12px 14px; border-left:3px solid var(--eosina);
-  background:var(--papel-alto); font-size:14px; color:var(--tinta); display:none;
-}
-.aviso code{font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--azul-claro); padding:1px 5px; border-radius:2px}
+footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
+.footer-brand{font:500 24px "DM Mono",monospace}.footer-brand i{font-style:normal;color:#ef7968}
+.footer-copy{max-width:470px;margin:12px 0 0;color:#aeb8b2;font-size:14px}
+.footer-links{display:flex;justify-content:flex-end;gap:22px;flex-wrap:wrap;font-size:13px}
+.footer-links a{text-underline-offset:4px}
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:48px}.lab-card{max-width:560px}.tools{grid-template-columns:1fr}.filters{justify-content:flex-start;max-width:none}
+  .grid{grid-template-columns:1fr}.card{grid-template-columns:40% 60%}
+}
+@media(max-width:620px){
+  .wrap{width:min(calc(100% - 28px),var(--max))}.topbar{height:64px}.navlinks a:not(.suggest){display:none}
+  .hero{padding:54px 0}.hero h1{font-size:46px}.lead{font-size:16px}.lab-card{padding:16px;transform:none}.well{width:13px;height:13px}.plate td{padding:2px}
+  .section-head{display:block}.section-head p:last-child{margin-top:16px}.catalog{padding:52px 0}
+  .card{display:block}.cover-wrap{height:280px}.card-body{padding:22px}.footer-grid{grid-template-columns:1fr}.footer-links{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="env">
-    <h1 class="marca"><a href="/">immuno<span>.</span>games</a></h1>
-    <p class="lema">Jogos gratuitos para ensinar e aprender imunologia. Rodam no navegador, sem instalar nada.</p>
-
-    <div class="placa-bloco">
-      <div class="placa" id="placa" aria-hidden="true"></div>
-      <div class="placa-leg">
-        <b id="totalJogos">—</b>
-        <span id="totalTxt">jogo publicado</span><br>
-        <span class="marca-poco"></span> cada poço marcado é um jogo. O resto da placa ainda está vazio.
-      </div>
+<header class="topbar">
+  <nav class="nav wrap" aria-label="Navegação principal">
+    <a class="brand" href="/">immuno<i>.</i>games</a>
+    <div class="navlinks">
+      <a href="#jogos">Jogos</a>
+      <a href="#sobre">Sobre</a>
+      <a class="suggest" href="mailto:contato@immuno.games">Sugerir um jogo</a>
     </div>
-  </div>
+  </nav>
 </header>
 
-<div class="filtros">
-  <div class="env">
-    <p class="rot">Buscar</p>
-    <input class="busca" id="busca" type="search" placeholder="Nome, tema ou conceito…" aria-label="Buscar jogos">
-    <p class="rot">Tema</p>
-    <div class="chips" id="chipsTema"></div>
-    <p class="rot">Nível</p>
-    <div class="chips" id="chipsNivel"></div>
-    <p class="contagem" id="contagem"></p>
-  </div>
-</div>
+<main>
+  <section class="hero">
+    <div class="hero-grid wrap">
+      <div>
+        <p class="eyebrow">Ciência que entra em jogo</p>
+        <h1>Imunologia para <em>jogar.</em></h1>
+        <p class="lead">Experiências curtas e gratuitas que transformam conceitos complexos do sistema imune em decisões, desafios e descobertas.</p>
+        <div class="hero-actions">
+          <a class="primary" href="#jogos">Explorar jogos <span aria-hidden="true">↓</span></a>
+          <span class="promise">Sem cadastro · Direto no navegador</span>
+        </div>
+      </div>
+      <aside class="lab-card" aria-label="Catálogo em placa de 96 poços">
+        <div class="lab-head"><strong>Placa do catálogo</strong><span>96 posições<br>1 posição = 1 jogo</span></div>
+        <div class="plate" id="placa" aria-hidden="true"></div>
+        <div class="lab-foot">
+          <div><div class="counter" id="totalJogos">—</div><span id="totalTxt">jogo publicado</span></div>
+          <div class="counter-copy">Os poços preenchidos levam você direto a cada experiência.</div>
+        </div>
+      </aside>
+    </div>
+  </section>
 
-<main class="env">
-  <ul class="grade" id="grade"></ul>
-  <p class="vazio" id="vazio" hidden>Nenhum jogo corresponde a esses filtros.</p>
-  <div class="aviso" id="aviso">
-    <b>O catálogo não carregou.</b><br>
-    Verifique se o arquivo <code>jogos.js</code> está na mesma pasta do
-    <code>index.html</code> e se não há erro de sintaxe nele — uma vírgula
-    sobrando ou faltando entre as entradas já basta. O console do navegador
-    (F12) aponta a linha exata.
-  </div>
+  <section class="catalog wrap" id="jogos">
+    <div class="section-head">
+      <div><p class="eyebrow">Catálogo aberto</p><h2>Escolha sua missão</h2></div>
+      <p>Para usar em sala, revisar um tema ou só descobrir como as nossas defesas funcionam.</p>
+    </div>
+    <div class="tools">
+      <div class="search-wrap"><label for="busca" aria-hidden="true">⌕</label><input class="search" id="busca" type="search" placeholder="Busque por jogo, célula ou conceito" aria-label="Buscar jogos"></div>
+      <div class="filters" id="filtros"><div id="chipsTema"></div><div id="chipsNivel"></div></div>
+    </div>
+    <p class="results" id="contagem" aria-live="polite"></p>
+    <ul class="grid" id="grade"></ul>
+    <p class="empty" id="vazio" hidden>Nenhum jogo corresponde a esses filtros. Tente remover um filtro ou buscar outro termo.</p>
+    <div class="warning" id="aviso"><b>O catálogo não carregou.</b> Verifique o arquivo <code>jogos.js</code>.</div>
+  </section>
 </main>
 
-<footer>
-  <div class="env">
-    <div class="rodape-linhas">
-      <span>Criado por <a href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener">Helder Nakaya</a></span>
-      <a href="https://github.com/" target="_blank" rel="noopener">Código no GitHub</a>
-      <a href="mailto:contato@immuno.games">Sugerir um jogo</a>
+<footer id="sobre">
+  <div class="footer-grid wrap">
+    <div><div class="footer-brand">immuno<i>.</i>games</div><p class="footer-copy">Jogos autorais, gratuitos e de uso livre em sala de aula. Um projeto de Helder Nakaya para aproximar ciência e aprendizagem.</p></div>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener">Instagram</a>
     </div>
-    <p style="margin:12px 0 0">Uso livre em sala de aula.</p>
   </div>
 </footer>
 
 <script src="jogos.js"></script>
 <script>
-/* ---------------------------------------------------------------
-   Todo o conteúdo vem de jogos.js.
-   Para publicar um jogo novo: criar a pasta, somar uma entrada no
-   catálogo. Esta página não precisa ser editada nunca mais.
-   --------------------------------------------------------------- */
-const IDIOMA = 'pt';
-const LINHAS = 'ABCDEFGH', COLUNAS = 12;   // placa de 96 poços
-
-let dados = null, filtroTema = null, filtroNivel = null, termo = '';
-
-const $ = id => document.getElementById(id);
-const txt = (obj, campo) => (obj && obj[IDIOMA] && obj[IDIOMA][campo]) || '';
-const rotulo = (dic, chave) => (dic[chave] && dic[chave][IDIOMA]) || chave;
-
-/* Coordenada do jogo na placa: A1, A2 … H12 */
-function coordenada(i){ return LINHAS[Math.floor(i / COLUNAS)] + (i % COLUNAS + 1); }
+const IDIOMA='pt',LINHAS='ABCDEFGH',COLUNAS=12;
+let dados=null,filtroTema=null,filtroNivel=null,termo='';
+const $=id=>document.getElementById(id);
+const txt=(obj,campo)=>(obj&&obj[IDIOMA]&&obj[IDIOMA][campo])||'';
+const rotulo=(dic,chave)=>(dic[chave]&&dic[chave][IDIOMA])||chave;
+const coordenada=i=>LINHAS[Math.floor(i/COLUNAS)]+(i%COLUNAS+1);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function montarPlaca(){
-  const n = dados.jogos.length;
-  let h = '<table><tr><th></th>';
-  for (let c = 1; c <= COLUNAS; c++) h += '<th>' + c + '</th>';
-  h += '</tr>';
-  for (let l = 0; l < LINHAS.length; l++){
-    h += '<tr><th class="lin">' + LINHAS[l] + '</th>';
-    for (let c = 0; c < COLUNAS; c++){
-      const i = l * COLUNAS + c, jogo = dados.jogos[i];
-      h += '<td>' + (jogo
-        ? '<button class="poco cheio" data-id="' + jogo.id + '" title="' + txt(jogo,'nome') + '"></button>'
-        : '<span class="poco"></span>') + '</td>';
-    }
-    h += '</tr>';
-  }
-  $('placa').innerHTML = h + '</table>';
-  $('placa').removeAttribute('aria-hidden');
-  $('totalJogos').textContent = n;
-  $('totalTxt').textContent = n === 1 ? 'jogo publicado' : 'jogos publicados';
-  $('placa').querySelectorAll('.poco.cheio').forEach(b => {
-    b.addEventListener('click', () => {
-      const alvo = document.getElementById('jogo-' + b.dataset.id);
-      if (alvo) alvo.scrollIntoView({behavior:'smooth', block:'center'});
-    });
-  });
+  const n=dados.jogos.length;let h='<table><tr><th></th>';
+  for(let c=1;c<=COLUNAS;c++)h+='<th>'+c+'</th>';h+='</tr>';
+  for(let l=0;l<LINHAS.length;l++){h+='<tr><th class="row">'+LINHAS[l]+'</th>';
+    for(let c=0;c<COLUNAS;c++){const i=l*COLUNAS+c,jogo=dados.jogos[i];
+      h+='<td>'+(jogo?'<button class="well" data-id="'+esc(jogo.id)+'" title="Ir para '+esc(txt(jogo,'nome'))+'"></button>':'<span class="well"></span>')+'</td>'}
+    h+='</tr>'}
+  $('placa').innerHTML=h+'</table>';$('placa').removeAttribute('aria-hidden');
+  $('totalJogos').textContent=n;$('totalTxt').textContent=n===1?'jogo publicado':'jogos publicados';
+  $('placa').querySelectorAll('button.well').forEach(b=>b.addEventListener('click',()=>document.getElementById('jogo-'+b.dataset.id)?.scrollIntoView({behavior:'smooth',block:'center'})));
 }
-
-function montarChips(destino, dic, chaves, atual, aoEscolher){
-  const el = $(destino);
-  el.innerHTML = '';
-  const add = (chave, texto) => {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.textContent = texto;
-    b.setAttribute('aria-pressed', String(atual() === chave));
-    b.addEventListener('click', () => { aoEscolher(atual() === chave ? null : chave); });
-    el.appendChild(b);
-  };
-  add(null, 'Todos');
-  chaves.forEach(k => add(k, rotulo(dic, k)));
+function montarChips(destino,dic,chaves,atual,escolher){
+  const el=$(destino);el.innerHTML='';const frag=document.createDocumentFragment();
+  const add=(chave,texto)=>{const b=document.createElement('button');b.className='chip';b.textContent=texto;b.setAttribute('aria-pressed',String(atual()===chave));b.addEventListener('click',()=>escolher(atual()===chave?null:chave));frag.appendChild(b)};
+  add(null,'Todos');chaves.forEach(k=>add(k,rotulo(dic,k)));el.appendChild(frag);
 }
-
-/* Busca ignora acento: no celular quase ninguém digita "macrófago" com o acento. */
-function simples(s){
-  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-}
-
+const simples=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function filtrados(){
-  const t = simples(termo.trim());
-  return dados.jogos.filter(j => {
-    if (filtroTema  && !(j.temas || []).includes(filtroTema)) return false;
-    if (filtroNivel && j.nivel !== filtroNivel) return false;
-    if (!t) return true;
-    const sopa = simples([
-      txt(j,'nome'), txt(j,'subtitulo'), txt(j,'resumo'),
-      (txt(j,'aprende') || []).join(' '),
-      (j.temas || []).map(k => rotulo(dados.temas, k)).join(' '),
-      rotulo(dados.niveis, j.nivel), (j.autores || []).join(' ')
-    ].join(' '));
-    return sopa.includes(t);
+  const t=simples(termo.trim());
+  return dados.jogos.filter(j=>{
+    if(filtroTema&&!(j.temas||[]).includes(filtroTema))return false;
+    if(filtroNivel&&j.nivel!==filtroNivel)return false;
+    if(!t)return true;
+    return simples([txt(j,'nome'),txt(j,'subtitulo'),txt(j,'resumo'),...(txt(j,'aprende')||[]),...(j.temas||[]).map(k=>rotulo(dados.temas,k)),rotulo(dados.niveis,j.nivel),...(j.autores||[])].join(' ')).includes(t);
   });
 }
-
-function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
 function montarGrade(){
-  const lista = filtrados();
-  $('contagem').textContent = lista.length + (lista.length === 1 ? ' jogo' : ' jogos');
-  $('vazio').hidden = lista.length > 0;
-  $('grade').innerHTML = lista.map(j => {
-    const i = dados.jogos.indexOf(j);
-    const aprende = txt(j,'aprende') || [];
-    return `<li class="cartao" id="jogo-${esc(j.id)}">
-      <div class="capa-env">
-        <img class="capa" src="${esc(j.capa)}" alt="Capa de ${esc(txt(j,'nome'))}" loading="lazy" width="600" height="400">
-        <span class="coord">${coordenada(i)}</span>
-      </div>
-      <div class="corpo">
-        <h2>${esc(txt(j,'nome'))}</h2>
-        ${txt(j,'subtitulo') ? `<p class="sub">${esc(txt(j,'subtitulo'))}</p>` : ''}
-        <p class="resumo">${esc(txt(j,'resumo'))}</p>
-        ${aprende.length ? `<div class="aprende"><p>Ao jogar, o aluno</p><ul>${
-          aprende.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
-        <div class="temas">${(j.temas || []).map(k =>
-          `<span class="tema">${esc(rotulo(dados.temas, k))}</span>`).join('')}</div>
-        <div class="ficha">
-          <span>${esc(rotulo(dados.niveis, j.nivel))}</span>
-          <span>~${esc(j.duracao)} min</span>
-          <span>${esc((j.autores || []).join(', '))}</span>
-        </div>
-        <a class="jogar" href="${esc(j.url)}">Jogar ${esc(txt(j,'nome'))} →</a>
-      </div>
-    </li>`;
-  }).join('');
+  const lista=filtrados();$('contagem').textContent=lista.length+(lista.length===1?' experiência encontrada':' experiências encontradas');$('vazio').hidden=lista.length>0;
+  $('grade').innerHTML=lista.map(j=>{const i=dados.jogos.indexOf(j),aprende=txt(j,'aprende')||[];
+    return `<li class="card" id="jogo-${esc(j.id)}">
+      <div class="cover-wrap"><img class="cover" src="${esc(j.capa)}" alt="Capa de ${esc(txt(j,'nome'))}" loading="lazy" width="600" height="400"><span class="coordinate">${coordenada(i)}</span></div>
+      <div class="card-body"><h3>${esc(txt(j,'nome'))}</h3>${txt(j,'subtitulo')?`<p class="subtitle">${esc(txt(j,'subtitulo'))}</p>`:''}
+      <p class="summary">${esc(txt(j,'resumo'))}</p>
+      ${aprende.length?`<div class="learn"><p>Ao jogar, você vai</p><ul>${aprende.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`:''}
+      <div class="tags">${(j.temas||[]).map(k=>`<span class="tag">${esc(rotulo(dados.temas,k))}</span>`).join('')}</div>
+      <div class="meta"><span>${esc(rotulo(dados.niveis,j.nivel))}</span><span>~${esc(j.duracao)} min</span><span>${esc((j.autores||[]).join(', '))}</span></div>
+      <a class="play" href="${esc(j.url)}"><span>Jogar agora</span><span aria-hidden="true">→</span></a></div></li>`}).join('');
 }
-
 function redesenhar(){
-  montarChips('chipsTema',  dados.temas,  Object.keys(dados.temas),
-    () => filtroTema,  v => { filtroTema = v;  redesenhar(); });
-  montarChips('chipsNivel', dados.niveis, Object.keys(dados.niveis),
-    () => filtroNivel, v => { filtroNivel = v; redesenhar(); });
-  montarGrade();
+  montarChips('chipsTema',dados.temas,Object.keys(dados.temas),()=>filtroTema,v=>{filtroTema=v;redesenhar()});
+  montarChips('chipsNivel',dados.niveis,Object.keys(dados.niveis),()=>filtroNivel,v=>{filtroNivel=v;redesenhar()});montarGrade();
 }
-
-$('busca').addEventListener('input', e => { termo = e.target.value; montarGrade(); });
-
-/* O catálogo chega pela tag <script src="jogos.js"> acima, não por fetch.
-   Isso faz a página funcionar também ao abrir o arquivo com duplo clique. */
-if (typeof CATALOGO !== 'undefined' && CATALOGO && Array.isArray(CATALOGO.jogos)) {
-  dados = CATALOGO;
-  montarPlaca();
-  redesenhar();
-} else {
-  $('aviso').style.display = 'block';
-  $('contagem').textContent = '';
-}
+$('busca').addEventListener('input',e=>{termo=e.target.value;montarGrade()});
+if(typeof CATALOGO!=='undefined'&&CATALOGO&&Array.isArray(CATALOGO.jogos)){dados=CATALOGO;montarPlaca();redesenhar()}else{$('aviso').style.display='block';$('contagem').textContent=''}
 </script>
 </body>
 </html>
