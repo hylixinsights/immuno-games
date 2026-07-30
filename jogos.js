@@ -50,6 +50,31 @@ const CATALOGO = {
           "Relacionar resposta excessiva com dano tecidual"
         ]
       }
+    },
+
+    /* Rascunho em teste: "oculto": true tira o card do site (grade, placa, busca e filtros),
+       mas o jogo continua acessível pelo link direto immuno.games/imunidade-coletiva/.
+       Para lançar, apague a linha "oculto": true e dê push. */
+    {
+      "id": "imunidade-coletiva",
+      "oculto": true,
+      "url": "imunidade-coletiva/",
+      "capa": "capas/imunidade-coletiva.webp",
+      "publicado": "2026-07",
+      "nivel": "medio",
+      "duracao": 10,
+      "temas": ["vacinas", "infeccao"],
+      "autores": ["Helder Nakaya"],
+      "pt": {
+        "nome": "Imunidade Coletiva",
+        "subtitulo": "Estratégia de Vacinação",
+        "resumo": "Uma criança não pode se vacinar. A cada turno você recebe doses e escolhe onde posicionar pessoas vacinadas para romper as cadeias de transmissão. Não é preciso vacinar todo mundo — bem posicionadas, poucas barreiras já protegem quem não pôde receber a vacina.",
+        "aprende": [
+          "Entender como a imunidade coletiva protege quem não pode se vacinar",
+          "Ver a vacinação como forma de interromper cadeias de transmissão",
+          "Perceber que diálogo e confiança podem reduzir a hesitação vacinal"
+        ]
+      }
     }
 
   ]

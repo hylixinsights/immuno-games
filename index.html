@@ -242,11 +242,14 @@ function montarGrade(){
       <a class="play" href="${esc(j.url)}"><span>Jogar agora</span><span aria-hidden="true">→</span></a></div></li>`}).join('');
 }
 function redesenhar(){
-  montarChips('chipsTema',dados.temas,Object.keys(dados.temas),()=>filtroTema,v=>{filtroTema=v;redesenhar()});
-  montarChips('chipsNivel',dados.niveis,Object.keys(dados.niveis),()=>filtroNivel,v=>{filtroNivel=v;redesenhar()});montarGrade();
+  // só mostra filtros que algum jogo VISÍVEL usa (jogos ocultos não vazam categorias)
+  const temasUsados=Object.keys(dados.temas).filter(k=>dados.jogos.some(j=>(j.temas||[]).includes(k)));
+  const niveisUsados=Object.keys(dados.niveis).filter(k=>dados.jogos.some(j=>j.nivel===k));
+  montarChips('chipsTema',dados.temas,temasUsados,()=>filtroTema,v=>{filtroTema=v;redesenhar()});
+  montarChips('chipsNivel',dados.niveis,niveisUsados,()=>filtroNivel,v=>{filtroNivel=v;redesenhar()});montarGrade();
 }
 $('busca').addEventListener('input',e=>{termo=e.target.value;montarGrade()});
-if(typeof CATALOGO!=='undefined'&&CATALOGO&&Array.isArray(CATALOGO.jogos)){dados=CATALOGO;montarPlaca();redesenhar()}else{$('aviso').style.display='block';$('contagem').textContent=''}
+if(typeof CATALOGO!=='undefined'&&CATALOGO&&Array.isArray(CATALOGO.jogos)){dados=CATALOGO;dados.jogos=dados.jogos.filter(j=>!j.oculto);montarPlaca();redesenhar()}else{$('aviso').style.display='block';$('contagem').textContent=''}
 </script>
 </body>
 </html>
