@@ -668,6 +668,205 @@
       background: var(--bonus-soft);
     }
 
+    .game-legend {
+      flex: 0 0 auto;
+      width: min(100%, 780px);
+      margin: 0 auto 5px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .92);
+      overflow: hidden;
+    }
+
+    .legend-toggle {
+      width: 100%;
+      min-height: 30px;
+      padding: 0 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0;
+      box-shadow: none;
+      color: var(--muted);
+      background: transparent;
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+
+    .legend-toggle::after {
+      content: "MOSTRAR";
+      font-size: 8px;
+    }
+
+    .game-legend.open .legend-toggle::after {
+      content: "OCULTAR";
+    }
+
+    .legend-items {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px 9px;
+      padding: 4px 10px 10px;
+    }
+
+    .game-legend.open .legend-items {
+      display: grid;
+    }
+
+    .legend-key {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+      border: 1px solid rgba(23, 32, 51, .14);
+      border-radius: 50%;
+    }
+
+    .failure-chain-card {
+      display: none;
+      margin: 0 0 16px;
+      padding: 14px;
+      border: 1px solid rgba(239, 70, 85, .28);
+      border-radius: 16px;
+      background: rgba(239, 70, 85, .07);
+      text-align: left;
+    }
+
+    .failure-chain-card.show {
+      display: block;
+    }
+
+    .failure-chain-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #8D2735;
+      font-size: 11px;
+      letter-spacing: .075em;
+    }
+
+    .failure-chain-card p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 680;
+    }
+
+    .failure-chain-card small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 650;
+    }
+
+    .event-modal-icon {
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      color: #FFFFFF;
+      background: var(--bonus);
+      font-size: 29px;
+      font-weight: 950;
+      box-shadow: 0 8px 20px rgba(125, 82, 0, .20);
+    }
+
+    .planning-budget {
+      margin: 2px 0 15px;
+      padding: 12px;
+      border-radius: 15px;
+      color: #FFFFFF;
+      background: var(--ink);
+    }
+
+    .planning-budget span {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: .09em;
+    }
+
+    .planning-budget strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .planning-grid {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+
+    .planning-row {
+      display: grid;
+      grid-template-columns: 1fr 44px 58px 44px;
+      align-items: center;
+      gap: 7px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--bg);
+      text-align: left;
+    }
+
+    .planning-row strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+
+    .planning-row small {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .planning-row button {
+      min-height: 42px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    .planning-value {
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .planning-summary {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.42;
+      font-weight: 680;
+    }
+
+    @media (max-width: 520px) {
+      .legend-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     .tutorial-bubble {
       width: min(100%, 620px);
       min-height: 28px;
@@ -1172,7 +1371,7 @@
         <h1 id="gameTitle">IMUNIDADE COLETIVA</h1>
         <p class="tagline">PROTEJA QUEM NÃO PODE SER VACINADO</p>
         <div class="story-card">
-          <p>Uma criança não pode receber a vacina. Você recebe duas novas doses a cada turno e guarda as que não usar. Antecipe os movimentos para interromper cadeias de transmissão. Pessoas amarelas ainda hesitam, mas podem decidir se vacinar.</p>
+          <p>Uma criança não pode receber a vacina. Na partida rápida, duas novas doses chegam a cada turno. Na gestão da campanha, você distribui um orçamento entre doses e comunicação. Antecipe os movimentos para interromper cadeias de transmissão.</p>
           <div class="mini-legend" aria-label="Legenda">
             <span class="mini-key"><i class="mini-dot" style="background:var(--gray)"></i>NÃO VACINADA</span>
             <span class="mini-key"><i class="mini-dot" style="background:var(--yellow)"></i>AINDA HESITA</span>
@@ -1183,7 +1382,8 @@
           </div>
         </div>
         <div class="menu-actions">
-          <button id="playBtn" class="primary" type="button">JOGAR</button>
+          <button id="playBtn" class="primary" type="button">PARTIDA RÁPIDA</button>
+          <button id="campaignPlayBtn" class="secondary" type="button">GESTÃO DA CAMPANHA</button>
           <button id="howBtn" class="secondary" type="button">COMO JOGAR</button>
           <div class="menu-tool-row">
             <button id="soundBtn" class="secondary" type="button">ÁUDIO LIGADO</button>
@@ -1197,9 +1397,9 @@
     <section id="difficultyScreen" class="screen menu-screen" aria-labelledby="difficultyTitle">
       <div class="difficulty-card">
         <h1 id="difficultyTitle">ESCOLHA A DIFICULDADE</h1>
-        <p>Todos os turnos trazem duas doses, que podem ser acumuladas. Um bom turno aumenta a chance de sortear doses extras, uma campanha ou uma mudança de decisão.</p>
+        <p id="difficultyIntro">Na partida rápida, duas doses chegam a cada turno. Na gestão da campanha, o estoque é comprado antes da rodada. No iniciante, as primeiras rodadas oferecem mais margem para aprender. Um bom turno aumenta a chance de receber bônus.</p>
         <button class="difficulty-option" type="button" data-difficulty="beginner">
-          <span><strong>INICIANTE</strong><span>Menos pessoas, um foco vermelho e uma criança</span></span>
+          <span><strong>INICIANTE</strong><span>Mais tempo, estoque inicial maior e movimento vermelho revelado aos poucos</span></span>
           <span class="difficulty-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
         </button>
         <button class="difficulty-option" type="button" data-difficulty="strategic">
@@ -1289,6 +1489,18 @@
         TURNO 1 · DUAS DOSES CHEGARAM. AS NÃO USADAS PERMANECEM NO ESTOQUE.
       </div>
 
+      <div id="gameLegend" class="game-legend" aria-label="Legenda durante a partida">
+        <button id="legendToggle" class="legend-toggle" type="button" aria-expanded="false">LEGENDA DAS CORES</button>
+        <div class="legend-items">
+          <span class="legend-key"><i class="legend-dot" style="background:var(--gray)"></i>NÃO VACINADA</span>
+          <span class="legend-key"><i class="legend-dot" style="background:var(--yellow)"></i>AINDA HESITA</span>
+          <span class="legend-key"><i class="legend-dot" style="background:var(--green)"></i>VACINADA</span>
+          <span class="legend-key"><i class="legend-dot" style="background:var(--red)"></i>INFECTADA</span>
+          <span class="legend-key"><i class="legend-dot" style="background:var(--blue)"></i>NÃO PODE VACINAR</span>
+          <span class="legend-key"><i class="legend-dot" style="background:var(--red-dark)"></i>RECUPERADA</span>
+        </div>
+      </div>
+
       <div id="boardArea" class="board-area">
         <div id="canvasShell" class="canvas-shell">
           <canvas id="gameCanvas" aria-label="Tabuleiro 19 por 19 com pessoas representadas por bolas coloridas" tabindex="0"></canvas>
@@ -1314,11 +1526,59 @@
         </div>
       </div>
 
+      <div id="planningOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="planningTitle">
+        <div class="modal">
+          <p class="modal-kicker">GESTÃO DA CAMPANHA</p>
+          <h2 id="planningTitle">DISTRIBUA O ORÇAMENTO</h2>
+          <p class="modal-subtitle">Compre doses para esta rodada ou invista em comunicação para reduzir a hesitação antes do primeiro movimento.</p>
+          <div class="planning-budget">
+            <span>ORÇAMENTO DISPONÍVEL</span>
+            <strong id="planningBudgetValue">0</strong>
+          </div>
+          <div class="planning-grid">
+            <div class="planning-row">
+              <div><strong>DOSES</strong><small>Cada dose custa 1 crédito e entra no estoque da rodada.</small></div>
+              <button id="doseMinusBtn" type="button" aria-label="Comprar menos doses">−</button>
+              <span id="planningDoseValue" class="planning-value">0</span>
+              <button id="dosePlusBtn" type="button" aria-label="Comprar mais doses">+</button>
+            </div>
+            <div class="planning-row">
+              <div><strong>COMUNICAÇÃO</strong><small>Cada nível custa 3 créditos e prepara até duas pessoas para considerar a vacinação.</small></div>
+              <button id="communicationMinusBtn" type="button" aria-label="Investir menos em comunicação">−</button>
+              <span id="planningCommunicationValue" class="planning-value">0</span>
+              <button id="communicationPlusBtn" type="button" aria-label="Investir mais em comunicação">+</button>
+            </div>
+          </div>
+          <p id="planningSummary" class="planning-summary"></p>
+          <div class="modal-actions">
+            <button id="planningStartBtn" class="primary" type="button">COMEÇAR RODADA</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="eventOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="eventTitle">
+        <div class="modal">
+          <div id="eventIcon" class="event-modal-icon" aria-hidden="true">+</div>
+          <p id="eventKicker" class="modal-kicker">EVENTO DA RODADA</p>
+          <h2 id="eventTitle">CAMPANHA DISPONÍVEL</h2>
+          <p id="eventText" class="modal-subtitle"></p>
+          <div class="modal-actions">
+            <button id="eventPrimaryBtn" class="primary" type="button">CONTINUAR</button>
+            <button id="eventSecondaryBtn" type="button">GUARDAR</button>
+          </div>
+        </div>
+      </div>
+
       <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
         <div class="modal">
           <p id="resultKicker" class="modal-kicker">RESULTADO DA RODADA</p>
           <h2 id="resultTitle">IMUNIDADE COLETIVA</h2>
           <p id="resultSubtitle" class="modal-subtitle"></p>
+          <div id="failureChainCard" class="failure-chain-card">
+            <strong>COMO A INFECÇÃO CHEGOU</strong>
+            <p id="failureChainText"></p>
+            <small id="failureChainNote"></small>
+          </div>
           <div id="resultStats" class="result-stats"></div>
           <div id="scorePanel" class="score-panel">
             <span id="scoreLabel">PONTOS NA RODADA</span>
@@ -1364,7 +1624,9 @@
         ballRadiusInCells: 0.35,
         touchRadiusInCells: 0.60,
         maxTurns: 12,
-        dosesPerTurn: 2
+        dosesPerTurn: 2,
+        beginnerInitialDoses: [4, 3, 2],
+        beginnerSafeTurns: 3
       },
       motion: {
         moveDurationMs: 900,
@@ -1372,6 +1634,7 @@
         activeTurns: 3,
         blockPauseMs: 460,
         lossFreezeMs: 500,
+        chainReplayMs: 3000,
         effectDurationMs: 680
       },
       difficulties: {
@@ -1381,7 +1644,8 @@
           red: [1, 1, 1],
           yellow: [3, 4, 5],
           blue: [1, 1, 1],
-          seeds: [181703, 491927, 813749]
+          seeds: [181703, 491927, 813749],
+          initialDoses: [4, 3, 2]
         },
         strategic: {
           label: "ESTRATÉGICA",
@@ -1415,8 +1679,19 @@
         extraDoseAmount: 2,
         rewardTypes: ["dose", "campaign", "persuasion"]
       },
+      management: {
+        doseCost: 1,
+        communicationCost: 3,
+        peoplePerLevel: 2,
+        maxCommunication: 3,
+        budgets: {
+          beginner: [14, 15, 16],
+          strategic: [18, 20, 22],
+          challenge: [22, 24, 26]
+        }
+      },
       storage: {
-        tutorialSeen: "protejaAzul.imunidadeColetiva.tutorial.v1",
+        tutorialSeen: "protejaAzul.imunidadeColetiva.tutorial.v2",
         sound: "protejaAzul.imunidadeColetiva.sound.v1",
         bestPrefix: "protejaAzul.imunidadeColetiva.best.v3."
       },
@@ -1431,13 +1706,13 @@
         activeAtLimit: "A TRANSMISSÃO CONTINUA",
         complete: "IMUNIDADE COLETIVA",
         tutorial: [
-          "TOQUE EM UMA PESSOA NÃO VACINADA",
-          "UMA DOSE: AGORA ELA ESTÁ VACINADA",
-          "TOQUE NA PESSOA QUE AINDA HESITA",
-          "ELA PODE MUDAR DE IDEIA COM ESCUTA E INFORMAÇÃO",
-          "INFECTADAS TRANSMITEM, MAS SEU DESTINO É OCULTO",
-          "PROTEJA A CRIANÇA AZUL, ELA NÃO PODE SER VACINADA",
-          "AS SETAS MAIORES MOSTRAM OS OUTROS DESTINOS. AVANCE"
+          "A PESSOA DESTACADA ESTÁ NA ROTA ENTRE A INFECTADA E A CRIANÇA. TOQUE NELA PARA VACINAR",
+          "BOA ESCOLHA. A VACINAÇÃO ANTECIPADA PODE INTERROMPER A CADEIA DEPOIS DO MOVIMENTO. TOQUE EM CONTINUAR",
+          "TOQUE NA PESSOA AMARELA PARA ENTENDER A HESITAÇÃO",
+          "HESITAÇÃO NÃO É FIXA. UMA CONVERSA PODE ABRIR CAMINHO PARA A VACINAÇÃO. TOQUE EM CONTINUAR",
+          "A PESSOA VERMELHA TRANSMITE. NESTE TUTORIAL, SEU DESTINO É MOSTRADO. TOQUE EM CONTINUAR",
+          "A CRIANÇA AZUL NÃO PODE RECEBER A VACINA E DEPENDE DA PROTEÇÃO AO REDOR. TOQUE EM CONTINUAR",
+          "AS SETAS MOSTRAM OS DESTINOS. A VACINA DEVE ESTAR NO CAMINHO FUTURO DA TRANSMISSÃO. AVANCE PARA VER O RESULTADO"
         ]
       }
     };
@@ -1466,12 +1741,15 @@
       creditsScreen: $("#creditsScreen"),
       gameScreen: $("#gameScreen"),
       playBtn: $("#playBtn"),
+      campaignPlayBtn: $("#campaignPlayBtn"),
       howBtn: $("#howBtn"),
       soundBtn: $("#soundBtn"),
       soundState: $("#soundState"),
       creditsBtn: $("#creditsBtn"),
       creditsBackBtn: $("#creditsBackBtn"),
       difficultyBackBtn: $("#difficultyBackBtn"),
+      difficultyTitle: $("#difficultyTitle"),
+      difficultyIntro: $("#difficultyIntro"),
       bestScore: $("#bestScore"),
       canvas: $("#gameCanvas"),
       canvasShell: $("#canvasShell"),
@@ -1488,6 +1766,8 @@
       campaignBtn: $("#campaignBtn"),
       campaignBtnText: $("#campaignBtnText"),
       turnLesson: $("#turnLesson"),
+      gameLegend: $("#gameLegend"),
+      legendToggle: $("#legendToggle"),
       meritFeedback: $("#meritFeedback"),
       meritNoInfection: $("#meritNoInfection"),
       meritBlock: $("#meritBlock"),
@@ -1502,10 +1782,30 @@
       pauseRestartBtn: $("#pauseRestartBtn"),
       pauseSoundBtn: $("#pauseSoundBtn"),
       pauseMenuBtn: $("#pauseMenuBtn"),
+      planningOverlay: $("#planningOverlay"),
+      planningBudgetValue: $("#planningBudgetValue"),
+      planningDoseValue: $("#planningDoseValue"),
+      planningCommunicationValue: $("#planningCommunicationValue"),
+      planningSummary: $("#planningSummary"),
+      doseMinusBtn: $("#doseMinusBtn"),
+      dosePlusBtn: $("#dosePlusBtn"),
+      communicationMinusBtn: $("#communicationMinusBtn"),
+      communicationPlusBtn: $("#communicationPlusBtn"),
+      planningStartBtn: $("#planningStartBtn"),
+      eventOverlay: $("#eventOverlay"),
+      eventIcon: $("#eventIcon"),
+      eventKicker: $("#eventKicker"),
+      eventTitle: $("#eventTitle"),
+      eventText: $("#eventText"),
+      eventPrimaryBtn: $("#eventPrimaryBtn"),
+      eventSecondaryBtn: $("#eventSecondaryBtn"),
       resultOverlay: $("#resultOverlay"),
       resultKicker: $("#resultKicker"),
       resultTitle: $("#resultTitle"),
       resultSubtitle: $("#resultSubtitle"),
+      failureChainCard: $("#failureChainCard"),
+      failureChainText: $("#failureChainText"),
+      failureChainNote: $("#failureChainNote"),
       resultStats: $("#resultStats"),
       scorePanel: $("#scorePanel"),
       scoreLabel: $("#scoreLabel"),
@@ -1524,6 +1824,9 @@
       previousState: null,
       phase: "choice",
       difficulty: null,
+      gameMode: "quick",
+      pendingModeAfterTutorial: null,
+      managementPlan: null,
       roundIndex: 0,
       roundSeed: 0,
       roundStartSignatures: Object.create(null),
@@ -1555,7 +1858,13 @@
       resultReason: "",
       resultAction: null,
       failureHighlights: [],
+      failureChain: null,
+      transmissionHistory: [],
       freezeUntil: 0,
+      eventModalOpen: false,
+      eventModalPrimary: null,
+      eventModalSecondary: null,
+      communicationAvailable: true,
       pausedAt: 0,
       tutorial: null,
       tutorialDemo: false,
@@ -1595,6 +1904,8 @@
       dom.gameScreen.classList.toggle("is-active", name === "game");
       if (name !== "game") {
         dom.pauseOverlay.classList.remove("show");
+        dom.planningOverlay.classList.remove("show");
+        dom.eventOverlay.classList.remove("show");
         dom.resultOverlay.classList.remove("show");
       }
       if (name === "game") {
@@ -1630,6 +1941,150 @@
         "MÚSICA E SONS DESLIGADOS";
       dom.soundBtn.setAttribute("aria-pressed", app.audioEnabled ? "true" : "false");
       dom.pauseSoundBtn.setAttribute("aria-pressed", app.audioEnabled ? "true" : "false");
+    }
+
+    function updateLegendUi(open = null) {
+      if (open !== null) dom.gameLegend.classList.toggle("open", Boolean(open));
+      const expanded = dom.gameLegend.classList.contains("open");
+      dom.legendToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+
+    function showEventModal({
+      icon = "+",
+      kicker = "EVENTO DA RODADA",
+      title,
+      text,
+      primaryLabel = "CONTINUAR",
+      secondaryLabel = "",
+      onPrimary = null,
+      onSecondary = null
+    }) {
+      app.eventModalOpen = true;
+      app.eventModalPrimary = onPrimary;
+      app.eventModalSecondary = onSecondary;
+      dom.eventIcon.textContent = icon;
+      dom.eventKicker.textContent = kicker;
+      dom.eventTitle.textContent = title;
+      dom.eventText.textContent = text;
+      dom.eventPrimaryBtn.textContent = primaryLabel;
+      dom.eventSecondaryBtn.textContent = secondaryLabel;
+      dom.eventSecondaryBtn.style.display = secondaryLabel ? "block" : "none";
+      dom.eventOverlay.classList.add("show");
+      updateControls();
+      announce(`${title}. ${text}`);
+    }
+
+    function closeEventModal(usePrimary) {
+      if (!app.eventModalOpen) return;
+      const callback = usePrimary ? app.eventModalPrimary : app.eventModalSecondary;
+      app.eventModalOpen = false;
+      app.eventModalPrimary = null;
+      app.eventModalSecondary = null;
+      dom.eventOverlay.classList.remove("show");
+      if (typeof callback === "function") callback();
+      updateHud();
+      updateControls();
+    }
+
+    function managementBudgetForRound() {
+      return Number(
+        GAME_CONFIG.management.budgets[app.difficulty]?.[app.roundIndex] || 0
+      );
+    }
+
+    function managementSpent(plan = app.managementPlan) {
+      if (!plan) return 0;
+      return plan.doses * GAME_CONFIG.management.doseCost +
+        plan.communication * GAME_CONFIG.management.communicationCost;
+    }
+
+    function renderManagementPlanning() {
+      const plan = app.managementPlan;
+      if (!plan) return;
+      const spent = managementSpent(plan);
+      const remaining = Math.max(0, plan.budget - spent);
+      const prepared = plan.communication * GAME_CONFIG.management.peoplePerLevel;
+      dom.planningBudgetValue.textContent = `${remaining} DE ${plan.budget}`;
+      dom.planningDoseValue.textContent = String(plan.doses);
+      dom.planningCommunicationValue.textContent = String(plan.communication);
+      dom.planningSummary.textContent =
+        `${plan.doses} doses entrarão no estoque. O investimento em comunicação pode preparar até ${prepared} ` +
+        `${prepared === 1 ? "pessoa" : "pessoas"} para considerar a vacinação. ` +
+        `${remaining} ${remaining === 1 ? "crédito permanece" : "créditos permanecem"} sem uso.`;
+      dom.doseMinusBtn.disabled = plan.doses <= 0;
+      dom.communicationMinusBtn.disabled = plan.communication <= 0;
+      dom.dosePlusBtn.disabled =
+        spent + GAME_CONFIG.management.doseCost > plan.budget;
+      dom.communicationPlusBtn.disabled =
+        plan.communication >= GAME_CONFIG.management.maxCommunication ||
+        spent + GAME_CONFIG.management.communicationCost > plan.budget;
+      dom.planningStartBtn.disabled = plan.doses < 2;
+    }
+
+    function openManagementPlanning() {
+      const budget = managementBudgetForRound();
+      const communication = Math.min(1, GAME_CONFIG.management.maxCommunication);
+      const doses = Math.max(2, budget - communication * GAME_CONFIG.management.communicationCost);
+      app.managementPlan = { budget, doses, communication };
+      app.eventModalOpen = true;
+      dom.planningOverlay.classList.add("show");
+      renderManagementPlanning();
+      updateControls();
+      announce("Distribua o orçamento entre doses e comunicação antes de começar a rodada.");
+    }
+
+    function adjustManagementPlan(field, delta) {
+      const plan = app.managementPlan;
+      if (!plan) return;
+      const next = { ...plan, [field]: Math.max(0, plan[field] + delta) };
+      if (field === "communication") {
+        next.communication = Math.min(
+          GAME_CONFIG.management.maxCommunication,
+          next.communication
+        );
+      }
+      if (managementSpent(next) > next.budget) return;
+      app.managementPlan = next;
+      sounds.ui();
+      renderManagementPlanning();
+    }
+
+    function applyManagementPlan() {
+      const plan = app.managementPlan;
+      if (!plan || plan.doses < 2 || managementSpent(plan) > plan.budget) return;
+      app.credits = plan.doses;
+      app.roundStats.baseDosesReceived = plan.doses;
+      app.roundStats.managementBudget = plan.budget;
+      app.roundStats.managementSpent = managementSpent(plan);
+      const targetCount = plan.communication * GAME_CONFIG.management.peoplePerLevel;
+      const candidates = app.balls
+        .filter((ball) => ball.kind === "yellow")
+        .sort((first, second) =>
+          Number(second.routePriority) - Number(first.routePriority) ||
+          first.id - second.id
+        )
+        .slice(0, targetCount);
+      for (const ball of candidates) {
+        ball.kind = "gray";
+        ball.changedByCampaignCommunication = true;
+        addEffect("campaignWave", ball.col + .5, ball.row + .5, {
+          color: GAME_CONFIG.colors.yellow,
+          duration: 950,
+          size: 1.1
+        });
+      }
+      app.roundStats.communicationPeoplePrepared = candidates.length;
+      app.communicationAvailable = false;
+      app.eventModalOpen = false;
+      dom.planningOverlay.classList.remove("show");
+      updateTurnLesson(null, true);
+      updateHud();
+      updateControls();
+      sounds.campaignUse();
+      announce(
+        `Planejamento concluído. ${plan.doses} doses no estoque e ${candidates.length} ` +
+        `${candidates.length === 1 ? "pessoa preparada" : "pessoas preparadas"} pela comunicação.`
+      );
     }
 
     function unlockAudio() {
@@ -2030,13 +2485,59 @@
       return null;
     }
 
+    function blueSafeThroughTurns(balls, seed, safeTurns) {
+      const simulated = balls.map((ball) => ({
+        ...ball,
+        row: ball.row,
+        col: ball.col,
+        activeTurns: ball.activeTurns
+      }));
+
+      for (let turn = 1; turn <= safeTurns; turn += 1) {
+        const paths = resolveTurnTargets(simulated, turn, seed);
+        const activeIds = simulated
+          .filter((ball) => ball.kind === "redActive")
+          .map((ball) => ball.id);
+        for (const path of paths) {
+          const ball = simulated.find((item) => item.id === path.id);
+          ball.row = path.target.row;
+          ball.col = path.target.col;
+        }
+        const activeSources = activeIds
+          .map((id) => simulated.find((ball) => ball.id === id))
+          .filter((ball) => ball?.kind === "redActive");
+        const pending = [];
+        for (const target of simulated) {
+          if (!["gray", "yellow", "blue"].includes(target.kind)) continue;
+          const source = activeSources.find((candidate) =>
+            candidate.id !== target.id && cellsAreNeighbors(candidate, target)
+          );
+          if (!source) continue;
+          if (target.kind === "blue") return false;
+          pending.push(target);
+        }
+        for (const source of activeSources) {
+          source.activeTurns -= 1;
+          if (source.activeTurns <= 0) {
+            source.activeTurns = 0;
+            source.kind = "redDark";
+          }
+        }
+        for (const target of pending) {
+          target.kind = "redActive";
+          target.activeTurns = GAME_CONFIG.motion.activeTurns;
+        }
+      }
+      return true;
+    }
+
     function takeCell(pool, target) {
       const key = cellKey(target);
       const index = pool.findIndex((cell) => cellKey(cell) === key);
       return index >= 0 ? pool.splice(index, 1)[0] : null;
     }
 
-    function createRoundBalls(difficultyKey, roundIndex, seedOverride) {
+    function createRoundBalls(difficultyKey, roundIndex, seedOverride, options = {}) {
       const difficulty = GAME_CONFIG.difficulties[difficultyKey];
       const seed = Number.isInteger(seedOverride) ?
         seedOverride >>> 0 :
@@ -2053,24 +2554,28 @@
       const neededRed = difficulty.red[roundIndex];
       const neededBlue = difficulty.blue[roundIndex];
       const yellowCount = difficulty.yellow[roundIndex];
+      const usePlannedChain = difficultyKey !== "beginner" || options.forceChain;
       let redCell = null;
       let chain = null;
-      const redSearchLimit = allCells.length;
-      for (let index = 0; index < redSearchLimit; index += 1) {
-        const candidate = allCells[index];
-        const candidatePool = allCells.filter((_, poolIndex) => poolIndex !== index);
-        const candidateChain = planRoundChain(
-          seed,
-          candidate,
-          neededRed,
-          neededBlue,
-          yellowCount,
-          candidatePool
-        );
-        if (candidateChain) {
-          redCell = allCells.splice(index, 1)[0];
-          chain = candidateChain;
-          break;
+
+      if (usePlannedChain) {
+        const redSearchLimit = allCells.length;
+        for (let index = 0; index < redSearchLimit; index += 1) {
+          const candidate = allCells[index];
+          const candidatePool = allCells.filter((_, poolIndex) => poolIndex !== index);
+          const candidateChain = planRoundChain(
+            seed,
+            candidate,
+            neededRed,
+            neededBlue,
+            yellowCount,
+            candidatePool
+          );
+          if (candidateChain) {
+            redCell = allCells.splice(index, 1)[0];
+            chain = candidateChain;
+            break;
+          }
         }
       }
       if (!redCell) redCell = allCells.shift();
@@ -2088,7 +2593,8 @@
 
       for (let count = blueCells.length; count < neededBlue; count += 1) {
         let chosen = allCells.findIndex((cell) => {
-          const farFromRed = chebyshev(cell, redCell) >= 5;
+          const minimumRedDistance = difficultyKey === "beginner" ? 7 : 5;
+          const farFromRed = redCells.every((red) => chebyshev(cell, red) >= minimumRedDistance);
           const farFromBlue = blueCells.every((blue) => chebyshev(cell, blue) >= 3);
           return farFromRed && farFromBlue;
         });
@@ -2123,13 +2629,16 @@
         redCells.push(allCells.splice(chosen, 1)[0]);
       }
 
-      const yellowCells = allCells.splice(0, yellowCount);
-      const grayNeeded =
-        difficulty.balls - redCells.length - blueCells.length - yellowCells.length;
       const bridgeCount = bridgeCells.filter(Boolean).length;
+      const hesitantBridgeCount =
+        difficultyKey !== "beginner" && roundIndex > 0 && bridgeCount > 0 ? 1 : 0;
+      const randomYellowCount = Math.max(0, yellowCount - hesitantBridgeCount);
+      const yellowCells = allCells.splice(0, randomYellowCount);
+      const grayNeeded =
+        difficulty.balls - redCells.length - blueCells.length - yellowCells.length - hesitantBridgeCount;
       const grayCells = [
         ...bridgeCells.filter(Boolean),
-        ...allCells.splice(0, Math.max(0, grayNeeded - bridgeCells.length))
+        ...allCells.splice(0, Math.max(0, grayNeeded - bridgeCells.length + hesitantBridgeCount))
       ];
       const assignments = [
         ...redCells.map((cell, index) => ({
@@ -2141,7 +2650,10 @@
         ...yellowCells.map((cell) => ({ cell, kind: "yellow" })),
         ...grayCells.map((cell, index) => ({
           cell,
-          kind: "gray",
+          kind:
+            hesitantBridgeCount > 0 && index === Math.max(0, bridgeCount - 1) ?
+              "yellow" :
+              "gray",
           routePriority: index < bridgeCount
         }))
       ];
@@ -2150,6 +2662,7 @@
       return assignments.map((assignment, id) => ({
         id,
         kind: assignment.kind,
+        originalKind: assignment.kind,
         routePriority: Boolean(assignment.routePriority),
         row: assignment.cell.row,
         col: assignment.cell.col,
@@ -2165,7 +2678,10 @@
         blockCount: 0,
         vaccinatedTurn: null,
         vaccinatedDistance: null,
-        vaccinatedBy: null
+        vaccinatedBy: null,
+        infectionParentId: null,
+        infectionTurn: assignment.kind === "redActive" ? 0 : null,
+        infectedFromKind: null
       }));
     }
 
@@ -2173,22 +2689,32 @@
       const difficulty = GAME_CONFIG.difficulties[difficultyKey];
       const baseSeed = difficulty.seeds[roundIndex];
       let fallback = null;
+      const attempts = difficultyKey === "beginner" ? 60 : 12;
 
-      for (let attempt = 0; attempt < 8; attempt += 1) {
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
         const seed = freshRoundSeed(
           baseSeed ^ Math.imul(attempt + 1, 0x85ebca6b)
         );
         const balls = createRoundBalls(difficultyKey, roundIndex, seed);
         const signature = strategicStartSignature(balls);
+        const beginnerSafe = difficultyKey !== "beginner" || blueSafeThroughTurns(
+          balls,
+          seed,
+          GAME_CONFIG.board.beginnerSafeTurns
+        );
         const candidate = {
           seed,
           balls,
           signature,
-          chainPlanned: app.chainPlanned
+          chainPlanned: app.chainPlanned,
+          beginnerSafe
         };
-        if (!fallback || candidate.chainPlanned) fallback = candidate;
+        const acceptable = difficultyKey === "beginner" ?
+          beginnerSafe :
+          candidate.chainPlanned;
+        if (!fallback || acceptable) fallback = candidate;
         if (
-          candidate.chainPlanned &&
+          acceptable &&
           (!previousSignature || signature !== previousSignature)
         ) {
           return candidate;
@@ -2205,9 +2731,13 @@
       const historyKey = `${app.difficulty}:${roundIndex}`;
       const previousSignature = app.roundStartSignatures[historyKey] || "";
       let generated;
-      if (Number.isInteger(options.seed)) {
-        const seed = options.seed >>> 0;
-        const balls = createRoundBalls(app.difficulty, roundIndex, seed);
+      if (Number.isInteger(options.seed) || options.forceChain) {
+        const seed = Number.isInteger(options.seed) ?
+          options.seed >>> 0 :
+          freshRoundSeed(difficulty.seeds[roundIndex] ^ 0x4a7c15d3);
+        const balls = createRoundBalls(app.difficulty, roundIndex, seed, {
+          forceChain: Boolean(options.forceChain)
+        });
         generated = {
           seed,
           balls,
@@ -2223,8 +2753,11 @@
       }
       app.roundSeed = generated.seed;
       app.turn = 1;
-      app.turnDoseGrant = GAME_CONFIG.board.dosesPerTurn;
-      app.credits = app.turnDoseGrant;
+      const managementRound = app.gameMode === "management" && !options.tutorial;
+      app.turnDoseGrant = managementRound ? 0 : GAME_CONFIG.board.dosesPerTurn;
+      app.credits = managementRound ?
+        0 :
+        Number(difficulty.initialDoses?.[roundIndex] || app.turnDoseGrant);
       app.balls = generated.balls;
       app.chainPlanned = Boolean(generated.chainPlanned);
       app.roundStartSignatures[historyKey] = generated.signature;
@@ -2245,6 +2778,12 @@
       app.previewPaths = [];
       app.effects = [];
       app.failureHighlights = [];
+      app.failureChain = null;
+      app.transmissionHistory = [];
+      app.communicationAvailable = app.gameMode === "quick";
+      app.eventModalOpen = false;
+      app.eventModalPrimary = null;
+      app.eventModalSecondary = null;
       app.phase = "choice";
       app.move = null;
       app.pendingResolution = null;
@@ -2259,7 +2798,7 @@
         changed: 0,
         turnsUsed: 0,
         creditsUsed: 0,
-        baseDosesReceived: app.turnDoseGrant,
+        baseDosesReceived: app.credits,
         bonusChecks: 0,
         bonusesEarned: 0,
         extraDosesEarned: 0,
@@ -2267,11 +2806,18 @@
         campaignsUsed: 0,
         campaignPeople: 0,
         persuadedPeople: 0,
+        communicationConversations: 0,
+        communicationPeoplePrepared: 0,
+        managementBudget: 0,
+        managementSpent: 0,
         anticipatoryBlocks: 0
       };
       prepareTurnPreview();
       dom.pauseOverlay.classList.remove("show");
+      dom.planningOverlay.classList.remove("show");
+      dom.eventOverlay.classList.remove("show");
       dom.resultOverlay.classList.remove("show");
+      dom.failureChainCard.classList.remove("show");
       dom.gameStatus.classList.remove("tutorial-active");
       dom.gameStatus.classList.remove("merit-active");
       dom.meritFeedback.classList.remove("show");
@@ -2280,9 +2826,14 @@
       setState("game");
       updateHud();
       updateTurnLesson(null, true);
+      updateLegendUi(app.difficulty === "beginner");
       updateControls();
       resizeCanvas();
-      if (options.tutorial) beginTutorial(Boolean(options.standalone));
+      if (options.tutorial) {
+        beginTutorial(Boolean(options.standalone));
+      } else if (managementRound) {
+        openManagementPlanning();
+      }
     }
 
     function startMatch(difficultyKey) {
@@ -2295,37 +2846,71 @@
         extraDosesEarned: 0,
         campaignPeople: 0,
         persuadedPeople: 0,
+        communicationConversations: 0,
+        communicationPeoplePrepared: 0,
+        managementBudget: 0,
+        managementSpent: 0,
         blocked: 0,
         anticipatoryBlocks: 0,
         changed: 0
       };
-      startRound(0);
       const seen = safeGet(GAME_CONFIG.storage.tutorialSeen, "no") === "yes";
-      if (!seen) beginTutorial(false);
+      if (seen) {
+        startRound(0);
+      } else {
+        startRound(0, { tutorial: true, standalone: false, forceChain: true });
+      }
     }
 
     function beginTutorial(standalone) {
+      const tutorialGrayId = app.balls.find((ball) =>
+        ball.kind === "gray" && ball.routePriority
+      )?.id ?? app.balls.find((ball) => ball.kind === "gray")?.id;
+      const tutorialRedId = app.balls.find((ball) => ball.kind === "redActive")?.id;
+      const redPath = app.previewPaths.find((path) => path.id === tutorialRedId);
+      const safeYellow = app.balls.find((ball) => {
+        if (ball.kind !== "yellow") return false;
+        const path = app.previewPaths.find((item) => item.id === ball.id);
+        return !redPath || !path || !cellsAreNeighbors(redPath.target, path.target);
+      }) ?? app.balls.find((ball) => ball.kind === "yellow");
+      if (redPath) {
+        for (const ball of app.balls) {
+          if (ball.id === tutorialGrayId || ball.id === tutorialRedId || ball.id === safeYellow?.id) continue;
+          const path = app.previewPaths.find((item) => item.id === ball.id);
+          if (
+            path &&
+            cellsAreNeighbors(redPath.target, path.target) &&
+            ["gray", "yellow"].includes(ball.kind)
+          ) {
+            ball.kind = "green";
+            ball.vaccinatedBy = "tutorial";
+            ball.vaccinatedTurn = 0;
+          }
+        }
+      }
       app.tutorial = {
         standalone,
         step: 0,
         stepStarted: performance.now(),
-        grayId: app.balls.find((ball) => ball.kind === "gray")?.id,
-        yellowId: app.balls.find((ball) => ball.kind === "yellow")?.id,
-        redId: app.balls.find((ball) => ball.kind === "redActive")?.id,
+        grayId: tutorialGrayId,
+        yellowId: safeYellow?.id,
+        redId: tutorialRedId,
         blueId: app.balls.find((ball) => ball.kind === "blue")?.id
       };
       setState("tutorial");
       dom.gameStatus.classList.add("tutorial-active");
       dom.tutorialBubble.classList.add("show");
+      updateLegendUi(true);
       updateTutorialUi();
       updateControls();
     }
 
     function startStandaloneTutorial() {
+      app.gameMode = "quick";
       app.difficulty = "beginner";
       app.matchScore = 0;
       app.matchStats = null;
-      startRound(0, { tutorial: true, standalone: true });
+      startRound(0, { tutorial: true, standalone: true, forceChain: true });
     }
 
     function tutorialTargetId() {
@@ -2347,29 +2932,18 @@
     function updateTutorialUi() {
       if (!app.tutorial) return;
       const step = app.tutorial.step;
-      const textByStep = [
-        GAME_CONFIG.texts.tutorial[0],
-        GAME_CONFIG.texts.tutorial[1],
-        GAME_CONFIG.texts.tutorial[2],
-        GAME_CONFIG.texts.tutorial[3],
-        GAME_CONFIG.texts.tutorial[4],
-        GAME_CONFIG.texts.tutorial[5],
-        GAME_CONFIG.texts.tutorial[6]
-      ];
-      dom.tutorialBubble.textContent = textByStep[step] || "";
-      dom.advanceBtn.classList.toggle("tutorial-focus", step === 6);
-      dom.advanceBtn.disabled = step !== 6;
+      const textByStep = GAME_CONFIG.texts.tutorial;
+      const canContinue = [1, 3, 4, 5, 6].includes(step);
+      dom.tutorialBubble.textContent = `${step + 1}/7 · ${textByStep[step] || ""}`;
+      dom.advanceBtn.textContent = step === 6 ? "AVANÇAR E OBSERVAR" : "CONTINUAR";
+      dom.advanceBtn.classList.toggle("tutorial-focus", canContinue);
+      dom.advanceBtn.disabled = !canContinue;
       dom.undoBtn.disabled = true;
       announce(textByStep[step] || "");
     }
 
-    function updateTutorial(now) {
-      if (app.state !== "tutorial" || !app.tutorial) return;
-      const elapsed = now - app.tutorial.stepStarted;
-      if (app.tutorial.step === 1 && elapsed > 900) setTutorialStep(2);
-      else if (app.tutorial.step === 3 && elapsed > 850) setTutorialStep(4);
-      else if (app.tutorial.step === 4 && elapsed > 1350) setTutorialStep(5);
-      else if (app.tutorial.step === 5 && elapsed > 1350) setTutorialStep(6);
+    function updateTutorial() {
+      return;
     }
 
     function finishTutorial() {
@@ -2380,6 +2954,7 @@
       dom.gameStatus.classList.remove("tutorial-active");
       dom.tutorialBubble.classList.remove("show");
       dom.advanceBtn.classList.remove("tutorial-focus");
+      dom.advanceBtn.textContent = "AVANÇAR";
       app.tutorialDemo = standalone;
       setState("game");
       updateControls();
@@ -2394,7 +2969,9 @@
         app.balls.filter((ball) => ["redActive", "redFresh"].includes(ball.kind)).length
       );
       dom.blueValue.textContent = String(app.balls.filter((ball) => ball.kind === "blue").length);
-      dom.turnDoseValue.textContent = `+${app.turnDoseGrant} POR TURNO`;
+      dom.turnDoseValue.textContent = app.gameMode === "management" ?
+        "SEM REPOSIÇÃO" :
+        `+${app.turnDoseGrant} POR TURNO`;
       if (app.phase === "motion") {
         dom.phasePill.textContent = GAME_CONFIG.texts.movement;
       } else if (app.phase === "resolution") {
@@ -2402,7 +2979,8 @@
       } else if (app.statusMessage && app.statusMessageUntil > performance.now()) {
         dom.phasePill.textContent = app.statusMessage;
       } else if (app.credits === 0) {
-        dom.phasePill.textContent =
+        dom.phasePill.textContent = app.gameMode === "management" ?
+          "ESTOQUE VAZIO · NÃO HÁ REPOSIÇÃO AUTOMÁTICA" :
           `ESTOQUE VAZIO · +${app.turnDoseGrant} NO PRÓXIMO TURNO`;
       } else {
         dom.phasePill.textContent =
@@ -2414,7 +2992,8 @@
 
     function updateTurnLesson(bonusResult = null, initial = false) {
       const lesson = TURN_EDUCATION[(app.turn - 1) % TURN_EDUCATION.length];
-      let text =
+      let text = app.gameMode === "management" ?
+        `TURNO ${app.turn} · ESTOQUE PLANEJADO: ${app.credits} DOSES. ` :
         `TURNO ${app.turn} · +${app.turnDoseGrant} DOSES. `;
       let bonus = false;
 
@@ -2435,9 +3014,13 @@
             "Todo o estoque não utilizado continua acumulado.";
         }
       } else if (initial) {
-        text += "As doses não usadas permanecem no estoque.";
+        text += app.gameMode === "management" ?
+          "As doses foram compradas antes da rodada e não haverá reposição automática." :
+          "As doses não usadas permanecem no estoque.";
       } else {
-        text += lesson;
+        text += app.gameMode === "management" ?
+          "Use o estoque com cuidado. Doses extras dependem dos bônus da partida." :
+          lesson;
       }
 
       dom.turnLesson.textContent = text;
@@ -2449,8 +3032,10 @@
       app.credits += amount;
       app.roundStats.baseDosesReceived += amount;
       const displayedGain = amount + Number(bonusResult?.doseAmount || 0);
-      showCreditPop(`+${displayedGain}`);
-      sounds.supply();
+      if (displayedGain > 0) {
+        showCreditPop(`+${displayedGain}`);
+        sounds.supply();
+      }
       updateTurnLesson(bonusResult);
       return amount;
     }
@@ -2513,12 +3098,22 @@
     }
 
     function updateControls() {
-      const choosing = app.phase === "choice" && app.state === "game";
+      const gameChoosing = app.phase === "choice" && app.state === "game";
+      const tutorialChoosing = app.phase === "choice" && app.state === "tutorial";
       const canUndo = app.turnActions.length > 0;
       dom.undoBtn.textContent = app.campaignMode ? "CANCELAR" : "DESFAZER";
-      dom.undoBtn.disabled = !choosing || (!canUndo && !app.campaignMode);
-      dom.advanceBtn.disabled = !choosing || app.campaignMode;
-      dom.pauseBtn.disabled = !["game", "tutorial"].includes(app.state);
+      if (tutorialChoosing && app.tutorial) {
+        const canContinue = [1, 3, 4, 5, 6].includes(app.tutorial.step);
+        dom.undoBtn.disabled = true;
+        dom.advanceBtn.disabled = !canContinue || app.eventModalOpen;
+      } else {
+        dom.undoBtn.disabled =
+          !gameChoosing || app.eventModalOpen || (!canUndo && !app.campaignMode);
+        dom.advanceBtn.disabled =
+          !gameChoosing || app.eventModalOpen || app.campaignMode;
+      }
+      dom.pauseBtn.disabled =
+        app.eventModalOpen || !["game", "tutorial"].includes(app.state);
       updateBonusUi();
     }
 
@@ -2580,12 +3175,55 @@
       return true;
     }
 
-    function touchYellow(ball) {
+    function touchYellow(ball, educationalOnly = false) {
       ball.shakeUntil = performance.now() + (reducedMotionQuery.matches ? 80 : 380);
       sounds.fixed();
-      announce(
-        "Esta pessoa ainda hesita. Escuta, confiança e informação clara podem ajudá-la a decidir se vacinar."
-      );
+      if (educationalOnly || app.state === "tutorial") {
+        announce(
+          "Esta pessoa ainda hesita. Escuta, confiança e informação clara podem ajudá-la a decidir se vacinar."
+        );
+        return;
+      }
+      if (!app.communicationAvailable) {
+        const message = app.gameMode === "management" ?
+          "Nesta modalidade, a comunicação é definida no orçamento antes da rodada." :
+          "A ação de comunicação desta rodada já foi usada. Esta pessoa ainda hesita.";
+        announce(message);
+        showTurnStatus(
+          app.gameMode === "management" ?
+            "COMUNICAÇÃO DEFINIDA NO PLANEJAMENTO" :
+            "COMUNICAÇÃO JÁ UTILIZADA NESTA RODADA",
+          1600
+        );
+        return;
+      }
+      showEventModal({
+        icon: "?",
+        kicker: "AÇÃO DE COMUNICAÇÃO",
+        title: "ABRIR UMA CONVERSA?",
+        text:
+          "Uma conversa respeitosa pode transformar hesitação em disposição para se vacinar. A dose ainda precisará ser aplicada depois.",
+        primaryLabel: "CONVERSAR",
+        secondaryLabel: "AGORA NÃO",
+        onPrimary: () => {
+          if (ball.kind !== "yellow") return;
+          ball.kind = "gray";
+          ball.shakeUntil = 0;
+          ball.changedByDialogue = true;
+          app.communicationAvailable = false;
+          app.roundStats.communicationConversations += 1;
+          addEffect("campaignWave", ball.col + .5, ball.row + .5, {
+            color: GAME_CONFIG.colors.yellow,
+            duration: 900,
+            size: 1.15
+          });
+          sounds.persuasion();
+          showTurnStatus("A PESSOA AGORA ACEITA RECEBER A VACINA", 1900);
+          announce(
+            "A pessoa agora aceita receber a vacina. Toque novamente nela para usar uma dose."
+          );
+        }
+      });
     }
 
     function toggleCampaignMode() {
@@ -3029,38 +3667,129 @@
         dom.campaignBtn.classList.remove("just-earned");
         void dom.campaignBtn.offsetWidth;
         dom.campaignBtn.classList.add("just-earned");
-        announce(
-          `Bônus sorteado. Campanha de Vacinação disponível. ` +
-          `A chance neste turno era de ${Math.round(result.chance * 100)} por cento.`
-        );
+        showEventModal({
+          icon: "+",
+          kicker: "BÔNUS DA RODADA",
+          title: "CAMPANHA DE VACINAÇÃO",
+          text:
+            "Uma campanha foi liberada. Escolha uma pessoa não vacinada para vacinar também as pessoas não vacinadas nas células vizinhas.",
+          primaryLabel: "USAR AGORA",
+          secondaryLabel: "GUARDAR",
+          onPrimary: () => {
+            app.campaignMode = true;
+            updateHud();
+            updateControls();
+          }
+        });
       } else if (result.type === "persuasion") {
         const persuaded = persuadeHesitantPerson(merit.score);
         if (persuaded) {
           app.lastBonusResult.persuadedId = persuaded.id;
-          announce(
-            "Bônus sorteado. Uma pessoa que ainda hesitava decidiu se vacinar. " +
-            "Escuta, confiança e informação confiável podem mudar decisões."
-          );
+          showEventModal({
+            icon: "✓",
+            kicker: "BÔNUS DA RODADA",
+            title: "UMA DECISÃO MUDOU",
+            text:
+              "Uma pessoa que ainda hesitava decidiu se vacinar. Escuta, confiança, acesso e informação confiável podem mudar decisões.",
+            primaryLabel: "CONTINUAR"
+          });
         } else {
-          awardExtraDoseBonus("convertedDose");
-          announce(
-            `Bônus sorteado. Como ninguém ainda hesitava, ` +
-            `${GAME_CONFIG.bonuses.extraDoseAmount} doses foram adicionadas ao estoque.`
-          );
+          const amount = awardExtraDoseBonus("convertedDose");
+          showEventModal({
+            icon: "+",
+            kicker: "BÔNUS DA RODADA",
+            title: `${amount} DOSES EXTRAS`,
+            text:
+              "Como ninguém ainda hesitava, o bônus foi convertido em doses extras, que permanecem no estoque.",
+            primaryLabel: "CONTINUAR"
+          });
         }
       } else {
         const convertedCampaign = result.type === "campaign";
         const amount = awardExtraDoseBonus(
           convertedCampaign ? "convertedDose" : ""
         );
-        announce(
-          convertedCampaign ?
-            `Bônus sorteado. Como uma campanha já estava disponível, ${amount} doses extras foram adicionadas ao estoque.` :
-            `Bônus sorteado. ${amount} doses extras foram adicionadas ao estoque.`
-        );
+        showEventModal({
+          icon: "+",
+          kicker: "BÔNUS DA RODADA",
+          title: `${amount} DOSES EXTRAS`,
+          text: convertedCampaign ?
+            "Como uma campanha já estava disponível, o bônus foi convertido em doses extras." :
+            "As doses foram adicionadas ao estoque e podem ser guardadas para os próximos turnos.",
+          primaryLabel: "CONTINUAR"
+        });
       }
       updateHud();
       return app.lastBonusResult;
+    }
+
+    function buildFailureChain(blueTargetId) {
+      if (blueTargetId === null || blueTargetId === undefined) return null;
+      const links = [];
+      let currentId = blueTargetId;
+      const visited = new Set();
+      while (!visited.has(currentId)) {
+        visited.add(currentId);
+        const ball = app.balls.find((item) => item.id === currentId);
+        if (!ball || ball.infectionParentId === null || ball.infectionParentId === undefined) break;
+        const link = [...app.transmissionHistory]
+          .reverse()
+          .find((item) =>
+            item.sourceId === ball.infectionParentId && item.targetId === currentId
+          );
+        if (!link) break;
+        links.unshift(link);
+        currentId = ball.infectionParentId;
+      }
+      if (!links.length) return null;
+      return {
+        blueTargetId,
+        links,
+        hesitationInvolved: links.some((link) =>
+          link.targetKindBefore === "yellow" ||
+          link.targetOriginalKind === "yellow" ||
+          link.sourceOriginalKind === "yellow"
+        )
+      };
+    }
+
+    function failureChainDescription(chain) {
+      if (!chain?.links?.length) {
+        return {
+          text: "A criança ficou vizinha a uma pessoa infectada depois do movimento.",
+          note: "Observe os destinos e proteja as rotas futuras, não apenas as posições atuais."
+        };
+      }
+      const labels = {
+        gray: "uma pessoa não vacinada",
+        yellow: "uma pessoa que ainda hesitava",
+        blue: "a criança",
+        redActive: "uma pessoa infectada",
+        redFresh: "uma pessoa recém infectada"
+      };
+      const steps = chain.links.map((link, index) => {
+        const targetLabel = labels[link.targetKindBefore] ||
+          labels[link.targetOriginalKind] ||
+          "outra pessoa";
+        return `${index + 1}. No turno ${link.turn}, a transmissão alcançou ${targetLabel}.`;
+      }).join(" ");
+      const firstIntervention = chain.links.find((link) =>
+        link.targetKindBefore !== "blue"
+      );
+      let intervention =
+        "Vacinar uma pessoa intermediária antes do contato teria interrompido essa rota.";
+      if (firstIntervention?.targetKindBefore === "yellow" ||
+          firstIntervention?.targetOriginalKind === "yellow") {
+        intervention =
+          "Uma conversa seguida de vacinação na primeira pessoa intermediária poderia ter interrompido essa rota.";
+      }
+      const attribution = chain.hesitationInvolved ?
+        "Uma pessoa que ainda hesitava participou diretamente desta cadeia." :
+        "Nesta derrota, nenhuma pessoa que hesitava participou diretamente da cadeia.";
+      return {
+        text: steps,
+        note: `${attribution} ${intervention}`
+      };
     }
 
     function resolveNeighborTransmission(now, activeIds) {
@@ -3077,11 +3806,14 @@
           candidate.id !== target.id && cellsAreNeighbors(candidate, target)
         );
         if (!source) continue;
-        const outcome = evaluateNeighbor(source.kind, target.kind);
+        const targetKindBefore = target.kind;
+        const outcome = evaluateNeighbor(source.kind, targetKindBefore);
         if (outcome.type === "none") continue;
         const contact = {
           aId: source.id,
           bId: target.id,
+          sourceId: source.id,
+          targetId: target.id,
           x1: source.col + .5,
           y1: source.row + .5,
           x2: target.col + .5,
@@ -3089,11 +3821,23 @@
           x: (source.col + target.col + 1) / 2,
           y: (source.row + target.row + 1) / 2,
           time: now,
-          outcome: outcome.type
+          turn: app.turn,
+          outcome: outcome.type,
+          targetKindBefore,
+          sourceOriginalKind: source.originalKind,
+          targetOriginalKind: target.originalKind
         };
         contacts.push(contact);
         if (outcome.type === "blocked") blocks.push({ source, target, contact });
-        if (outcome.type === "changed") changes.push({ source, target, contact, blue: outcome.blue });
+        if (outcome.type === "changed") {
+          changes.push({
+            source,
+            target,
+            contact,
+            blue: outcome.blue,
+            targetKindBefore
+          });
+        }
       }
 
       const anticipatoryBlockIds = [];
@@ -3124,13 +3868,18 @@
       }
 
       let blueInfected = false;
-      for (const { source, target, blue } of changes) {
+      let blueTargetId = null;
+      for (const { source, target, blue, contact, targetKindBefore } of changes) {
         addEffect("infectionLink", source.col + .5, source.row + .5, {
           x2: target.col + .5,
           y2: target.row + .5,
           color: GAME_CONFIG.colors.redActive,
           duration: 720
         });
+        target.infectionParentId = source.id;
+        target.infectionTurn = app.turn;
+        target.infectedFromKind = targetKindBefore;
+        app.transmissionHistory.push({ ...contact });
         target.kind = "redFresh";
         target.activeTurns = 0;
         app.roundStats.changed += 1;
@@ -3142,9 +3891,13 @@
           color: GAME_CONFIG.colors.redActive,
           duration: 690
         });
-        blueInfected ||= blue;
+        if (blue) {
+          blueInfected = true;
+          blueTargetId = target.id;
+        }
       }
 
+      if (blueInfected) app.failureChain = buildFailureChain(blueTargetId);
       if (blocks.length) sounds.block();
       if (changes.length) sounds.red();
       if (changes.length) {
@@ -3155,6 +3908,7 @@
       return {
         contacts,
         blueInfected,
+        blueTargetId,
         blockIds: blocks.map(({ target }) => target.id),
         anticipatoryBlockIds,
         blockedCount: blocks.length,
@@ -3248,6 +4002,7 @@
       app.pendingResolution = null;
       setState("roundResult");
       dom.resultOverlay.classList.add("show");
+      dom.failureChainCard.classList.remove("show");
       dom.resultKicker.textContent = "COMO JOGAR";
       dom.resultTitle.textContent = "TURNO COMPLETO";
       dom.resultSubtitle.textContent = transmission.blockedCount ?
@@ -3293,6 +4048,7 @@
 
       const bonusResult = resolveTurnBonus(transmission, completedMove);
       app.turn += 1;
+      app.communicationAvailable = app.gameMode === "quick";
       grantDosesForNewTurn(bonusResult);
       activateFreshBalls();
       prepareTurnPreview();
@@ -3315,15 +4071,23 @@
       app.resultReason = reason;
       app.resultWin = false;
       app.phase = "freeze";
-      app.freezeUntil = now + GAME_CONFIG.motion.lossFreezeMs;
-      app.failureHighlights = contacts.slice(-6).map((contact) => ({
+      const replayDuration = reason === "blue" ?
+        GAME_CONFIG.motion.chainReplayMs :
+        GAME_CONFIG.motion.lossFreezeMs;
+      app.freezeUntil = now + replayDuration;
+      const chainLinks = reason === "blue" && app.failureChain?.links?.length ?
+        app.failureChain.links :
+        contacts.slice(-6);
+      app.failureHighlights = chainLinks.map((contact, index) => ({
         ...contact,
-        expires: now + 2500
+        step: index + 1,
+        expires: now + replayDuration
       }));
-      if (app.move) {
-        app.move.renderProgress = 1;
-      }
+      if (app.move) app.move.renderProgress = 1;
       updateControls();
+      if (reason === "blue") {
+        announce("A cadeia completa que alcançou a criança está sendo mostrada no tabuleiro.");
+      }
     }
 
     function calculateRoundScore() {
@@ -3380,6 +4144,9 @@
         statMarkup(stats.extraDosesEarned || 0, "DOSES EXTRAS") +
         statMarkup(stats.campaignPeople || 0, "VACINADAS EM CAMPANHAS") +
         statMarkup(stats.persuadedPeople || 0, "MUDARAM DE DECISÃO") +
+        statMarkup(stats.communicationConversations || 0, "CONVERSAS REALIZADAS") +
+        statMarkup(stats.communicationPeoplePrepared || 0, "PREPARADAS PELA COMUNICAÇÃO") +
+        (stats.managementBudget ? statMarkup(stats.managementSpent || 0, "ORÇAMENTO UTILIZADO") : "") +
         statMarkup(stats.blocked || 0, "TRANSMISSÕES INTERROMPIDAS") +
         statMarkup(stats.anticipatoryBlocks || 0, "PROTEÇÕES ANTECIPADAS") +
         statMarkup(stats.changed || 0, "PESSOAS INFECTADAS");
@@ -3387,6 +4154,7 @@
 
     function showRoundResult(win) {
       setState("roundResult");
+      dom.eventOverlay.classList.remove("show");
       dom.resultOverlay.classList.add("show");
       dom.resultKicker.textContent = `RODADA ${app.roundIndex + 1} DE 3`;
       dom.resultTitle.textContent = win ?
@@ -3395,8 +4163,18 @@
       dom.resultSubtitle.textContent = win ?
         "As barreiras de vacinação interromperam a cadeia antes que ela alcançasse as crianças." :
         (app.resultReason === "blue" ?
-          "Observe quais células ficaram vizinhas às pessoas em vermelho e reposicione sua estratégia de vacinação." :
+          "A sequência abaixo mostra por que a criança foi alcançada e qual decisão poderia ter interrompido a rota." :
           "Ainda havia pessoas transmitindo após o último turno.");
+      const showChain = !win && app.resultReason === "blue";
+      dom.failureChainCard.classList.toggle("show", showChain);
+      if (showChain) {
+        const description = failureChainDescription(app.failureChain);
+        dom.failureChainText.textContent = description.text;
+        dom.failureChainNote.textContent = description.note;
+      } else {
+        dom.failureChainText.textContent = "";
+        dom.failureChainNote.textContent = "";
+      }
       fillResultStats(app.roundStats);
       dom.scorePanel.style.display = win ? "block" : "none";
       dom.scienceCard.style.display = "none";
@@ -3410,7 +4188,10 @@
 
     function showFinalResult() {
       setState("finalResult");
+      dom.eventOverlay.classList.remove("show");
+      dom.failureChainCard.classList.remove("show");
       dom.resultOverlay.classList.add("show");
+      dom.failureChainCard.classList.remove("show");
       dom.resultKicker.textContent = GAME_CONFIG.difficulties[app.difficulty].label;
       dom.resultTitle.textContent = GAME_CONFIG.texts.complete;
       dom.resultSubtitle.textContent =
@@ -3422,7 +4203,7 @@
       dom.scoreValue.textContent = app.matchScore.toLocaleString("pt-BR");
       dom.resultPrimaryBtn.textContent = "JOGAR NOVAMENTE";
       app.resultAction = "restartMatch";
-      const bestKey = GAME_CONFIG.storage.bestPrefix + app.difficulty;
+      const bestKey = bestScoreKey(app.difficulty);
       const previousBest = Number(safeGet(bestKey, "0")) || 0;
       if (app.matchScore > previousBest) safeSet(bestKey, app.matchScore);
       announce(GAME_CONFIG.texts.complete);
@@ -3443,7 +4224,15 @@
       } else if (app.resultAction === "restartMatch") {
         startMatch(app.difficulty);
       } else if (app.resultAction === "tutorialDone") {
-        goToMenu();
+        if (app.pendingModeAfterTutorial) {
+          app.gameMode = app.pendingModeAfterTutorial;
+          app.pendingModeAfterTutorial = null;
+          updateDifficultyModeUi();
+          updateBestScores();
+          setState("difficulty");
+        } else {
+          goToMenu();
+        }
       }
     }
 
@@ -3481,6 +4270,10 @@
       app.pendingResolution = null;
       app.previewPaths = [];
       app.effects = [];
+      app.managementPlan = null;
+      app.eventModalOpen = false;
+      app.eventModalPrimary = null;
+      app.eventModalSecondary = null;
       app.phase = "choice";
       app.turnActions = [];
       app.campaignMode = false;
@@ -3492,13 +4285,31 @@
       dom.tutorialBubble.classList.remove("show");
       dom.advanceBtn.classList.remove("tutorial-focus");
       dom.pauseOverlay.classList.remove("show");
+      dom.planningOverlay.classList.remove("show");
+      dom.eventOverlay.classList.remove("show");
       dom.resultOverlay.classList.remove("show");
       setState("menu");
     }
 
+    function updateDifficultyModeUi() {
+      const management = app.gameMode === "management";
+      dom.difficultyTitle.textContent = management ?
+        "GESTÃO DA CAMPANHA" :
+        "ESCOLHA A DIFICULDADE";
+      dom.difficultyIntro.textContent = management ?
+        "Antes de cada rodada, distribua um orçamento entre doses e comunicação. Não há reposição automática de doses." :
+        "Duas doses chegam a cada turno e podem ser acumuladas. Um bom turno aumenta a chance de receber bônus.";
+    }
+
+    function bestScoreKey(difficulty) {
+      return GAME_CONFIG.storage.bestPrefix +
+        (app.gameMode === "management" ? "management." : "") +
+        difficulty;
+    }
+
     function updateBestScores() {
       const rows = Object.entries(GAME_CONFIG.difficulties).map(([key, value]) => {
-        const best = Number(safeGet(GAME_CONFIG.storage.bestPrefix + key, "0")) || 0;
+        const best = Number(safeGet(bestScoreKey(key), "0")) || 0;
         return best > 0 ? `${value.label}: ${best.toLocaleString("pt-BR")}` : null;
       }).filter(Boolean);
       dom.bestScore.textContent = rows.length ? `MELHORES: ${rows.join("  ·  ")}` : "";
@@ -3592,7 +4403,7 @@
         if (step === 0 && ball.id === app.tutorial.grayId && selectGray(ball)) {
           setTutorialStep(1);
         } else if (step === 2 && ball.id === app.tutorial.yellowId) {
-          touchYellow(ball);
+          touchYellow(ball, true);
           setTutorialStep(3);
         }
         return;
@@ -3695,8 +4506,17 @@
       return GAME_CONFIG.colors.redActive;
     }
 
+    function infectedGuideMode() {
+      if (app.state === "tutorial") return "exact";
+      if (app.difficulty !== "beginner") return "hidden";
+      if (app.roundIndex === 0) return "exact";
+      if (app.roundIndex === 1) return "uncertain";
+      return "hidden";
+    }
+
     function movementGuideVisible(ball) {
-      return !["redActive", "redFresh"].includes(ball?.kind);
+      if (!["redActive", "redFresh"].includes(ball?.kind)) return true;
+      return infectedGuideMode() === "exact";
     }
 
     function drawMovementGuides(now) {
@@ -3751,15 +4571,9 @@
           const wing = baseRadius * .47;
           ctx.globalAlpha = ball.kind === "gray" ? .68 : .82;
           ctx.beginPath();
-          ctx.moveTo(
-            tailX + sideX * wing,
-            tailY + sideY * wing
-          );
+          ctx.moveTo(tailX + sideX * wing, tailY + sideY * wing);
           ctx.lineTo(tipX, tipY);
-          ctx.lineTo(
-            tailX - sideX * wing,
-            tailY - sideY * wing
-          );
+          ctx.lineTo(tailX - sideX * wing, tailY - sideY * wing);
           ctx.stroke();
           ctx.restore();
           continue;
@@ -3786,26 +4600,12 @@
 
         ctx.setLineDash([Math.max(1.5, cell * .09), Math.max(1.5, cell * .08)]);
         ctx.globalAlpha = .40 + Math.sin(now * .012 + ball.id) * .07;
-        circle(
-          x1,
-          y1,
-          baseRadius * .72,
-          null,
-          color,
-          Math.max(1, cell * .055)
-        );
+        circle(x1, y1, baseRadius * .72, null, color, Math.max(1, cell * .055));
         ctx.setLineDash([]);
 
         if (moving) {
           ctx.globalAlpha = Math.max(.18, .58 - movementProgress * .26);
-          circle(
-            x0,
-            y0,
-            baseRadius * .76,
-            null,
-            color,
-            Math.max(1.2, cell * .07)
-          );
+          circle(x0, y0, baseRadius * .76, null, color, Math.max(1.2, cell * .07));
           if (movementRaw >= .68) {
             const settle = Math.min(1, (movementRaw - .68) / .32);
             ctx.globalAlpha = (1 - settle) * .34;
@@ -3820,6 +4620,29 @@
           }
         }
         ctx.restore();
+      }
+
+      if (choosing && infectedGuideMode() === "uncertain") {
+        const activeReds = app.balls.filter((ball) => ball.kind === "redActive");
+        for (const ball of activeReds) {
+          const candidates = orderedNeighborTargets(ball, app.turn, app.roundSeed).slice(0, 3);
+          ctx.save();
+          ctx.setLineDash([Math.max(2, cell * .12), Math.max(2, cell * .10)]);
+          ctx.strokeStyle = GAME_CONFIG.colors.redActive;
+          ctx.lineWidth = Math.max(1.4, cell * .075);
+          ctx.globalAlpha = .55;
+          for (const candidate of candidates) {
+            circle(
+              (candidate.col + .5) * cell,
+              (candidate.row + .5) * cell,
+              baseRadius * .82,
+              null,
+              GAME_CONFIG.colors.redActive,
+              Math.max(1.4, cell * .075)
+            );
+          }
+          ctx.restore();
+        }
       }
     }
 
@@ -4057,6 +4880,52 @@
       if (!app.failureHighlights.length) return;
       const cell = app.layout.cell;
       for (const item of app.failureHighlights) {
+        const duration = app.resultReason === "blue" ?
+          GAME_CONFIG.motion.chainReplayMs :
+          2500;
+        const remaining = Math.max(0, Math.min(1, (item.expires - now) / duration));
+        const pulse = reducedMotionQuery.matches ?
+          1 :
+          .88 + Math.sin(now * .009 + item.step) * .12;
+        const x1 = item.x1 * cell;
+        const y1 = item.y1 * cell;
+        const x2 = item.x2 * cell;
+        const y2 = item.y2 * cell;
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+        ctx.save();
+        ctx.globalAlpha = .45 + remaining * .45;
+        ctx.strokeStyle = GAME_CONFIG.colors.redActive;
+        ctx.lineWidth = Math.max(2.4, cell * .15);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        circle(
+          x2,
+          y2,
+          cell * (.50 + .10 * pulse),
+          null,
+          GAME_CONFIG.colors.redActive,
+          Math.max(2, cell * .12)
+        );
+        circle(midX, midY, cell * .30, GAME_CONFIG.colors.white);
+        circle(midX, midY, cell * .26, GAME_CONFIG.colors.redActive);
+        ctx.fillStyle = GAME_CONFIG.colors.white;
+        ctx.font = `950 ${Math.max(8, cell * .34)}px Inter, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(item.step || 1), midX, midY + .3);
+        ctx.restore();
+      }
+    }
+
+    function drawFailureHighlights(now) {
+      app.failureHighlights = app.failureHighlights.filter((item) => item.expires > now);
+      if (!app.failureHighlights.length) return;
+      const cell = app.layout.cell;
+      for (const item of app.failureHighlights) {
         const remaining = Math.max(0, Math.min(1, (item.expires - now) / 2500));
         const pulse = reducedMotionQuery.matches ? 1 : .8 + Math.sin(now * .012 + item.aId) * .2;
         ctx.save();
@@ -4109,12 +4978,31 @@
     dom.playBtn.addEventListener("click", () => {
       unlockAudio();
       sounds.ui();
+      app.gameMode = "quick";
+      app.pendingModeAfterTutorial = null;
+      updateDifficultyModeUi();
+      updateBestScores();
+      setState("difficulty");
+    });
+    dom.campaignPlayBtn.addEventListener("click", () => {
+      unlockAudio();
+      sounds.ui();
+      const seen = safeGet(GAME_CONFIG.storage.tutorialSeen, "no") === "yes";
+      if (!seen) {
+        app.pendingModeAfterTutorial = "management";
+        startStandaloneTutorial();
+        return;
+      }
+      app.gameMode = "management";
+      app.pendingModeAfterTutorial = null;
+      updateDifficultyModeUi();
       updateBestScores();
       setState("difficulty");
     });
     dom.howBtn.addEventListener("click", () => {
       unlockAudio();
       sounds.ui();
+      app.pendingModeAfterTutorial = null;
       startStandaloneTutorial();
     });
     dom.soundBtn.addEventListener("click", toggleSound);
@@ -4138,15 +5026,29 @@
         startMatch(button.dataset.difficulty);
       });
     });
+    dom.legendToggle.addEventListener("click", () => {
+      updateLegendUi(!dom.gameLegend.classList.contains("open"));
+    });
+    dom.eventPrimaryBtn.addEventListener("click", () => closeEventModal(true));
+    dom.eventSecondaryBtn.addEventListener("click", () => closeEventModal(false));
+    dom.doseMinusBtn.addEventListener("click", () => adjustManagementPlan("doses", -1));
+    dom.dosePlusBtn.addEventListener("click", () => adjustManagementPlan("doses", 1));
+    dom.communicationMinusBtn.addEventListener("click", () => adjustManagementPlan("communication", -1));
+    dom.communicationPlusBtn.addEventListener("click", () => adjustManagementPlan("communication", 1));
+    dom.planningStartBtn.addEventListener("click", applyManagementPlan);
     dom.undoBtn.addEventListener("click", undoChoices);
     dom.campaignBtn.addEventListener("click", toggleCampaignMode);
     dom.advanceBtn.addEventListener("click", () => {
       unlockAudio();
-      if (app.state === "tutorial" && app.tutorial?.step === 6) {
-        finishTutorial();
-      } else {
-        beginMovement();
+      if (app.state === "tutorial" && app.tutorial) {
+        if (app.tutorial.step === 6) {
+          finishTutorial();
+        } else if ([1, 3, 4, 5].includes(app.tutorial.step)) {
+          setTutorialStep(app.tutorial.step + 1);
+        }
+        return;
       }
+      beginMovement();
     });
     dom.pauseBtn.addEventListener("click", () => {
       sounds.ui();
@@ -4341,6 +5243,8 @@
           resultAction: app.resultAction,
           tutorialDemo: app.tutorialDemo,
           difficulty: app.difficulty,
+          gameMode: app.gameMode,
+          managementPlan: app.managementPlan ? { ...app.managementPlan } : null,
           round: app.roundIndex + 1,
           turn: app.turn,
           credits: app.credits,
@@ -4348,6 +5252,19 @@
           turnLesson: dom.turnLesson.textContent,
           audioEnabled: app.audioEnabled,
           musicPlaying: app.musicTimer !== null,
+          eventModalOpen: app.eventModalOpen,
+          communicationAvailable: app.communicationAvailable,
+          failureChain: app.failureChain ? {
+            hesitationInvolved: app.failureChain.hesitationInvolved,
+            links: app.failureChain.links.map((link) => ({
+              sourceId: link.sourceId,
+              targetId: link.targetId,
+              turn: link.turn,
+              targetKindBefore: link.targetKindBefore,
+              sourceOriginalKind: link.sourceOriginalKind,
+              targetOriginalKind: link.targetOriginalKind
+            }))
+          } : null,
           choices: app.currentChoices.slice(),
           campaignAvailable: app.campaignAvailable,
           campaignMode: app.campaignMode,
@@ -4387,9 +5304,27 @@
             blockCount: ball.blockCount,
             vaccinatedTurn: ball.vaccinatedTurn,
             vaccinatedDistance: ball.vaccinatedDistance,
-            vaccinatedBy: ball.vaccinatedBy
+            vaccinatedBy: ball.vaccinatedBy,
+            originalKind: ball.originalKind,
+            infectionParentId: ball.infectionParentId,
+            infectionTurn: ball.infectionTurn,
+            infectedFromKind: ball.infectedFromKind
           }))
         };
+      },
+      setGameModeForTest(mode = "quick") {
+        app.gameMode = mode;
+        return this.getSnapshot();
+      },
+      applyManagementPlanForTest(doses, communication) {
+        if (!app.managementPlan) return this.getSnapshot();
+        app.managementPlan = {
+          ...app.managementPlan,
+          doses,
+          communication
+        };
+        applyManagementPlan();
+        return this.getSnapshot();
       },
       startTestRound(difficulty = "beginner", round = 0) {
         app.difficulty = difficulty;
@@ -4487,6 +5422,19 @@
       },
       completeResolutionForTest(now = performance.now()) {
         completeTurnResolution(now);
+        return this.getSnapshot();
+      },
+      touchYellowForTest(id) {
+        const ball = app.balls.find((item) => item.id === id);
+        if (ball) touchYellow(ball);
+        return this.getSnapshot();
+      },
+      confirmEventPrimaryForTest() {
+        closeEventModal(true);
+        return this.getSnapshot();
+      },
+      dismissEventForTest() {
+        closeEventModal(false);
         return this.getSnapshot();
       },
       undoForTest() {
