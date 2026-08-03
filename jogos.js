@@ -52,15 +52,11 @@ const CATALOGO = {
       }
     },
 
-    /* Rascunho em teste: "oculto": true tira o card do site (grade, placa, busca e filtros),
-       mas o jogo continua acessível pelo link direto immuno.games/imunidade-coletiva/.
-       Para lançar, apague a linha "oculto": true e dê push. */
     {
       "id": "imunidade-coletiva",
-      "oculto": true,
       "url": "imunidade-coletiva/",
       "capa": "capas/imunidade-coletiva.webp",
-      "publicado": "2026-07",
+      "publicado": "2026-08",
       "nivel": "medio",
       "duracao": 10,
       "temas": ["vacinas", "infeccao"],
