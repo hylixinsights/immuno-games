@@ -1358,6 +1358,23 @@
       }
     }
   </style>
+<!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
+     Crie o site no painel do Umami e cole o ID em data-website-id abaixo. -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="14446bce-e8a6-4e64-a6b9-26788218dbe2"></script>
+<script>
+(function(){
+  var jogo=null, t0=0, acumulado=0, enviado=false;
+  function agora(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
+  function faixa(s){ if(s<30)return"menos-30s"; if(s<120)return"30s-2min"; if(s<300)return"2-5min"; if(s<600)return"5-10min"; if(s<1200)return"10-20min"; return"mais-20min"; }
+  window.imTrack=function(nome,dados){ try{ if(window.umami) umami.track(nome,dados); }catch(e){} };
+  window.imInicio=function(nomeJogo,extra){ jogo=nomeJogo; acumulado=0; enviado=false; t0=agora(); imTrack("jogo_iniciado", Object.assign({jogo:nomeJogo}, extra||{})); };
+  function pausar(){ if(jogo!==null){ acumulado+=agora()-t0; t0=agora(); } }
+  function flush(motivo){ if(jogo===null||enviado) return; pausar(); var s=Math.round(acumulado/1000); if(s<3) return; enviado=true; imTrack("jogo_tempo",{jogo:jogo,duracao_seg:s,faixa:faixa(s),motivo:motivo}); }
+  window.imFimPartida=function(){ flush("fim"); };
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") pausar(); else t0=agora(); });
+  window.addEventListener("pagehide",function(){ flush("saiu"); });
+})();
+</script>
 </head>
 <body>
   <main id="app" aria-label="Imunidade Coletiva, jogo educativo de estratégia">
@@ -2837,6 +2854,7 @@
     }
 
     function startMatch(difficultyKey) {
+      if (window.imInicio) imInicio('imunidade-coletiva', { dificuldade: difficultyKey });
       app.difficulty = difficultyKey;
       app.matchScore = 0;
       app.matchStats = {
@@ -4188,6 +4206,8 @@
 
     function showFinalResult() {
       setState("finalResult");
+      if (window.imTrack) imTrack('jogo_concluido', { jogo: 'imunidade-coletiva', resultado: 'venceu' });
+      if (window.imFimPartida) imFimPartida();
       dom.eventOverlay.classList.remove("show");
       dom.failureChainCard.classList.remove("show");
       dom.resultOverlay.classList.add("show");

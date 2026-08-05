@@ -199,6 +199,23 @@ body.lowfx .card{box-shadow:0 0 0 1px #1b2a4d}
   #score.pop,.badge{animation:none}
 }
 </style>
+<!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
+     Crie o site no painel do Umami e cole o ID em data-website-id abaixo. -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="14446bce-e8a6-4e64-a6b9-26788218dbe2"></script>
+<script>
+(function(){
+  var jogo=null, t0=0, acumulado=0, enviado=false;
+  function agora(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
+  function faixa(s){ if(s<30)return"menos-30s"; if(s<120)return"30s-2min"; if(s<300)return"2-5min"; if(s<600)return"5-10min"; if(s<1200)return"10-20min"; return"mais-20min"; }
+  window.imTrack=function(nome,dados){ try{ if(window.umami) umami.track(nome,dados); }catch(e){} };
+  window.imInicio=function(nomeJogo,extra){ jogo=nomeJogo; acumulado=0; enviado=false; t0=agora(); imTrack("jogo_iniciado", Object.assign({jogo:nomeJogo}, extra||{})); };
+  function pausar(){ if(jogo!==null){ acumulado+=agora()-t0; t0=agora(); } }
+  function flush(motivo){ if(jogo===null||enviado) return; pausar(); var s=Math.round(acumulado/1000); if(s<3) return; enviado=true; imTrack("jogo_tempo",{jogo:jogo,duracao_seg:s,faixa:faixa(s),motivo:motivo}); }
+  window.imFimPartida=function(){ flush("fim"); };
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") pausar(); else t0=agora(); });
+  window.addEventListener("pagehide",function(){ flush("saiu"); });
+})();
+</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
@@ -666,7 +683,7 @@ function phaseCleared(){ if(phaseEnded) return; phaseEnded=true;
   phaseStats.tissueRecovery=phi<PHASES.length-1?Math.min(18,100-tissueHealth):0;
   tissueHealth=Math.min(100,tissueHealth+phaseStats.tissueRecovery);
   profile.completed[phi]=true; profile.best[phi]=Math.max(profile.best[phi]||0,score-scoreAtStart); saveProfile();
-  if(phi>=PHASES.length-1) showWin(); else showClear(); }
+  if(window.imTrack)imTrack('fase_concluida',{jogo:'imunotropa',fase:phi}); if(phi>=PHASES.length-1){ if(window.imTrack)imTrack('jogo_concluido',{jogo:'imunotropa',resultado:'venceu'}); if(window.imFimPartida)imFimPartida(); showWin(); } else showClear(); }
 
 /* ---------- Dano ao jogador ---------- */
 function damageTissue(amount,msg){ if(tissueLost) return; tissueHealth=Math.max(0,tissueHealth-amount); flash=Math.max(flash,.18); shake=Math.max(shake,5); sCollateral(); vibrate(55);
@@ -908,7 +925,7 @@ function showMenu(){ setAccent('#ff6b4a'); state='menu';
     '<a class="creator-sign" href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener noreferrer">Criado por <b>@helder_nakaya</b></a>'+
     '<p class="note">Arraste em todas as direções · tiro automático · poder especial por célula</p>');
   card.classList.add('menuCard');
-  const go=key=>{ audioInit(); if(AC&&AC.state==='suspended') AC.resume(); DIFF=DIFFS[key]; selDiff=key; profile.difficulty=key; saveProfile(); if(profile.shake) enableShake(); score=0; tissueHealth=100; startPhase(0); };
+  const go=key=>{ audioInit(); if(AC&&AC.state==='suspended') AC.resume(); DIFF=DIFFS[key]; selDiff=key; profile.difficulty=key; saveProfile(); if(profile.shake) enableShake(); score=0; tissueHealth=100; if(window.imInicio)imInicio('imunotropa',{dificuldade:key,modo:'completo'}); startPhase(0); };
   tap($('bDiff0'),()=>go('facil')); tap($('bDiff1'),()=>go('medio')); tap($('bDiff2'),()=>go('dificil'));
   tap($('lvl'),showLevelSelect); tap($('more'),()=>showInfo('imuno')); tap($('prefs'),showSettings);
   if(hiScore>0) tap($('shM'),()=>shareScore({record:true}));
@@ -941,7 +958,7 @@ function showLevelSelect(){ state='levels'; setAccent('#ff6b4a'); elSpecial.styl
     '<p class="txt" style="margin:8px 0 0">Dificuldade</p>'+chips+btns+
     '<button class="btn ghost" id="bkLvl">VOLTAR</button>');
   dkeys.forEach((k,ix)=> tap($('d'+ix),()=>{ selDiff=k; profile.difficulty=k; saveProfile(); showLevelSelect(); }));
-  PHASES.forEach((p,i)=> tap($('lv'+i),()=>{ audioInit(); if(AC&&AC.state==='suspended') AC.resume(); if(profile.shake) enableShake(); DIFF=DIFFS[selDiff]; score=0; tissueHealth=100; startPhase(i); }));
+  PHASES.forEach((p,i)=> tap($('lv'+i),()=>{ audioInit(); if(AC&&AC.state==='suspended') AC.resume(); if(profile.shake) enableShake(); DIFF=DIFFS[selDiff]; score=0; tissueHealth=100; if(window.imInicio)imInicio('imunotropa',{fase:i,modo:'fase'}); startPhase(i); }));
   tap($('bkLvl'),showMenu);
 }
 function showClear(){ state='clear'; elSpecial.style.display='none';
@@ -969,7 +986,7 @@ function showWin(){ state='win'; elSpecial.style.display='none';
     '<button class="btn" id="ag">JOGAR NOVAMENTE</button>'+
     '<button class="btn ghost" id="more2">SABER MAIS · imunologia & créditos</button>');
   tap($('sh'),()=>shareScore({value:score}));
-  tap($('ag'),()=>{ score=0; tissueHealth=100; startPhase(0); });
+  tap($('ag'),()=>{ score=0; tissueHealth=100; if(window.imInicio)imInicio('imunotropa',{modo:'completo'}); startPhase(0); });
   tap($('more2'),()=>showInfo('imuno'));
 }
 function showOver(){ state='over'; elSpecial.style.display='none';
