@@ -1,0 +1,4537 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#F3F7FC">
+  <meta name="color-scheme" content="light">
+  <title>Imunidade Coletiva | immuno.games</title>
+  <style>
+    :root {
+      --bg: #F3F7FC;
+      --board: #FBFDFF;
+      --grid: #D8E1EC;
+      --gray: #91A0B2;
+      --yellow: #F2B735;
+      --green: #18B967;
+      --red: #EF4655;
+      --red-dark: #8D2735;
+      --blue: #58C7F4;
+      --bonus: #D99512;
+      --bonus-soft: #FFF4D1;
+      --ink: #18243A;
+      --muted: #607087;
+      --panel: #FFFFFF;
+      --border: #D5DFEB;
+      --shadow: 0 16px 38px rgba(24, 36, 58, .12);
+      --radius: 24px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100dvh;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 16px;
+      min-height: 52px;
+      padding: 0 22px;
+      font: 800 14px/1 inherit;
+      letter-spacing: .055em;
+      color: var(--ink);
+      background: #FFFFFF;
+      box-shadow: inset 0 0 0 1px var(--border), 0 4px 12px rgba(24, 36, 58, .07);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform .14s ease, box-shadow .14s ease, background-color .14s ease;
+    }
+
+    button:focus-visible {
+      outline: 4px solid rgba(125, 211, 252, .65);
+      outline-offset: 3px;
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(1px) scale(.985);
+    }
+
+    button:disabled {
+      opacity: .42;
+      cursor: default;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: none;
+      min-height: 100dvh;
+      background: var(--bg);
+    }
+
+    .screen.is-active {
+      display: flex;
+    }
+
+    .menu-screen {
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding:
+        max(22px, env(safe-area-inset-top))
+        max(20px, env(safe-area-inset-right))
+        max(22px, env(safe-area-inset-bottom))
+        max(20px, env(safe-area-inset-left));
+    }
+
+    .menu-card {
+      width: min(100%, 520px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+
+    .title-mark {
+      position: relative;
+      width: 150px;
+      height: 92px;
+      margin-bottom: 2px;
+    }
+
+    .title-ball {
+      position: absolute;
+      border-radius: 50%;
+      box-shadow: 0 7px 20px rgba(23, 32, 51, .13);
+    }
+
+    .title-ball.blue {
+      width: 68px;
+      height: 68px;
+      left: 10px;
+      top: 12px;
+      background: var(--blue);
+      border: 5px solid #FFFFFF;
+      outline: 3px solid var(--blue);
+    }
+
+    .title-ball.green {
+      width: 48px;
+      height: 48px;
+      left: 66px;
+      top: 0;
+      background: var(--green);
+      border: 4px solid #FFFFFF;
+    }
+
+    .title-ball.red {
+      width: 38px;
+      height: 38px;
+      right: 4px;
+      bottom: 4px;
+      background: var(--red);
+      border: 4px solid #FFFFFF;
+      box-shadow: 0 0 0 7px rgba(239, 68, 68, .12), 0 7px 20px rgba(23, 32, 51, .13);
+    }
+
+    .menu-card h1 {
+      margin: 0;
+      max-width: 480px;
+      font-size: clamp(34px, 9.4vw, 60px);
+      line-height: .96;
+      letter-spacing: -.055em;
+      font-weight: 950;
+      text-wrap: balance;
+    }
+
+    .menu-card .tagline {
+      margin: 0;
+      max-width: 390px;
+      font-size: clamp(14px, 3.8vw, 18px);
+      line-height: 1.35;
+      font-weight: 800;
+      letter-spacing: .07em;
+      color: var(--muted);
+    }
+
+    .story-card {
+      width: min(100%, 440px);
+      padding: 14px 15px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 5px 16px rgba(24, 36, 58, .06);
+      text-align: left;
+    }
+
+    .story-card p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 720;
+    }
+
+    .mini-legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px 12px;
+      margin-top: 11px;
+    }
+
+    .mini-key {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.15;
+      font-weight: 820;
+    }
+
+    .mini-dot {
+      width: 13px;
+      height: 13px;
+      flex: 0 0 13px;
+      border: 1px solid rgba(23, 32, 51, .14);
+      border-radius: 50%;
+    }
+
+    .menu-actions {
+      width: min(100%, 340px);
+      display: grid;
+      gap: 12px;
+    }
+
+    .menu-tool-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .menu-tool-row button {
+      min-width: 0;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+
+    .primary {
+      min-height: 62px;
+      color: #FFFFFF;
+      background: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 10px 23px rgba(24, 36, 58, .24);
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, .82);
+    }
+
+    .sound-state,
+    .best-score {
+      min-height: 18px;
+      margin: -6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .04em;
+    }
+
+    .difficulty-card {
+      width: min(100%, 560px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .difficulty-card h1 {
+      margin: 0 0 4px;
+      font-size: clamp(31px, 8vw, 48px);
+      line-height: 1;
+      letter-spacing: -.04em;
+      text-align: center;
+    }
+
+    .difficulty-card > p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 650;
+    }
+
+    .difficulty-option {
+      min-height: 86px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      background: #FFFFFF;
+    }
+
+    .difficulty-option strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 17px;
+      letter-spacing: .035em;
+    }
+
+    .difficulty-option span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .difficulty-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .difficulty-dots i {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--ink);
+      opacity: .18;
+    }
+
+    .difficulty-dots i.on {
+      opacity: 1;
+    }
+
+    .back-button {
+      align-self: center;
+      min-height: 48px;
+      margin-top: 4px;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .credits-card {
+      width: min(100%, 520px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+    }
+
+    .credits-kicker {
+      margin: 0;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
+    }
+
+    .credits-card h1 {
+      margin: 0;
+      font-size: clamp(32px, 8vw, 48px);
+      line-height: 1;
+      letter-spacing: -.045em;
+    }
+
+    .credits-intro {
+      max-width: 400px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .support-panel {
+      width: 100%;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #FFFFFF;
+      box-shadow: 0 7px 22px rgba(24, 36, 58, .07);
+      text-align: left;
+    }
+
+    .support-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-align: center;
+    }
+
+    .support-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .support-item {
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg);
+    }
+
+    .support-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.05;
+      letter-spacing: -.015em;
+    }
+
+    .support-item strong:only-child {
+      margin-bottom: 0;
+    }
+
+    .support-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.28;
+    }
+
+    .support-item.sbi {
+      border-color: rgba(24, 185, 103, .34);
+      background: rgba(24, 185, 103, .08);
+    }
+
+    .support-item.sbi strong {
+      color: #0B7138;
+    }
+
+    #gameScreen {
+      flex-direction: column;
+      min-height: 100dvh;
+      padding:
+        max(8px, env(safe-area-inset-top))
+        max(8px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(8px, env(safe-area-inset-left));
+    }
+
+    .hud {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 1.14fr 1.08fr .78fr .78fr 42px;
+      gap: 0;
+      width: min(100%, 780px);
+      margin: 0 auto 5px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 4px 13px rgba(24, 36, 58, .055);
+    }
+
+    .hud-item {
+      position: relative;
+      min-width: 0;
+      min-height: 54px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      padding: 7px 8px;
+      border: 0;
+      border-right: 1px solid rgba(213, 223, 235, .86);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .hud-item::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      border-radius: 13px 13px 0 0;
+      background: #9AA8B8;
+    }
+
+    .hud-item.credits::before {
+      background: var(--green);
+    }
+
+    .hud-item.reds::before {
+      background: var(--red);
+    }
+
+    .hud-item.blues::before {
+      background: var(--blue);
+    }
+
+    .hud-label {
+      min-height: 18px;
+      overflow: visible;
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.05;
+      font-weight: 850;
+      letter-spacing: .035em;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    .hud-value {
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -.02em;
+      white-space: nowrap;
+    }
+
+    .hud-item.credits .hud-value {
+      color: #12883D;
+    }
+
+    .hud-item.blues .hud-value {
+      color: #087BAE;
+    }
+
+    .hud-item.reds .hud-value {
+      color: var(--red);
+    }
+
+    .hud-progress {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+
+    .hud-progress small {
+      color: var(--muted);
+      font-size: .72em;
+      font-weight: 850;
+    }
+
+    .hud-note {
+      color: var(--muted);
+      font-size: 8.2px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: .025em;
+      white-space: nowrap;
+    }
+
+    .credit-pop {
+      position: absolute;
+      z-index: 4;
+      right: 9px;
+      top: 22px;
+      color: #12883D;
+      font-size: 16px;
+      font-weight: 950;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    .credit-pop.show {
+      animation: creditPop .65s ease-out forwards;
+    }
+
+    .credit-pop.gain {
+      color: var(--bonus);
+    }
+
+    .hud-pause {
+      width: 42px;
+      min-width: 42px;
+      min-height: 54px;
+      padding: 0;
+      border-radius: 0;
+      color: var(--muted);
+      background: transparent;
+      box-shadow: none;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    @keyframes creditPop {
+      0% { opacity: 0; transform: translateY(5px) scale(.8); }
+      20% { opacity: 1; transform: translateY(0) scale(1.05); }
+      100% { opacity: 0; transform: translateY(-18px) scale(.95); }
+    }
+
+    .board-area {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .canvas-shell {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--board);
+      box-shadow:
+        0 13px 30px rgba(24, 36, 58, .10),
+        0 2px 6px rgba(24, 36, 58, .055),
+        inset 0 0 0 1px rgba(255, 255, 255, .86);
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--board);
+      touch-action: none;
+    }
+
+    .game-status {
+      flex: 0 0 auto;
+      width: min(100%, 780px);
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+      padding: 0 5px;
+    }
+
+    .turn-status {
+      max-width: 100%;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: .11em;
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .turn-lesson {
+      flex: 0 0 auto;
+      width: min(100%, 780px);
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+      padding: 7px 12px;
+      border: 1px solid rgba(24, 185, 103, .25);
+      border-radius: 12px;
+      color: #31506A;
+      background: rgba(255, 255, 255, .76);
+      font-size: 10px;
+      line-height: 1.28;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .turn-lesson.bonus {
+      border-color: rgba(217, 149, 18, .42);
+      color: #6F4A00;
+      background: var(--bonus-soft);
+    }
+
+    .tutorial-bubble {
+      width: min(100%, 620px);
+      min-height: 28px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 11px;
+      border-radius: 10px;
+      color: #FFFFFF;
+      background: rgba(24, 36, 58, .96);
+      box-shadow: 0 5px 14px rgba(24, 36, 58, .16);
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 900;
+      letter-spacing: .05em;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .tutorial-bubble.show {
+      display: flex;
+    }
+
+    .game-status.tutorial-active .turn-status {
+      display: none;
+    }
+
+    .game-status.bonus-active .turn-status {
+      display: none;
+    }
+
+    .merit-feedback {
+      width: min(100%, 520px);
+      min-height: 34px;
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .merit-feedback.show {
+      display: grid;
+    }
+
+    .merit-chip,
+    .merit-summary {
+      min-width: 0;
+      padding: 6px 7px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .92);
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 920;
+      letter-spacing: .035em;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .merit-chip.pass {
+      border-color: rgba(24, 185, 103, .34);
+      color: #0B7138;
+      background: rgba(24, 185, 103, .09);
+    }
+
+    .merit-summary {
+      border-color: rgba(217, 149, 18, .36);
+      color: #765000;
+      background: var(--bonus-soft);
+    }
+
+    .game-status.merit-active .turn-status,
+    .game-status.merit-active .campaign-button {
+      display: none !important;
+    }
+
+    .campaign-button {
+      width: min(100%, 390px);
+      min-height: 34px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(217, 149, 18, .48);
+      border-radius: 999px;
+      color: #6F4700;
+      background: var(--bonus-soft);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .76),
+        0 5px 14px rgba(125, 82, 0, .13);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .075em;
+      white-space: nowrap;
+    }
+
+    .campaign-button[hidden] {
+      display: none !important;
+    }
+
+    .campaign-button.armed {
+      color: #FFFFFF;
+      background: #8A5A00;
+      box-shadow:
+        0 0 0 4px rgba(217, 149, 18, .20),
+        0 6px 16px rgba(90, 58, 0, .22);
+    }
+
+    .campaign-button.just-earned {
+      animation: campaignArrival .72s ease-out;
+    }
+
+    .campaign-icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #FFFFFF;
+      background: var(--bonus);
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .campaign-button.armed .campaign-icon {
+      color: #8A5A00;
+      background: #FFFFFF;
+    }
+
+    @keyframes campaignArrival {
+      0% { opacity: 0; transform: scale(.82); }
+      48% { opacity: 1; transform: scale(1.045); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .controls {
+      flex: 0 0 auto;
+      width: min(100%, 780px);
+      display: grid;
+      grid-template-columns: .82fr 1.58fr;
+      gap: 8px;
+      margin: 9px auto 0;
+    }
+
+    .controls button {
+      min-width: 0;
+      min-height: clamp(54px, 8vh, 66px);
+      padding: 0 10px;
+      font-size: clamp(11px, 3vw, 14px);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    #advanceBtn {
+      color: #FFFFFF;
+      background: var(--ink);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .16),
+        0 10px 22px rgba(24, 36, 58, .24);
+    }
+
+    #advanceBtn.tutorial-focus {
+      animation: buttonFocus 1s ease-in-out infinite;
+      box-shadow: 0 0 0 5px rgba(125, 211, 252, .55), 0 9px 20px rgba(23, 32, 51, .22);
+    }
+
+    @keyframes buttonFocus {
+      50% { transform: scale(1.025); }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: inset 0 0 0 1px var(--border), 0 9px 20px rgba(24, 36, 58, .12);
+      }
+
+      #advanceBtn:hover:not(:disabled),
+      .primary:hover:not(:disabled) {
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, .18),
+          0 13px 27px rgba(24, 36, 58, .28);
+      }
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(18px, env(safe-area-inset-right))
+        max(18px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+      background: rgba(243, 247, 252, .84);
+      backdrop-filter: blur(7px);
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(100%, 430px);
+      max-height: min(90dvh, 680px);
+      overflow: auto;
+      padding: 25px 20px 20px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #FFFFFF;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .modal-kicker {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .11em;
+    }
+
+    .modal h2 {
+      margin: 0 0 9px;
+      font-size: clamp(27px, 8vw, 40px);
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+
+    .modal-subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .result-stat {
+      padding: 12px 8px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg);
+    }
+
+    .result-stat:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+
+    .result-stat strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .result-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: .06em;
+    }
+
+    .score-panel {
+      margin: 12px 0 18px;
+      padding: 15px;
+      border-radius: 16px;
+      color: #FFFFFF;
+      background: var(--ink);
+    }
+
+    .score-panel span {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .09em;
+    }
+
+    .score-panel strong {
+      display: block;
+      font-size: 31px;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .science-card {
+      display: none;
+      margin: 0 0 18px;
+      padding: 14px;
+      border: 1px solid rgba(34, 197, 94, .28);
+      border-radius: 16px;
+      background: rgba(34, 197, 94, .08);
+      text-align: left;
+    }
+
+    .science-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #0B6B31;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+
+    .science-card p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .science-card small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 620;
+      line-height: 1.4;
+    }
+
+    .modal-actions {
+      display: grid;
+      gap: 9px;
+    }
+
+    .modal-actions button {
+      width: 100%;
+    }
+
+    .status-line {
+      position: fixed;
+      z-index: -1;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    @media (min-width: 700px) {
+      #gameScreen {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .hud {
+        margin-bottom: 9px;
+      }
+
+      .hud-item {
+        min-height: 59px;
+        padding-left: 12px;
+      }
+
+      .hud-label {
+        font-size: 10px;
+      }
+
+      .hud-value {
+        font-size: 17px;
+      }
+
+      .canvas-shell {
+        border-radius: 22px;
+      }
+
+      .controls {
+        gap: 10px;
+      }
+    }
+
+    @media (max-height: 650px) and (orientation: landscape) {
+      .hud {
+        width: min(100%, 900px);
+        margin-bottom: 4px;
+      }
+
+      .hud-item {
+        min-height: 44px;
+      }
+
+      .hud-pause {
+        min-height: 44px;
+      }
+
+      .controls {
+        width: min(100%, 900px);
+        margin-top: 4px;
+      }
+
+      .turn-lesson {
+        min-height: 28px;
+        padding: 4px 10px;
+        font-size: 9px;
+      }
+
+      .controls button {
+        min-height: 48px;
+      }
+
+      .canvas-shell {
+        width: min(calc(100dvh - 158px), calc(100vw - 20px)) !important;
+        height: min(calc(100dvh - 158px), calc(100vw - 20px)) !important;
+      }
+    }
+
+    @media (max-height: 760px) and (orientation: portrait) {
+      .menu-screen {
+        align-items: flex-start;
+      }
+
+      .menu-card {
+        gap: 12px;
+      }
+
+      .title-mark {
+        width: 120px;
+        height: 68px;
+      }
+
+      .title-ball.blue {
+        width: 52px;
+        height: 52px;
+      }
+
+      .title-ball.green {
+        width: 38px;
+        height: 38px;
+        left: 54px;
+      }
+
+      .title-ball.red {
+        width: 31px;
+        height: 31px;
+      }
+
+      .menu-card h1 {
+        font-size: clamp(34px, 9vw, 52px);
+      }
+
+      .story-card {
+        padding: 11px 13px;
+      }
+
+      .menu-actions {
+        gap: 8px;
+      }
+
+      .menu-actions button {
+        min-height: 50px;
+      }
+
+      .credits-card {
+        gap: 11px;
+      }
+
+      .support-panel {
+        padding: 13px;
+      }
+
+      .support-item {
+        min-height: 74px;
+        padding: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="app" aria-label="Imunidade Coletiva, jogo educativo de estratégia">
+    <section id="menuScreen" class="screen menu-screen is-active" aria-labelledby="gameTitle">
+      <div class="menu-card">
+        <div class="title-mark" aria-hidden="true">
+          <i class="title-ball blue"></i>
+          <i class="title-ball green"></i>
+          <i class="title-ball red"></i>
+        </div>
+        <h1 id="gameTitle">IMUNIDADE COLETIVA</h1>
+        <p class="tagline">PROTEJA QUEM NÃO PODE SER VACINADO</p>
+        <div class="story-card">
+          <p>Uma criança não pode receber a vacina. Você recebe duas novas doses a cada turno e guarda as que não usar. Antecipe os movimentos para interromper cadeias de transmissão. Pessoas amarelas ainda hesitam, mas podem decidir se vacinar.</p>
+          <div class="mini-legend" aria-label="Legenda">
+            <span class="mini-key"><i class="mini-dot" style="background:var(--gray)"></i>NÃO VACINADA</span>
+            <span class="mini-key"><i class="mini-dot" style="background:var(--yellow)"></i>AINDA HESITA</span>
+            <span class="mini-key"><i class="mini-dot" style="background:var(--green)"></i>VACINADA</span>
+            <span class="mini-key"><i class="mini-dot" style="background:var(--red)"></i>INFECTADA</span>
+            <span class="mini-key"><i class="mini-dot" style="background:var(--blue)"></i>NÃO PODE VACINAR</span>
+            <span class="mini-key"><i class="mini-dot" style="background:var(--red-dark)"></i>RECUPERADA, NÃO TRANSMITE</span>
+          </div>
+        </div>
+        <div class="menu-actions">
+          <button id="playBtn" class="primary" type="button">JOGAR</button>
+          <button id="howBtn" class="secondary" type="button">COMO JOGAR</button>
+          <div class="menu-tool-row">
+            <button id="soundBtn" class="secondary" type="button">ÁUDIO LIGADO</button>
+            <button id="creditsBtn" class="secondary" type="button">CRÉDITOS</button>
+          </div>
+        </div>
+        <p id="soundState" class="sound-state">MÚSICA E EFEITOS LIGADOS</p>
+      </div>
+    </section>
+
+    <section id="difficultyScreen" class="screen menu-screen" aria-labelledby="difficultyTitle">
+      <div class="difficulty-card">
+        <h1 id="difficultyTitle">ESCOLHA A DIFICULDADE</h1>
+        <p>Todos os turnos trazem duas doses, que podem ser acumuladas. Um bom turno aumenta a chance de sortear doses extras, uma campanha ou uma mudança de decisão.</p>
+        <button class="difficulty-option" type="button" data-difficulty="beginner">
+          <span><strong>INICIANTE</strong><span>Menos pessoas, um foco vermelho e uma criança</span></span>
+          <span class="difficulty-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+        </button>
+        <button class="difficulty-option" type="button" data-difficulty="strategic">
+          <span><strong>ESTRATÉGICA</strong><span>Até dois focos vermelhos e duas crianças</span></span>
+          <span class="difficulty-dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span>
+        </button>
+        <button class="difficulty-option" type="button" data-difficulty="challenge">
+          <span><strong>DESAFIO</strong><span>Até três focos, três crianças e menor margem para erro</span></span>
+          <span class="difficulty-dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></span>
+        </button>
+        <p id="bestScore" class="best-score"></p>
+        <button id="difficultyBackBtn" class="back-button" type="button">VOLTAR</button>
+      </div>
+    </section>
+
+    <section id="creditsScreen" class="screen menu-screen" aria-labelledby="creditsTitle">
+      <div class="credits-card">
+        <p class="credits-kicker">CRÉDITOS E APOIOS</p>
+        <h1 id="creditsTitle">IMUNIDADE COLETIVA</h1>
+        <p class="credits-intro">Jogo educativo sobre vacinação, transmissão e proteção indireta de pessoas que não podem receber a vacina.</p>
+        <div class="support-panel">
+          <p class="support-label">APOIO INSTITUCIONAL</p>
+          <div class="support-list">
+            <div class="support-item sbi">
+              <strong>SBI</strong>
+              <span>Sociedade Brasileira de Imunologia</span>
+            </div>
+            <div class="support-item">
+              <strong>CT Vacinas</strong>
+              <span>Centro de Tecnologia de Vacinas</span>
+            </div>
+            <div class="support-item">
+              <strong>ITpS</strong>
+              <span>Instituto Todos pela Saúde</span>
+            </div>
+            <div class="support-item">
+              <strong>Todos pelas Vacinas</strong>
+            </div>
+          </div>
+        </div>
+        <button id="creditsBackBtn" class="back-button" type="button">VOLTAR</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen" aria-label="Tabuleiro">
+      <header class="hud" aria-label="Indicadores">
+        <div class="hud-item">
+          <span class="hud-label">RODADA E TURNO</span>
+          <strong class="hud-value hud-progress">
+            <span id="roundValue">R1/3</span>
+            <small id="turnValue">T1/12</small>
+          </strong>
+        </div>
+        <div class="hud-item credits">
+          <span class="hud-label">DOSES NO ESTOQUE</span>
+          <strong id="creditsValue" class="hud-value">2</strong>
+          <span id="turnDoseValue" class="hud-note">+2 POR TURNO</span>
+          <span id="creditPop" class="credit-pop" aria-hidden="true">−1</span>
+        </div>
+        <div class="hud-item reds">
+          <span class="hud-label">INFECTADAS</span>
+          <strong id="redValue" class="hud-value">1</strong>
+        </div>
+        <div class="hud-item blues">
+          <span class="hud-label">CRIANÇAS</span>
+          <strong id="blueValue" class="hud-value">1</strong>
+        </div>
+        <button id="pauseBtn" class="hud-pause" type="button" aria-label="Pausar">Ⅱ</button>
+      </header>
+
+      <div id="gameStatus" class="game-status">
+        <div id="phasePill" class="turn-status">ESCOLHA QUEM VACINAR · 2 NO ESTOQUE</div>
+        <button id="campaignBtn" class="campaign-button" type="button" aria-pressed="false" hidden>
+          <span class="campaign-icon" aria-hidden="true">+</span>
+          <span id="campaignBtnText">USAR CAMPANHA DE VACINAÇÃO</span>
+        </button>
+        <div id="meritFeedback" class="merit-feedback" aria-live="polite">
+          <span id="meritNoInfection" class="merit-chip">SEM INFECÇÃO</span>
+          <span id="meritBlock" class="merit-chip">BLOQUEIO</span>
+          <span id="meritAnticipation" class="merit-chip">ANTECIPAÇÃO</span>
+          <span id="meritSummary" class="merit-summary">0/3 · CHANCE 10%</span>
+        </div>
+        <div id="tutorialBubble" class="tutorial-bubble" role="status"></div>
+      </div>
+
+      <div id="turnLesson" class="turn-lesson" role="status" aria-live="polite">
+        TURNO 1 · DUAS DOSES CHEGARAM. AS NÃO USADAS PERMANECEM NO ESTOQUE.
+      </div>
+
+      <div id="boardArea" class="board-area">
+        <div id="canvasShell" class="canvas-shell">
+          <canvas id="gameCanvas" aria-label="Tabuleiro 19 por 19 com pessoas representadas por bolas coloridas" tabindex="0"></canvas>
+        </div>
+      </div>
+
+      <footer class="controls" aria-label="Controles">
+        <button id="undoBtn" type="button">DESFAZER</button>
+        <button id="advanceBtn" type="button">AVANÇAR</button>
+      </footer>
+
+      <div id="pauseOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+        <div class="modal">
+          <p class="modal-kicker">PAUSA</p>
+          <h2 id="pauseTitle">JOGO PAUSADO</h2>
+          <p class="modal-subtitle">A rodada continua exatamente do mesmo ponto.</p>
+          <div class="modal-actions">
+            <button id="resumeBtn" class="primary" type="button">CONTINUAR</button>
+            <button id="pauseRestartBtn" type="button">REINICIAR RODADA</button>
+            <button id="pauseSoundBtn" type="button">MÚSICA E SONS LIGADOS</button>
+            <button id="pauseMenuBtn" type="button">MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <div class="modal">
+          <p id="resultKicker" class="modal-kicker">RESULTADO DA RODADA</p>
+          <h2 id="resultTitle">IMUNIDADE COLETIVA</h2>
+          <p id="resultSubtitle" class="modal-subtitle"></p>
+          <div id="resultStats" class="result-stats"></div>
+          <div id="scorePanel" class="score-panel">
+            <span id="scoreLabel">PONTOS NA RODADA</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div id="scienceCard" class="science-card">
+            <strong>POR QUE ISSO É IMUNIDADE COLETIVA?</strong>
+            <p>Não foi necessário vacinar todas as pessoas. Ao ocupar pontos estratégicos com pessoas vacinadas, você rompeu caminhos de transmissão e protegeu indiretamente quem não podia receber a vacina.</p>
+            <small>O jogo simplifica a realidade. Aqui, a proteção é imediata e completa, e a transmissão ocorre apenas entre células vizinhas. A hesitação não é tratada como uma característica fixa. Pessoas podem rever decisões quando dúvidas são acolhidas e há confiança, acesso e informação confiável. Na vida real, a proteção e as decisões variam com a vacina, o agente, o tempo e o contexto social.</small>
+          </div>
+          <div class="modal-actions">
+            <button id="resultPrimaryBtn" class="primary" type="button">PRÓXIMA RODADA</button>
+            <button id="resultMenuBtn" type="button">MENU</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="liveStatus" class="status-line" aria-live="polite"></div>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const GAME_CONFIG = {
+      colors: {
+        background: "#FBFDFF",
+        grid: "#D8E1EC",
+        gray: "#91A0B2",
+        yellow: "#F2B735",
+        green: "#18B967",
+        redActive: "#EF4655",
+        redDark: "#8D2735",
+        blue: "#58C7F4",
+        bonus: "#D99512",
+        text: "#18243A",
+        muted: "#607087",
+        white: "#FFFFFF"
+      },
+      board: {
+        cells: 19,
+        ballRadiusInCells: 0.35,
+        touchRadiusInCells: 0.60,
+        maxTurns: 12,
+        dosesPerTurn: 2
+      },
+      motion: {
+        moveDurationMs: 900,
+        reducedMoveDurationMs: 220,
+        activeTurns: 3,
+        blockPauseMs: 460,
+        lossFreezeMs: 500,
+        effectDurationMs: 680
+      },
+      difficulties: {
+        beginner: {
+          label: "INICIANTE",
+          balls: 45,
+          red: [1, 1, 1],
+          yellow: [3, 4, 5],
+          blue: [1, 1, 1],
+          seeds: [181703, 491927, 813749]
+        },
+        strategic: {
+          label: "ESTRATÉGICA",
+          balls: 60,
+          red: [1, 2, 2],
+          yellow: [8, 11, 14],
+          blue: [1, 2, 2],
+          seeds: [227879, 613117, 942083]
+        },
+        challenge: {
+          label: "DESAFIO",
+          balls: 75,
+          red: [2, 2, 3],
+          yellow: [16, 20, 24],
+          blue: [2, 3, 3],
+          seeds: [349298, 727253, 991061]
+        }
+      },
+      scoring: {
+        roundComplete: 5000,
+        eachBlueSafe: 3000,
+        eachBlock: 300,
+        eachAnticipatoryBlock: 550,
+        eachTurnSaved: 240,
+        eachInfectionPenalty: 260
+      },
+      bonuses: {
+        chances: [0.10, 0.25, 0.50, 0.80],
+        missIncrease: 0.10,
+        maximumChance: 0.95,
+        extraDoseAmount: 2,
+        rewardTypes: ["dose", "campaign", "persuasion"]
+      },
+      storage: {
+        tutorialSeen: "protejaAzul.imunidadeColetiva.tutorial.v1",
+        sound: "protejaAzul.imunidadeColetiva.sound.v1",
+        bestPrefix: "protejaAzul.imunidadeColetiva.best.v3."
+      },
+      texts: {
+        choice: "ESCOLHA QUEM VACINAR",
+        movement: "ORIGEM → DESTINO",
+        resolution: "CONTATOS APÓS O MOVIMENTO",
+        blocked: "VACINA INTERROMPEU A TRANSMISSÃO",
+        fixed: "AINDA HESITA",
+        win: "CADEIA INTERROMPIDA",
+        blueLost: "A CRIANÇA FOI ALCANÇADA",
+        activeAtLimit: "A TRANSMISSÃO CONTINUA",
+        complete: "IMUNIDADE COLETIVA",
+        tutorial: [
+          "TOQUE EM UMA PESSOA NÃO VACINADA",
+          "UMA DOSE: AGORA ELA ESTÁ VACINADA",
+          "TOQUE NA PESSOA QUE AINDA HESITA",
+          "ELA PODE MUDAR DE IDEIA COM ESCUTA E INFORMAÇÃO",
+          "INFECTADAS TRANSMITEM, MAS SEU DESTINO É OCULTO",
+          "PROTEJA A CRIANÇA AZUL, ELA NÃO PODE SER VACINADA",
+          "AS SETAS MAIORES MOSTRAM OS OUTROS DESTINOS. AVANCE"
+        ]
+      }
+    };
+
+    window.GAME_CONFIG = GAME_CONFIG;
+
+    const TURN_EDUCATION = [
+      "As doses não usadas permanecem no estoque para os próximos turnos.",
+      "Vacinar antes da aproximação pode interromper caminhos de transmissão.",
+      "Uma cobertura maior ajuda a proteger indiretamente quem não pode se vacinar.",
+      "Hesitação não é uma decisão imutável. Escuta e informação confiável podem ajudar.",
+      "Responder dúvidas com respeito pode aumentar a confiança na vacinação.",
+      "Pessoas podem rever decisões quando encontram informação clara e acesso facilitado.",
+      "Guardar doses permite reforçar a proteção quando o risco aumenta.",
+      "A proteção coletiva depende da cobertura, do tempo e dos padrões de contato.",
+      "Cada pessoa vacinada pode reduzir oportunidades de transmissão.",
+      "Campanhas aproximam informação, acesso e vacinação.",
+      "Proteção individual e proteção coletiva podem se fortalecer juntas.",
+      "Boa comunicação acolhe dúvidas sem culpar quem ainda hesita."
+    ];
+
+    const $ = (selector) => document.querySelector(selector);
+    const dom = {
+      menuScreen: $("#menuScreen"),
+      difficultyScreen: $("#difficultyScreen"),
+      creditsScreen: $("#creditsScreen"),
+      gameScreen: $("#gameScreen"),
+      playBtn: $("#playBtn"),
+      howBtn: $("#howBtn"),
+      soundBtn: $("#soundBtn"),
+      soundState: $("#soundState"),
+      creditsBtn: $("#creditsBtn"),
+      creditsBackBtn: $("#creditsBackBtn"),
+      difficultyBackBtn: $("#difficultyBackBtn"),
+      bestScore: $("#bestScore"),
+      canvas: $("#gameCanvas"),
+      canvasShell: $("#canvasShell"),
+      boardArea: $("#boardArea"),
+      gameStatus: $("#gameStatus"),
+      roundValue: $("#roundValue"),
+      turnValue: $("#turnValue"),
+      creditsValue: $("#creditsValue"),
+      turnDoseValue: $("#turnDoseValue"),
+      redValue: $("#redValue"),
+      blueValue: $("#blueValue"),
+      creditPop: $("#creditPop"),
+      phasePill: $("#phasePill"),
+      campaignBtn: $("#campaignBtn"),
+      campaignBtnText: $("#campaignBtnText"),
+      turnLesson: $("#turnLesson"),
+      meritFeedback: $("#meritFeedback"),
+      meritNoInfection: $("#meritNoInfection"),
+      meritBlock: $("#meritBlock"),
+      meritAnticipation: $("#meritAnticipation"),
+      meritSummary: $("#meritSummary"),
+      tutorialBubble: $("#tutorialBubble"),
+      undoBtn: $("#undoBtn"),
+      advanceBtn: $("#advanceBtn"),
+      pauseBtn: $("#pauseBtn"),
+      pauseOverlay: $("#pauseOverlay"),
+      resumeBtn: $("#resumeBtn"),
+      pauseRestartBtn: $("#pauseRestartBtn"),
+      pauseSoundBtn: $("#pauseSoundBtn"),
+      pauseMenuBtn: $("#pauseMenuBtn"),
+      resultOverlay: $("#resultOverlay"),
+      resultKicker: $("#resultKicker"),
+      resultTitle: $("#resultTitle"),
+      resultSubtitle: $("#resultSubtitle"),
+      resultStats: $("#resultStats"),
+      scorePanel: $("#scorePanel"),
+      scoreLabel: $("#scoreLabel"),
+      scoreValue: $("#scoreValue"),
+      scienceCard: $("#scienceCard"),
+      resultPrimaryBtn: $("#resultPrimaryBtn"),
+      resultMenuBtn: $("#resultMenuBtn"),
+      liveStatus: $("#liveStatus")
+    };
+
+    const ctx = dom.canvas.getContext("2d", { alpha: false });
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const app = {
+      state: "menu",
+      previousState: null,
+      phase: "choice",
+      difficulty: null,
+      roundIndex: 0,
+      roundSeed: 0,
+      roundStartSignatures: Object.create(null),
+      turn: 1,
+      credits: 0,
+      turnDoseGrant: 0,
+      balls: [],
+      currentChoices: [],
+      currentChoiceMeta: [],
+      turnActions: [],
+      campaignAvailable: false,
+      campaignMode: false,
+      campaignAction: null,
+      bonusMisses: 0,
+      lastBonusResult: null,
+      meritFeedbackUntil: 0,
+      statusMessage: "",
+      statusMessageUntil: 0,
+      previewPaths: [],
+      effects: [],
+      move: null,
+      layout: { size: 300, cell: 18.75, dpr: 1 },
+      roundStats: null,
+      matchStats: null,
+      chainPlanned: false,
+      matchScore: 0,
+      roundResultScore: 0,
+      resultWin: false,
+      resultReason: "",
+      resultAction: null,
+      failureHighlights: [],
+      freezeUntil: 0,
+      pausedAt: 0,
+      tutorial: null,
+      tutorialDemo: false,
+      pendingResolution: null,
+      pointerStart: null,
+      audioEnabled: true,
+      audioContext: null,
+      musicTimer: null,
+      musicStep: 0,
+      lastFrame: 0
+    };
+
+    function safeGet(key, fallback = null) {
+      try {
+        const value = localStorage.getItem(key);
+        return value === null ? fallback : value;
+      } catch (_) {
+        return fallback;
+      }
+    }
+
+    function safeSet(key, value) {
+      try {
+        localStorage.setItem(key, String(value));
+      } catch (_) {
+        return false;
+      }
+      return true;
+    }
+
+    app.audioEnabled = safeGet(GAME_CONFIG.storage.sound, "on") !== "off";
+
+    function setScreen(name) {
+      dom.menuScreen.classList.toggle("is-active", name === "menu");
+      dom.difficultyScreen.classList.toggle("is-active", name === "difficulty");
+      dom.creditsScreen.classList.toggle("is-active", name === "credits");
+      dom.gameScreen.classList.toggle("is-active", name === "game");
+      if (name !== "game") {
+        dom.pauseOverlay.classList.remove("show");
+        dom.resultOverlay.classList.remove("show");
+      }
+      if (name === "game") {
+        requestAnimationFrame(resizeCanvas);
+      }
+    }
+
+    function setState(next) {
+      app.state = next;
+      if (next === "menu") setScreen("menu");
+      if (next === "difficulty") setScreen("difficulty");
+      if (next === "credits") setScreen("credits");
+      if (["tutorial", "game", "pause", "roundResult", "finalResult"].includes(next)) {
+        setScreen("game");
+      }
+      syncBackgroundMusic();
+    }
+
+    function announce(text) {
+      dom.liveStatus.textContent = "";
+      requestAnimationFrame(() => {
+        dom.liveStatus.textContent = text;
+      });
+    }
+
+    function updateSoundUi() {
+      dom.soundBtn.textContent = app.audioEnabled ? "ÁUDIO LIGADO" : "ÁUDIO DESLIGADO";
+      dom.soundState.textContent = app.audioEnabled ?
+        "MÚSICA E EFEITOS LIGADOS" :
+        "MÚSICA E EFEITOS DESLIGADOS";
+      dom.pauseSoundBtn.textContent = app.audioEnabled ?
+        "MÚSICA E SONS LIGADOS" :
+        "MÚSICA E SONS DESLIGADOS";
+      dom.soundBtn.setAttribute("aria-pressed", app.audioEnabled ? "true" : "false");
+      dom.pauseSoundBtn.setAttribute("aria-pressed", app.audioEnabled ? "true" : "false");
+    }
+
+    function unlockAudio() {
+      if (!app.audioEnabled) return;
+      if (!app.audioContext) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) app.audioContext = new AudioContextClass();
+      }
+      if (app.audioContext && app.audioContext.state === "suspended") {
+        app.audioContext.resume().catch(() => {});
+      }
+    }
+
+    function tone(
+      frequency,
+      duration,
+      type = "sine",
+      volume = 0.035,
+      delay = 0,
+      endFrequency = frequency
+    ) {
+      if (!app.audioEnabled) return;
+      unlockAudio();
+      const audio = app.audioContext;
+      if (!audio) return;
+      const start = audio.currentTime + delay;
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(Math.max(20, frequency), start);
+      if (endFrequency !== frequency) {
+        oscillator.frequency.exponentialRampToValueAtTime(
+          Math.max(20, endFrequency),
+          start + duration
+        );
+      }
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(
+        Math.max(0.0002, volume),
+        start + Math.min(.012, duration * .22)
+      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain);
+      gain.connect(audio.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.02);
+    }
+
+    function noiseBurst(
+      duration = .08,
+      volume = .01,
+      delay = 0,
+      filterFrequency = 900
+    ) {
+      if (!app.audioEnabled) return;
+      unlockAudio();
+      const audio = app.audioContext;
+      if (!audio) return;
+      const frameCount = Math.max(1, Math.floor(audio.sampleRate * duration));
+      const buffer = audio.createBuffer(1, frameCount, audio.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let index = 0; index < frameCount; index += 1) {
+        const envelope = 1 - index / frameCount;
+        data[index] = (Math.random() * 2 - 1) * envelope;
+      }
+      const source = audio.createBufferSource();
+      const filter = audio.createBiquadFilter();
+      const gain = audio.createGain();
+      const start = audio.currentTime + delay;
+      source.buffer = buffer;
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(filterFrequency, start);
+      filter.Q.setValueAtTime(.7, start);
+      gain.gain.setValueAtTime(Math.max(.0002, volume), start);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(audio.destination);
+      source.start(start);
+      source.stop(start + duration + .02);
+    }
+
+    const MUSIC_STEP_MS = 220;
+    const MUSIC_MELODY = [
+      329.63, null, 392.00, 493.88,
+      440.00, 392.00, 329.63, null,
+      293.66, 329.63, 392.00, null,
+      261.63, 293.66, 329.63, 392.00,
+      349.23, null, 440.00, 523.25,
+      493.88, 440.00, 392.00, null,
+      293.66, 349.23, 440.00, 392.00,
+      329.63, 293.66, 261.63, null
+    ];
+    const MUSIC_BASS = [130.81, 110.00, 87.31, 98.00];
+
+    function shouldPlayBackgroundMusic() {
+      return app.audioEnabled && ["game", "tutorial"].includes(app.state);
+    }
+
+    function playBackgroundMusicStep() {
+      if (!shouldPlayBackgroundMusic()) {
+        stopBackgroundMusic();
+        return;
+      }
+      const step = app.musicStep % MUSIC_MELODY.length;
+      const melody = MUSIC_MELODY[step];
+      if (melody) {
+        tone(melody, .16, "triangle", .0085);
+        if (step % 8 === 6) {
+          tone(melody * 2, .075, "sine", .0035, .02);
+        }
+      }
+      if (step % 4 === 0) {
+        const bass = MUSIC_BASS[Math.floor(step / 8) % MUSIC_BASS.length];
+        tone(bass, .48, "sine", .0065);
+      }
+      app.musicStep = (app.musicStep + 1) % MUSIC_MELODY.length;
+    }
+
+    function startBackgroundMusic() {
+      if (!shouldPlayBackgroundMusic() || app.musicTimer !== null) return;
+      unlockAudio();
+      if (!app.audioContext) return;
+      playBackgroundMusicStep();
+      app.musicTimer = window.setInterval(
+        playBackgroundMusicStep,
+        MUSIC_STEP_MS
+      );
+    }
+
+    function stopBackgroundMusic() {
+      if (app.musicTimer === null) return;
+      window.clearInterval(app.musicTimer);
+      app.musicTimer = null;
+    }
+
+    function syncBackgroundMusic() {
+      if (shouldPlayBackgroundMusic()) {
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
+      }
+    }
+
+    const sounds = {
+      ui() {
+        tone(610, .055, "sine", .022, 0, 720);
+        tone(920, .04, "sine", .010, .035, 980);
+      },
+      green() {
+        tone(430, .11, "triangle", .035, 0, 610);
+        tone(740, .10, "sine", .024, .055, 900);
+      },
+      fixed() {
+        tone(175, .10, "triangle", .027, 0, 120);
+        noiseBurst(.045, .006, 0, 520);
+      },
+      undo() {
+        tone(650, .09, "sine", .024, 0, 460);
+      },
+      move() {
+        noiseBurst(.24, .010, 0, 1050);
+        tone(220, .24, "sine", .017, 0, 390);
+        tone(330, .20, "triangle", .009, .07, 560);
+      },
+      land() {
+        tone(250, .085, "triangle", .018, 0, 175);
+        tone(510, .055, "sine", .010, .025, 440);
+      },
+      red() {
+        tone(270, .18, "triangle", .034, 0, 155);
+        tone(185, .14, "sine", .021, .07, 125);
+        noiseBurst(.09, .007, .015, 360);
+      },
+      block() {
+        tone(410, .09, "triangle", .029, 0, 500);
+        tone(620, .10, "sine", .031, .06, 720);
+        tone(860, .14, "sine", .025, .13, 980);
+      },
+      bonus() {
+        tone(520, .10, "triangle", .028, 0, 690);
+        tone(780, .12, "sine", .030, .07, 940);
+      },
+      supply() {
+        tone(470, .08, "triangle", .022, 0, 610);
+        tone(720, .10, "sine", .020, .06, 860);
+      },
+      persuasion() {
+        tone(440, .11, "triangle", .026, 0, 554);
+        tone(659, .13, "sine", .028, .08, 784);
+        tone(988, .16, "sine", .021, .17, 1175);
+      },
+      campaignReady() {
+        tone(390, .10, "triangle", .027, 0, 520);
+        tone(610, .12, "sine", .031, .07, 760);
+        tone(920, .17, "sine", .027, .16, 1080);
+      },
+      campaignUse() {
+        noiseBurst(.18, .009, 0, 1280);
+        tone(360, .18, "triangle", .030, 0, 620);
+        tone(640, .19, "sine", .027, .09, 960);
+      },
+      win() {
+        tone(392, .13, "triangle", .032);
+        tone(523, .15, "sine", .034, .09);
+        tone(659, .17, "sine", .035, .18);
+        tone(784, .25, "sine", .030, .29, 820);
+      },
+      lose() {
+        tone(294, .16, "triangle", .032, 0, 230);
+        tone(220, .24, "triangle", .032, .12, 155);
+      }
+    };
+
+    function mulberry32(seed) {
+      let value = seed >>> 0;
+      return function random() {
+        value += 0x6D2B79F5;
+        let result = value;
+        result = Math.imul(result ^ (result >>> 15), result | 1);
+        result ^= result + Math.imul(result ^ (result >>> 7), result | 61);
+        return ((result ^ (result >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function mix32(value) {
+      let x = value >>> 0;
+      x ^= x >>> 16;
+      x = Math.imul(x, 0x7feb352d);
+      x ^= x >>> 15;
+      x = Math.imul(x, 0x846ca68b);
+      x ^= x >>> 16;
+      return x >>> 0;
+    }
+
+    let roundSeedSequence = 0;
+
+    function freshRoundSeed(baseSeed) {
+      let entropy;
+      if (
+        globalThis.crypto &&
+        typeof globalThis.crypto.getRandomValues === "function"
+      ) {
+        const values = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(values);
+        entropy = values[0];
+      } else {
+        entropy = Math.floor(Math.random() * 4294967296) >>> 0;
+      }
+      roundSeedSequence = (roundSeedSequence + 1) >>> 0;
+      return mix32(
+        baseSeed ^
+        entropy ^
+        (Date.now() >>> 0) ^
+        Math.imul(roundSeedSequence, 0x9e3779b1)
+      );
+    }
+
+    function deterministicIndex(seed, turn, id, length) {
+      const mixed = mix32(seed ^ Math.imul(turn + 17, 0x9e3779b1) ^ Math.imul(id + 31, 0x85ebca6b));
+      return mixed % length;
+    }
+
+    function shuffle(array, random) {
+      for (let index = array.length - 1; index > 0; index -= 1) {
+        const other = Math.floor(random() * (index + 1));
+        [array[index], array[other]] = [array[other], array[index]];
+      }
+      return array;
+    }
+
+    function chebyshev(a, b) {
+      return Math.max(Math.abs(a.col - b.col), Math.abs(a.row - b.row));
+    }
+
+    function cellKey(cell) {
+      return `${cell.row},${cell.col}`;
+    }
+
+    function strategicStartSignature(balls) {
+      return balls
+        .filter((ball) => ball.kind === "redActive" || ball.kind === "blue")
+        .map((ball) => `${ball.kind}:${ball.row},${ball.col}`)
+        .join("|");
+    }
+
+    function movementPositions(startCell, id, seed, turns = 3) {
+      const positions = [];
+      let current = { row: startCell.row, col: startCell.col };
+      for (let turn = 1; turn <= turns; turn += 1) {
+        current = targetForBall(
+          { id, row: current.row, col: current.col },
+          turn,
+          seed
+        );
+        positions.push({ row: current.row, col: current.col });
+      }
+      return positions;
+    }
+
+    function cellsAreNeighbors(first, second) {
+      return chebyshev(first, second) === 1;
+    }
+
+    function positionsAreDistinct(...positions) {
+      return new Set(positions.map(cellKey)).size === positions.length;
+    }
+
+    function planRoundChain(seed, redCell, redCount, blueCount, yellowCount, candidates) {
+      const firstGrayId = redCount + blueCount + yellowCount;
+      const redPositions = movementPositions(redCell, 0, seed, 3);
+      const firstGrayPaths = new Map();
+      const secondGrayPaths = new Map();
+      const bluePaths = new Map();
+
+      for (const cell of candidates) {
+        const key = cellKey(cell);
+        firstGrayPaths.set(key, movementPositions(cell, firstGrayId, seed, 3));
+        secondGrayPaths.set(key, movementPositions(cell, firstGrayId + 1, seed, 3));
+        bluePaths.set(key, movementPositions(cell, redCount, seed, 3));
+      }
+
+      const firstCandidates = candidates.filter((cell) => {
+        const path = firstGrayPaths.get(cellKey(cell));
+        return chebyshev(cell, redCell) >= 2 &&
+          cellsAreNeighbors(redPositions[0], path[0]);
+      });
+
+      for (const firstGray of firstCandidates) {
+        const firstKey = cellKey(firstGray);
+        const firstPath = firstGrayPaths.get(firstKey);
+        const secondCandidates = candidates.filter((cell) => {
+          const key = cellKey(cell);
+          if (key === firstKey) return false;
+          const path = secondGrayPaths.get(key);
+          return !cellsAreNeighbors(redPositions[0], path[0]) &&
+            !cellsAreNeighbors(redPositions[1], path[1]) &&
+            cellsAreNeighbors(firstPath[1], path[1]) &&
+            positionsAreDistinct(redPositions[0], firstPath[0], path[0]) &&
+            positionsAreDistinct(redPositions[1], firstPath[1], path[1]);
+        });
+
+        for (const secondGray of secondCandidates) {
+          const secondKey = cellKey(secondGray);
+          const secondPath = secondGrayPaths.get(secondKey);
+          const blueCandidates = candidates.filter((cell) => {
+            const key = cellKey(cell);
+            if (key === firstKey || key === secondKey) return false;
+            if (chebyshev(cell, redCell) < 4) return false;
+            if (chebyshev(cell, firstGray) < 3) return false;
+            const path = bluePaths.get(key);
+            const touchesRed = redPositions.some((position, index) =>
+              cellsAreNeighbors(position, path[index])
+            );
+            const touchesFirstTooSoon = cellsAreNeighbors(firstPath[1], path[1]);
+            return !touchesRed &&
+              !touchesFirstTooSoon &&
+              cellsAreNeighbors(secondPath[2], path[2]) &&
+              positionsAreDistinct(redPositions[0], firstPath[0], secondPath[0], path[0]) &&
+              positionsAreDistinct(redPositions[1], firstPath[1], secondPath[1], path[1]) &&
+              positionsAreDistinct(redPositions[2], firstPath[2], secondPath[2], path[2]);
+          });
+          if (blueCandidates.length) {
+            return {
+              blue: blueCandidates[0],
+              firstGray,
+              secondGray
+            };
+          }
+        }
+      }
+
+      for (const firstGray of firstCandidates) {
+        const firstKey = cellKey(firstGray);
+        const firstPath = firstGrayPaths.get(firstKey);
+        const blueCandidates = candidates.filter((cell) => {
+          const key = cellKey(cell);
+          if (key === firstKey) return false;
+          if (chebyshev(cell, redCell) < 3) return false;
+          if (chebyshev(cell, firstGray) < 3) return false;
+          const path = bluePaths.get(key);
+          const touchesRed = redPositions.slice(0, 2).some((position, index) =>
+            cellsAreNeighbors(position, path[index])
+          );
+          return !touchesRed &&
+            cellsAreNeighbors(firstPath[1], path[1]) &&
+            positionsAreDistinct(redPositions[0], firstPath[0], path[0]) &&
+            positionsAreDistinct(redPositions[1], firstPath[1], path[1]);
+        });
+        if (blueCandidates.length) {
+          return {
+            blue: blueCandidates[0],
+            firstGray,
+            secondGray: null
+          };
+        }
+      }
+      return null;
+    }
+
+    function takeCell(pool, target) {
+      const key = cellKey(target);
+      const index = pool.findIndex((cell) => cellKey(cell) === key);
+      return index >= 0 ? pool.splice(index, 1)[0] : null;
+    }
+
+    function createRoundBalls(difficultyKey, roundIndex, seedOverride) {
+      const difficulty = GAME_CONFIG.difficulties[difficultyKey];
+      const seed = Number.isInteger(seedOverride) ?
+        seedOverride >>> 0 :
+        difficulty.seeds[roundIndex];
+      const random = mulberry32(seed);
+      const allCells = [];
+      for (let row = 0; row < GAME_CONFIG.board.cells; row += 1) {
+        for (let col = 0; col < GAME_CONFIG.board.cells; col += 1) {
+          allCells.push({ row, col });
+        }
+      }
+      shuffle(allCells, random);
+
+      const neededRed = difficulty.red[roundIndex];
+      const neededBlue = difficulty.blue[roundIndex];
+      const yellowCount = difficulty.yellow[roundIndex];
+      let redCell = null;
+      let chain = null;
+      const redSearchLimit = allCells.length;
+      for (let index = 0; index < redSearchLimit; index += 1) {
+        const candidate = allCells[index];
+        const candidatePool = allCells.filter((_, poolIndex) => poolIndex !== index);
+        const candidateChain = planRoundChain(
+          seed,
+          candidate,
+          neededRed,
+          neededBlue,
+          yellowCount,
+          candidatePool
+        );
+        if (candidateChain) {
+          redCell = allCells.splice(index, 1)[0];
+          chain = candidateChain;
+          break;
+        }
+      }
+      if (!redCell) redCell = allCells.shift();
+
+      const redCells = [redCell];
+      const blueCells = [];
+      const bridgeCells = [];
+      if (chain) {
+        blueCells.push(takeCell(allCells, chain.blue));
+        bridgeCells.push(takeCell(allCells, chain.firstGray));
+        if (chain.secondGray) {
+          bridgeCells.push(takeCell(allCells, chain.secondGray));
+        }
+      }
+
+      for (let count = blueCells.length; count < neededBlue; count += 1) {
+        let chosen = allCells.findIndex((cell) => {
+          const farFromRed = chebyshev(cell, redCell) >= 5;
+          const farFromBlue = blueCells.every((blue) => chebyshev(cell, blue) >= 3);
+          return farFromRed && farFromBlue;
+        });
+        if (chosen < 0) chosen = 0;
+        blueCells.push(allCells.splice(chosen, 1)[0]);
+      }
+
+      for (let count = redCells.length; count < neededRed; count += 1) {
+        const redId = count;
+        let chosen = allCells.findIndex((cell) => {
+          const farFromRed = redCells.every((red) => chebyshev(cell, red) >= 4);
+          const farFromBlue = blueCells.every((blue) => chebyshev(cell, blue) >= 4);
+          const farFromBridge = bridgeCells
+            .filter(Boolean)
+            .every((bridge) => chebyshev(cell, bridge) >= 3);
+          const redTarget = targetForBall(
+            { id: redId, row: cell.row, col: cell.col },
+            1,
+            seed
+          );
+          const missesBlueAfterMove = blueCells.every((blue, index) => {
+            const blueTarget = targetForBall(
+              { id: neededRed + index, row: blue.row, col: blue.col },
+              1,
+              seed
+            );
+            return !cellsAreNeighbors(redTarget, blueTarget);
+          });
+          return farFromRed && farFromBlue && farFromBridge && missesBlueAfterMove;
+        });
+        if (chosen < 0) chosen = 0;
+        redCells.push(allCells.splice(chosen, 1)[0]);
+      }
+
+      const yellowCells = allCells.splice(0, yellowCount);
+      const grayNeeded =
+        difficulty.balls - redCells.length - blueCells.length - yellowCells.length;
+      const bridgeCount = bridgeCells.filter(Boolean).length;
+      const grayCells = [
+        ...bridgeCells.filter(Boolean),
+        ...allCells.splice(0, Math.max(0, grayNeeded - bridgeCells.length))
+      ];
+      const assignments = [
+        ...redCells.map((cell, index) => ({
+          cell,
+          kind: "redActive",
+          routePriority: index === 0
+        })),
+        ...blueCells.map((cell, index) => ({ cell, kind: "blue", routePriority: index === 0 })),
+        ...yellowCells.map((cell) => ({ cell, kind: "yellow" })),
+        ...grayCells.map((cell, index) => ({
+          cell,
+          kind: "gray",
+          routePriority: index < bridgeCount
+        }))
+      ];
+
+      app.chainPlanned = Boolean(chain);
+      return assignments.map((assignment, id) => ({
+        id,
+        kind: assignment.kind,
+        routePriority: Boolean(assignment.routePriority),
+        row: assignment.cell.row,
+        col: assignment.cell.col,
+        targetRow: assignment.cell.row,
+        targetCol: assignment.cell.col,
+        offsetX: 0,
+        offsetY: 0,
+        targetOffsetX: 0,
+        targetOffsetY: 0,
+        activeTurns: assignment.kind === "redActive" ? GAME_CONFIG.motion.activeTurns : 0,
+        selectedAt: 0,
+        shakeUntil: 0,
+        blockCount: 0,
+        vaccinatedTurn: null,
+        vaccinatedDistance: null,
+        vaccinatedBy: null
+      }));
+    }
+
+    function createFreshRoundBalls(difficultyKey, roundIndex, previousSignature = "") {
+      const difficulty = GAME_CONFIG.difficulties[difficultyKey];
+      const baseSeed = difficulty.seeds[roundIndex];
+      let fallback = null;
+
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const seed = freshRoundSeed(
+          baseSeed ^ Math.imul(attempt + 1, 0x85ebca6b)
+        );
+        const balls = createRoundBalls(difficultyKey, roundIndex, seed);
+        const signature = strategicStartSignature(balls);
+        const candidate = {
+          seed,
+          balls,
+          signature,
+          chainPlanned: app.chainPlanned
+        };
+        if (!fallback || candidate.chainPlanned) fallback = candidate;
+        if (
+          candidate.chainPlanned &&
+          (!previousSignature || signature !== previousSignature)
+        ) {
+          return candidate;
+        }
+      }
+
+      app.chainPlanned = Boolean(fallback?.chainPlanned);
+      return fallback;
+    }
+
+    function startRound(roundIndex, options = {}) {
+      const difficulty = GAME_CONFIG.difficulties[app.difficulty];
+      app.roundIndex = roundIndex;
+      const historyKey = `${app.difficulty}:${roundIndex}`;
+      const previousSignature = app.roundStartSignatures[historyKey] || "";
+      let generated;
+      if (Number.isInteger(options.seed)) {
+        const seed = options.seed >>> 0;
+        const balls = createRoundBalls(app.difficulty, roundIndex, seed);
+        generated = {
+          seed,
+          balls,
+          signature: strategicStartSignature(balls),
+          chainPlanned: app.chainPlanned
+        };
+      } else {
+        generated = createFreshRoundBalls(
+          app.difficulty,
+          roundIndex,
+          previousSignature
+        );
+      }
+      app.roundSeed = generated.seed;
+      app.turn = 1;
+      app.turnDoseGrant = GAME_CONFIG.board.dosesPerTurn;
+      app.credits = app.turnDoseGrant;
+      app.balls = generated.balls;
+      app.chainPlanned = Boolean(generated.chainPlanned);
+      app.roundStartSignatures[historyKey] = generated.signature;
+      dom.gameScreen.dataset.chainPlanned = app.chainPlanned ? "yes" : "no";
+      dom.gameScreen.dataset.startSignature = generated.signature;
+      updatePositionSignature();
+      app.currentChoices = [];
+      app.currentChoiceMeta = [];
+      app.turnActions = [];
+      app.campaignAvailable = false;
+      app.campaignMode = false;
+      app.campaignAction = null;
+      app.bonusMisses = 0;
+      app.lastBonusResult = null;
+      app.meritFeedbackUntil = 0;
+      app.statusMessage = "";
+      app.statusMessageUntil = 0;
+      app.previewPaths = [];
+      app.effects = [];
+      app.failureHighlights = [];
+      app.phase = "choice";
+      app.move = null;
+      app.pendingResolution = null;
+      app.tutorialDemo = false;
+      app.freezeUntil = 0;
+      app.roundResultScore = 0;
+      app.resultWin = false;
+      app.resultReason = "";
+      app.resultAction = null;
+      app.roundStats = {
+        blocked: 0,
+        changed: 0,
+        turnsUsed: 0,
+        creditsUsed: 0,
+        baseDosesReceived: app.turnDoseGrant,
+        bonusChecks: 0,
+        bonusesEarned: 0,
+        extraDosesEarned: 0,
+        campaignsEarned: 0,
+        campaignsUsed: 0,
+        campaignPeople: 0,
+        persuadedPeople: 0,
+        anticipatoryBlocks: 0
+      };
+      prepareTurnPreview();
+      dom.pauseOverlay.classList.remove("show");
+      dom.resultOverlay.classList.remove("show");
+      dom.gameStatus.classList.remove("tutorial-active");
+      dom.gameStatus.classList.remove("merit-active");
+      dom.meritFeedback.classList.remove("show");
+      dom.tutorialBubble.classList.remove("show");
+      dom.advanceBtn.classList.remove("tutorial-focus");
+      setState("game");
+      updateHud();
+      updateTurnLesson(null, true);
+      updateControls();
+      resizeCanvas();
+      if (options.tutorial) beginTutorial(Boolean(options.standalone));
+    }
+
+    function startMatch(difficultyKey) {
+      app.difficulty = difficultyKey;
+      app.matchScore = 0;
+      app.matchStats = {
+        turnsUsed: 0,
+        creditsUsed: 0,
+        baseDosesReceived: 0,
+        extraDosesEarned: 0,
+        campaignPeople: 0,
+        persuadedPeople: 0,
+        blocked: 0,
+        anticipatoryBlocks: 0,
+        changed: 0
+      };
+      startRound(0);
+      const seen = safeGet(GAME_CONFIG.storage.tutorialSeen, "no") === "yes";
+      if (!seen) beginTutorial(false);
+    }
+
+    function beginTutorial(standalone) {
+      app.tutorial = {
+        standalone,
+        step: 0,
+        stepStarted: performance.now(),
+        grayId: app.balls.find((ball) => ball.kind === "gray")?.id,
+        yellowId: app.balls.find((ball) => ball.kind === "yellow")?.id,
+        redId: app.balls.find((ball) => ball.kind === "redActive")?.id,
+        blueId: app.balls.find((ball) => ball.kind === "blue")?.id
+      };
+      setState("tutorial");
+      dom.gameStatus.classList.add("tutorial-active");
+      dom.tutorialBubble.classList.add("show");
+      updateTutorialUi();
+      updateControls();
+    }
+
+    function startStandaloneTutorial() {
+      app.difficulty = "beginner";
+      app.matchScore = 0;
+      app.matchStats = null;
+      startRound(0, { tutorial: true, standalone: true });
+    }
+
+    function tutorialTargetId() {
+      if (!app.tutorial) return null;
+      if (app.tutorial.step === 0 || app.tutorial.step === 1) return app.tutorial.grayId;
+      if (app.tutorial.step === 2 || app.tutorial.step === 3) return app.tutorial.yellowId;
+      if (app.tutorial.step === 4) return app.tutorial.redId;
+      if (app.tutorial.step === 5) return app.tutorial.blueId;
+      return null;
+    }
+
+    function setTutorialStep(step) {
+      if (!app.tutorial) return;
+      app.tutorial.step = step;
+      app.tutorial.stepStarted = performance.now();
+      updateTutorialUi();
+    }
+
+    function updateTutorialUi() {
+      if (!app.tutorial) return;
+      const step = app.tutorial.step;
+      const textByStep = [
+        GAME_CONFIG.texts.tutorial[0],
+        GAME_CONFIG.texts.tutorial[1],
+        GAME_CONFIG.texts.tutorial[2],
+        GAME_CONFIG.texts.tutorial[3],
+        GAME_CONFIG.texts.tutorial[4],
+        GAME_CONFIG.texts.tutorial[5],
+        GAME_CONFIG.texts.tutorial[6]
+      ];
+      dom.tutorialBubble.textContent = textByStep[step] || "";
+      dom.advanceBtn.classList.toggle("tutorial-focus", step === 6);
+      dom.advanceBtn.disabled = step !== 6;
+      dom.undoBtn.disabled = true;
+      announce(textByStep[step] || "");
+    }
+
+    function updateTutorial(now) {
+      if (app.state !== "tutorial" || !app.tutorial) return;
+      const elapsed = now - app.tutorial.stepStarted;
+      if (app.tutorial.step === 1 && elapsed > 900) setTutorialStep(2);
+      else if (app.tutorial.step === 3 && elapsed > 850) setTutorialStep(4);
+      else if (app.tutorial.step === 4 && elapsed > 1350) setTutorialStep(5);
+      else if (app.tutorial.step === 5 && elapsed > 1350) setTutorialStep(6);
+    }
+
+    function finishTutorial() {
+      if (!app.tutorial) return;
+      const standalone = app.tutorial.standalone;
+      safeSet(GAME_CONFIG.storage.tutorialSeen, "yes");
+      app.tutorial = null;
+      dom.gameStatus.classList.remove("tutorial-active");
+      dom.tutorialBubble.classList.remove("show");
+      dom.advanceBtn.classList.remove("tutorial-focus");
+      app.tutorialDemo = standalone;
+      setState("game");
+      updateControls();
+      beginMovement();
+    }
+
+    function updateHud() {
+      dom.roundValue.textContent = `R${app.roundIndex + 1}/3`;
+      dom.turnValue.textContent = `T${app.turn}/${GAME_CONFIG.board.maxTurns}`;
+      dom.creditsValue.textContent = String(app.credits);
+      dom.redValue.textContent = String(
+        app.balls.filter((ball) => ["redActive", "redFresh"].includes(ball.kind)).length
+      );
+      dom.blueValue.textContent = String(app.balls.filter((ball) => ball.kind === "blue").length);
+      dom.turnDoseValue.textContent = `+${app.turnDoseGrant} POR TURNO`;
+      if (app.phase === "motion") {
+        dom.phasePill.textContent = GAME_CONFIG.texts.movement;
+      } else if (app.phase === "resolution") {
+        dom.phasePill.textContent = GAME_CONFIG.texts.resolution;
+      } else if (app.statusMessage && app.statusMessageUntil > performance.now()) {
+        dom.phasePill.textContent = app.statusMessage;
+      } else if (app.credits === 0) {
+        dom.phasePill.textContent =
+          `ESTOQUE VAZIO · +${app.turnDoseGrant} NO PRÓXIMO TURNO`;
+      } else {
+        dom.phasePill.textContent =
+          `ESCOLHA QUEM VACINAR · ${app.credits} ` +
+          `${app.credits === 1 ? "DOSE" : "DOSES"} NO ESTOQUE`;
+      }
+      updateBonusUi();
+    }
+
+    function updateTurnLesson(bonusResult = null, initial = false) {
+      const lesson = TURN_EDUCATION[(app.turn - 1) % TURN_EDUCATION.length];
+      let text =
+        `TURNO ${app.turn} · +${app.turnDoseGrant} DOSES. `;
+      let bonus = false;
+
+      if (bonusResult?.awarded) {
+        bonus = true;
+        if (bonusResult.type === "campaign") {
+          text +=
+            "BÔNUS SORTEADO: CAMPANHA DE VACINAÇÃO DISPONÍVEL. " +
+            "Campanhas facilitam o acesso e ampliam a proteção.";
+        } else if (bonusResult.type === "persuasion") {
+          text +=
+            "BÔNUS SORTEADO: UMA PESSOA DECIDIU SE VACINAR. " +
+            "Escuta, confiança e informação podem mudar decisões.";
+        } else {
+          const extra = bonusResult.doseAmount || GAME_CONFIG.bonuses.extraDoseAmount;
+          text +=
+            `BÔNUS SORTEADO: +${extra} DOSES EXTRAS. ` +
+            "Todo o estoque não utilizado continua acumulado.";
+        }
+      } else if (initial) {
+        text += "As doses não usadas permanecem no estoque.";
+      } else {
+        text += lesson;
+      }
+
+      dom.turnLesson.textContent = text;
+      dom.turnLesson.classList.toggle("bonus", bonus);
+    }
+
+    function grantDosesForNewTurn(bonusResult = null) {
+      const amount = app.turnDoseGrant;
+      app.credits += amount;
+      app.roundStats.baseDosesReceived += amount;
+      const displayedGain = amount + Number(bonusResult?.doseAmount || 0);
+      showCreditPop(`+${displayedGain}`);
+      sounds.supply();
+      updateTurnLesson(bonusResult);
+      return amount;
+    }
+
+    function updateBonusUi() {
+      const visible =
+        app.campaignAvailable &&
+        app.phase === "choice" &&
+        app.state === "game" &&
+        app.meritFeedbackUntil <= performance.now();
+      dom.campaignBtn.hidden = !visible;
+      dom.gameStatus.classList.toggle("bonus-active", visible);
+      dom.campaignBtn.classList.toggle("armed", visible && app.campaignMode);
+      dom.campaignBtn.setAttribute("aria-pressed", app.campaignMode ? "true" : "false");
+      if (app.campaignMode) {
+        dom.campaignBtnText.textContent = "TOQUE EM UMA PESSOA NÃO VACINADA";
+      } else {
+        dom.campaignBtnText.textContent = "USAR CAMPANHA DE VACINAÇÃO";
+      }
+    }
+
+    function showMeritFeedback(merit, chance) {
+      dom.meritNoInfection.classList.toggle("pass", merit.noNewInfections);
+      dom.meritBlock.classList.toggle("pass", merit.interruptedTransmission);
+      dom.meritAnticipation.classList.toggle("pass", merit.anticipatoryVaccination);
+      dom.meritSummary.textContent =
+        `${merit.score}/3 · CHANCE ${Math.round(chance * 100)}%`;
+      app.meritFeedbackUntil = performance.now() + 1650;
+      dom.gameStatus.classList.add("merit-active");
+      dom.meritFeedback.classList.add("show");
+      updateBonusUi();
+    }
+
+    function showTurnStatus(text, duration = 1500) {
+      app.statusMessage = text;
+      app.statusMessageUntil = performance.now() + duration;
+      dom.phasePill.textContent = text;
+    }
+
+    function updateTransientStatus(now) {
+      let changed = false;
+      if (app.statusMessage && now >= app.statusMessageUntil) {
+        app.statusMessage = "";
+        app.statusMessageUntil = 0;
+        changed = true;
+      }
+      if (app.meritFeedbackUntil && now >= app.meritFeedbackUntil) {
+        app.meritFeedbackUntil = 0;
+        dom.gameStatus.classList.remove("merit-active");
+        dom.meritFeedback.classList.remove("show");
+        changed = true;
+      }
+      if (changed) updateHud();
+    }
+
+    function updatePositionSignature() {
+      dom.gameScreen.dataset.positionSignature = app.balls
+        .map((ball) => `${ball.id}:${ball.row},${ball.col}`)
+        .join("|");
+    }
+
+    function updateControls() {
+      const choosing = app.phase === "choice" && app.state === "game";
+      const canUndo = app.turnActions.length > 0;
+      dom.undoBtn.textContent = app.campaignMode ? "CANCELAR" : "DESFAZER";
+      dom.undoBtn.disabled = !choosing || (!canUndo && !app.campaignMode);
+      dom.advanceBtn.disabled = !choosing || app.campaignMode;
+      dom.pauseBtn.disabled = !["game", "tutorial"].includes(app.state);
+      updateBonusUi();
+    }
+
+    function showCreditPop(text = "−1") {
+      dom.creditPop.textContent = text;
+      dom.creditPop.classList.toggle("gain", text.startsWith("+"));
+      dom.creditPop.classList.remove("show");
+      void dom.creditPop.offsetWidth;
+      dom.creditPop.classList.add("show");
+    }
+
+    function distanceToNearestActiveRed(ball) {
+      const active = app.balls.filter((other) => other.kind === "redActive");
+      if (!active.length) return null;
+      return Math.min(...active.map((other) => chebyshev(other, ball)));
+    }
+
+    function markVaccinated(ball, method) {
+      const distance = distanceToNearestActiveRed(ball);
+      ball.vaccinatedTurn = app.turn;
+      ball.vaccinatedDistance = distance;
+      ball.vaccinatedBy = method;
+      return distance;
+    }
+
+    function clearVaccination(ball) {
+      ball.vaccinatedTurn = null;
+      ball.vaccinatedDistance = null;
+      ball.vaccinatedBy = null;
+    }
+
+    function selectGray(ball) {
+      if (app.phase !== "choice" || ball.kind !== "gray") return false;
+      if (app.credits <= 0) {
+        announce("Não há mais doses disponíveis.");
+        return false;
+      }
+      ball.kind = "green";
+      ball.selectedAt = performance.now();
+      const vaccinatedDistance = markVaccinated(ball, "dose");
+      app.credits -= 1;
+      app.currentChoices.push(ball.id);
+      app.currentChoiceMeta.push({
+        id: ball.id,
+        startedAdjacentToRed: vaccinatedDistance === 1,
+        vaccinatedDistance
+      });
+      app.turnActions.push({ type: "dose", affectedIds: [ball.id] });
+      app.roundStats.creditsUsed += 1;
+      addEffect("greenPop", ball.col + .5, ball.row + .5, { duration: 430 });
+      showCreditPop();
+      sounds.green();
+      updateHud();
+      updateControls();
+      announce(
+        `Pessoa vacinada. ${app.credits} ` +
+        `${app.credits === 1 ? "dose permanece" : "doses permanecem"} no estoque.`
+      );
+      return true;
+    }
+
+    function touchYellow(ball) {
+      ball.shakeUntil = performance.now() + (reducedMotionQuery.matches ? 80 : 380);
+      sounds.fixed();
+      announce(
+        "Esta pessoa ainda hesita. Escuta, confiança e informação clara podem ajudá-la a decidir se vacinar."
+      );
+    }
+
+    function toggleCampaignMode() {
+      if (
+        !app.campaignAvailable ||
+        app.phase !== "choice" ||
+        app.state !== "game"
+      ) return false;
+      app.campaignMode = !app.campaignMode;
+      sounds.ui();
+      updateHud();
+      updateControls();
+      announce(app.campaignMode ?
+        "Campanha de Vacinação ativada. Toque em uma pessoa não vacinada." :
+        "Campanha de Vacinação cancelada.");
+      return true;
+    }
+
+    function campaignTargets(centerBall) {
+      if (!centerBall || centerBall.kind !== "gray") return [];
+      return app.balls.filter((ball) =>
+        ball.kind === "gray" &&
+        chebyshev(ball, centerBall) <= 1
+      );
+    }
+
+    function applyCampaign(centerBall) {
+      if (
+        !app.campaignAvailable ||
+        !app.campaignMode ||
+        app.phase !== "choice" ||
+        app.state !== "game" ||
+        centerBall?.kind !== "gray"
+      ) return [];
+
+      const affected = campaignTargets(centerBall);
+      if (!affected.length) return [];
+      const now = performance.now();
+      for (const ball of affected) {
+        ball.kind = "green";
+        ball.selectedAt = now;
+        markVaccinated(ball, "campaign");
+        addEffect("greenPop", ball.col + .5, ball.row + .5, {
+          duration: 520
+        });
+      }
+      addEffect("campaignWave", centerBall.col + .5, centerBall.row + .5, {
+        color: GAME_CONFIG.colors.bonus,
+        duration: 880,
+        size: 1.75
+      });
+      app.campaignAction = {
+        centerId: centerBall.id,
+        affectedIds: affected.map((ball) => ball.id)
+      };
+      app.turnActions.push({
+        type: "campaign",
+        centerId: centerBall.id,
+        affectedIds: affected.map((ball) => ball.id)
+      });
+      app.campaignAvailable = false;
+      app.campaignMode = false;
+      app.roundStats.campaignsUsed += 1;
+      app.roundStats.campaignPeople += affected.length;
+      sounds.campaignUse();
+      showTurnStatus(
+        `CAMPANHA VACINOU ${affected.length} ${affected.length === 1 ? "PESSOA" : "PESSOAS"}`,
+        1700
+      );
+      updateHud();
+      updateControls();
+      announce(
+        `Campanha de Vacinação aplicada. ${affected.length} ` +
+        `${affected.length === 1 ? "pessoa foi vacinada" : "pessoas foram vacinadas"}.`
+      );
+      return affected.map((ball) => ball.id);
+    }
+
+    function undoChoices() {
+      if (app.phase !== "choice" || app.state !== "game") return;
+      if (app.campaignMode) {
+        app.campaignMode = false;
+        sounds.undo();
+        updateHud();
+        updateControls();
+        announce("Campanha de Vacinação cancelada.");
+        return;
+      }
+
+      const action = app.turnActions.pop();
+      if (!action) return;
+      if (action.type === "dose") {
+        const id = action.affectedIds[0];
+        const ball = app.balls.find((item) => item.id === id);
+        if (ball && ball.kind === "green") {
+          ball.kind = "gray";
+          ball.selectedAt = 0;
+          clearVaccination(ball);
+          app.credits += 1;
+          app.roundStats.creditsUsed = Math.max(0, app.roundStats.creditsUsed - 1);
+        }
+        const choiceIndex = app.currentChoices.indexOf(id);
+        if (choiceIndex >= 0) app.currentChoices.splice(choiceIndex, 1);
+        const metaIndex = app.currentChoiceMeta.findIndex((item) => item.id === id);
+        if (metaIndex >= 0) app.currentChoiceMeta.splice(metaIndex, 1);
+      } else if (action.type === "campaign") {
+        for (const id of action.affectedIds) {
+          const ball = app.balls.find((item) => item.id === id);
+          if (ball && ball.kind === "green") {
+            ball.kind = "gray";
+            ball.selectedAt = 0;
+            clearVaccination(ball);
+          }
+        }
+        app.campaignAvailable = true;
+        app.roundStats.campaignsUsed = Math.max(0, app.roundStats.campaignsUsed - 1);
+        app.roundStats.campaignPeople = Math.max(
+          0,
+          app.roundStats.campaignPeople - action.affectedIds.length
+        );
+        app.campaignAction = null;
+      }
+      sounds.undo();
+      updateHud();
+      updateControls();
+      announce("Última ação desfeita.");
+    }
+
+    const DIRECTIONS = [
+      [-1, -1], [0, -1], [1, -1],
+      [-1, 0],             [1, 0],
+      [-1, 1],  [0, 1],   [1, 1]
+    ];
+
+    function validDirections(row, col) {
+      return DIRECTIONS.filter(([dx, dy]) => {
+        const nextCol = col + dx;
+        const nextRow = row + dy;
+        return nextCol >= 0 && nextCol < GAME_CONFIG.board.cells &&
+          nextRow >= 0 && nextRow < GAME_CONFIG.board.cells;
+      });
+    }
+
+    function orderedNeighborTargets(ball, turn = app.turn, seed = app.roundSeed, includeCurrent = false) {
+      const valid = validDirections(ball.row, ball.col);
+      const start = deterministicIndex(seed, turn, ball.id, valid.length);
+      const targets = valid.map((_, index) => {
+        const [dx, dy] = valid[(start + index) % valid.length];
+        return { row: ball.row + dy, col: ball.col + dx };
+      });
+      if (includeCurrent) targets.push({ row: ball.row, col: ball.col });
+      return targets;
+    }
+
+    function targetForBall(ball, turn = app.turn, seed = app.roundSeed) {
+      return orderedNeighborTargets(ball, turn, seed)[0];
+    }
+
+    function tryMovementMatching(balls, turn, seed, includeCurrent, protectRoute) {
+      const targetOwner = new Map();
+      const assignment = new Map();
+      const protectedIds = new Set();
+      const protectedBalls = protectRoute ?
+        balls.filter((ball) => ball.routePriority) :
+        [];
+
+      for (const ball of protectedBalls) {
+        const target = orderedNeighborTargets(ball, turn, seed, includeCurrent)
+          .find((candidate) => !targetOwner.has(cellKey(candidate)));
+        if (!target) return null;
+        const key = cellKey(target);
+        targetOwner.set(key, ball.id);
+        assignment.set(ball.id, target);
+        protectedIds.add(ball.id);
+      }
+
+      const remaining = balls
+        .filter((ball) => !protectedIds.has(ball.id))
+        .sort((first, second) => {
+          const firstOrder = deterministicIndex(seed ^ 0x51ed270b, turn, first.id, 1000000);
+          const secondOrder = deterministicIndex(seed ^ 0x51ed270b, turn, second.id, 1000000);
+          return firstOrder - secondOrder || first.id - second.id;
+        });
+      const byId = new Map(balls.map((ball) => [ball.id, ball]));
+
+      function assign(ballId, visitedBalls, visitedTargets) {
+        if (visitedBalls.has(ballId)) return false;
+        visitedBalls.add(ballId);
+        const ball = byId.get(ballId);
+        const candidates = orderedNeighborTargets(ball, turn, seed, includeCurrent);
+        for (const target of candidates) {
+          const key = cellKey(target);
+          if (visitedTargets.has(key)) continue;
+          visitedTargets.add(key);
+          const owner = targetOwner.get(key);
+          if (
+            owner === undefined ||
+            (!protectedIds.has(owner) && assign(owner, visitedBalls, visitedTargets))
+          ) {
+            targetOwner.set(key, ballId);
+            assignment.set(ballId, target);
+            return true;
+          }
+        }
+        return false;
+      }
+
+      for (const ball of remaining) {
+        if (!assign(ball.id, new Set(), new Set())) return null;
+      }
+      return assignment;
+    }
+
+    function resolveTurnTargets(balls, turn = app.turn, seed = app.roundSeed) {
+      const assignment =
+        tryMovementMatching(balls, turn, seed, false, true) ||
+        tryMovementMatching(balls, turn, seed, false, false);
+      if (!assignment || assignment.size !== balls.length) {
+        throw new Error("Não foi possível atribuir uma célula exclusiva a cada pessoa.");
+      }
+      return balls.map((ball) => {
+        const target = assignment.get(ball.id);
+        return {
+          id: ball.id,
+          target,
+          x0: ball.col + .5,
+          y0: ball.row + .5,
+          x1: target.col + .5,
+          y1: target.row + .5
+        };
+      });
+    }
+
+    function prepareTurnPreview() {
+      if (!app.balls.length || !app.difficulty) {
+        app.previewPaths = [];
+        return;
+      }
+      app.previewPaths = resolveTurnTargets(app.balls, app.turn, app.roundSeed);
+    }
+
+    function beginMovement() {
+      if (app.phase !== "choice" || app.state !== "game") return;
+      unlockAudio();
+      const selectionMeta = app.currentChoiceMeta.map((item) => ({ ...item }));
+      const campaignUsed = Boolean(app.campaignAction);
+      app.currentChoices = [];
+      app.currentChoiceMeta = [];
+      app.turnActions = [];
+      app.campaignMode = false;
+      app.campaignAction = null;
+      const paths = (app.previewPaths.length ? app.previewPaths : resolveTurnTargets(app.balls))
+        .map((path) => ({
+          ...path,
+          target: { ...path.target }
+        }));
+      app.previewPaths = [];
+      for (const path of paths) {
+        const ball = app.balls.find((item) => item.id === path.id);
+        const target = path.target;
+        ball.targetRow = target.row;
+        ball.targetCol = target.col;
+        ball.targetOffsetX = 0;
+        ball.targetOffsetY = 0;
+      }
+      const duration = reducedMotionQuery.matches ?
+        GAME_CONFIG.motion.reducedMoveDurationMs :
+        GAME_CONFIG.motion.moveDurationMs;
+      app.move = {
+        start: performance.now(),
+        duration,
+        rawProgress: 0,
+        renderProgress: 0,
+        paths,
+        activeAtStart: app.balls.filter((ball) => ball.kind === "redActive").map((ball) => ball.id),
+        selectionMeta,
+        campaignUsed,
+        lastContacts: []
+      };
+      app.phase = "motion";
+      sounds.move();
+      updateHud();
+      updateControls();
+    }
+
+    function evaluateNeighbor(sourceKind, targetKind) {
+      if (sourceKind !== "redActive") return { type: "none" };
+      if (targetKind === "green") return { type: "blocked" };
+      if (["gray", "yellow", "blue"].includes(targetKind)) {
+        return { type: "changed", blue: targetKind === "blue" };
+      }
+      return { type: "none" };
+    }
+
+    function addEffect(type, x, y, options = {}) {
+      const now = performance.now();
+      app.effects.push({
+        type,
+        x,
+        y,
+        start: now,
+        duration: options.duration || GAME_CONFIG.motion.effectDurationMs,
+        text: options.text || "",
+        color: options.color || GAME_CONFIG.colors.redActive,
+        size: options.size || 1,
+        x2: options.x2 ?? x,
+        y2: options.y2 ?? y
+      });
+    }
+
+    function bonusChanceForMerit(merit, misses = 0) {
+      const bonusConfig = GAME_CONFIG.bonuses;
+      const safeMerit = Math.max(0, Math.min(3, Math.floor(merit)));
+      return Math.min(
+        bonusConfig.maximumChance,
+        bonusConfig.chances[safeMerit] +
+          Math.max(0, Math.floor(misses)) * bonusConfig.missIncrease
+      );
+    }
+
+    function deterministicBonusUnit(seed, turn, merit, salt) {
+      const mixed = mix32(
+        seed ^
+        Math.imul(turn + 19, 0x6d2b79f5) ^
+        Math.imul(merit + 7, 0x1b873593) ^
+        salt
+      );
+      return mixed / 4294967296;
+    }
+
+    function calculateTurnMerit(transmission, completedMove) {
+      const blockIds = new Set(transmission.blockIds || []);
+      const anticipatoryBlockIds = new Set(transmission.anticipatoryBlockIds || []);
+      const noNewInfections = transmission.changedCount === 0;
+      const interruptedTransmission = blockIds.size > 0;
+      const anticipatoryVaccination =
+        anticipatoryBlockIds.size > 0 ||
+        (completedMove?.selectionMeta || []).some((selection) =>
+          !selection.startedAdjacentToRed && blockIds.has(selection.id)
+        );
+      return {
+        score:
+          Number(noNewInfections) +
+          Number(interruptedTransmission) +
+          Number(anticipatoryVaccination),
+        noNewInfections,
+        interruptedTransmission,
+        anticipatoryVaccination
+      };
+    }
+
+    function determineTurnBonus(seed, turn, merit, misses = 0) {
+      const chance = bonusChanceForMerit(merit, misses);
+      const successRoll = deterministicBonusUnit(seed, turn, merit, 0x2c1b3c6d);
+      const rewardRoll = deterministicBonusUnit(seed, turn, merit, 0x71e84a19);
+      const awarded = successRoll < chance;
+      const rewardTypes = GAME_CONFIG.bonuses.rewardTypes;
+      const rewardIndex = Math.min(
+        rewardTypes.length - 1,
+        Math.floor(rewardRoll * rewardTypes.length)
+      );
+      return {
+        awarded,
+        chance,
+        successRoll,
+        rewardRoll,
+        type: awarded ? rewardTypes[rewardIndex] : "none"
+      };
+    }
+
+    function persuadeHesitantPerson(meritScore) {
+      const candidates = app.balls
+        .filter((ball) => ball.kind === "yellow")
+        .sort((first, second) => first.id - second.id);
+      if (!candidates.length) return null;
+      const choiceRoll = deterministicBonusUnit(
+        app.roundSeed,
+        app.turn,
+        meritScore,
+        0x4f1bbcdc
+      );
+      const index = Math.min(
+        candidates.length - 1,
+        Math.floor(choiceRoll * candidates.length)
+      );
+      const ball = candidates[index];
+      ball.kind = "green";
+      ball.selectedAt = performance.now();
+      markVaccinated(ball, "persuasion");
+      app.roundStats.persuadedPeople += 1;
+      addEffect("greenPop", ball.col + .5, ball.row + .5, {
+        duration: 620
+      });
+      addEffect("campaignWave", ball.col + .5, ball.row + .5, {
+        color: GAME_CONFIG.colors.green,
+        duration: 980,
+        size: 1.45
+      });
+      sounds.persuasion();
+      return ball;
+    }
+
+    function awardExtraDoseBonus(convertedType = "") {
+      const amount = GAME_CONFIG.bonuses.extraDoseAmount;
+      app.credits += amount;
+      app.roundStats.extraDosesEarned += amount;
+      app.lastBonusResult.type = convertedType || "dose";
+      app.lastBonusResult.doseAmount = amount;
+      sounds.bonus();
+      return amount;
+    }
+
+    function resolveTurnBonus(transmission, completedMove) {
+      const merit = calculateTurnMerit(transmission, completedMove);
+      const result = determineTurnBonus(
+        app.roundSeed,
+        app.turn,
+        merit.score,
+        app.bonusMisses
+      );
+      app.roundStats.bonusChecks += 1;
+      app.lastBonusResult = {
+        ...result,
+        merit: { ...merit },
+        turn: app.turn
+      };
+      showMeritFeedback(merit, result.chance);
+
+      if (!result.awarded) {
+        app.bonusMisses += 1;
+        return app.lastBonusResult;
+      }
+
+      app.bonusMisses = 0;
+      app.roundStats.bonusesEarned += 1;
+      if (result.type === "campaign" && !app.campaignAvailable) {
+        app.campaignAvailable = true;
+        app.roundStats.campaignsEarned += 1;
+        sounds.campaignReady();
+        updateBonusUi();
+        dom.campaignBtn.classList.remove("just-earned");
+        void dom.campaignBtn.offsetWidth;
+        dom.campaignBtn.classList.add("just-earned");
+        announce(
+          `Bônus sorteado. Campanha de Vacinação disponível. ` +
+          `A chance neste turno era de ${Math.round(result.chance * 100)} por cento.`
+        );
+      } else if (result.type === "persuasion") {
+        const persuaded = persuadeHesitantPerson(merit.score);
+        if (persuaded) {
+          app.lastBonusResult.persuadedId = persuaded.id;
+          announce(
+            "Bônus sorteado. Uma pessoa que ainda hesitava decidiu se vacinar. " +
+            "Escuta, confiança e informação confiável podem mudar decisões."
+          );
+        } else {
+          awardExtraDoseBonus("convertedDose");
+          announce(
+            `Bônus sorteado. Como ninguém ainda hesitava, ` +
+            `${GAME_CONFIG.bonuses.extraDoseAmount} doses foram adicionadas ao estoque.`
+          );
+        }
+      } else {
+        const convertedCampaign = result.type === "campaign";
+        const amount = awardExtraDoseBonus(
+          convertedCampaign ? "convertedDose" : ""
+        );
+        announce(
+          convertedCampaign ?
+            `Bônus sorteado. Como uma campanha já estava disponível, ${amount} doses extras foram adicionadas ao estoque.` :
+            `Bônus sorteado. ${amount} doses extras foram adicionadas ao estoque.`
+        );
+      }
+      updateHud();
+      return app.lastBonusResult;
+    }
+
+    function resolveNeighborTransmission(now, activeIds) {
+      const activeSources = activeIds
+        .map((id) => app.balls.find((ball) => ball.id === id))
+        .filter((ball) => ball?.kind === "redActive")
+        .sort((first, second) => first.id - second.id);
+      const contacts = [];
+      const changes = [];
+      const blocks = [];
+
+      for (const target of app.balls) {
+        const source = activeSources.find((candidate) =>
+          candidate.id !== target.id && cellsAreNeighbors(candidate, target)
+        );
+        if (!source) continue;
+        const outcome = evaluateNeighbor(source.kind, target.kind);
+        if (outcome.type === "none") continue;
+        const contact = {
+          aId: source.id,
+          bId: target.id,
+          x1: source.col + .5,
+          y1: source.row + .5,
+          x2: target.col + .5,
+          y2: target.row + .5,
+          x: (source.col + target.col + 1) / 2,
+          y: (source.row + target.row + 1) / 2,
+          time: now,
+          outcome: outcome.type
+        };
+        contacts.push(contact);
+        if (outcome.type === "blocked") blocks.push({ source, target, contact });
+        if (outcome.type === "changed") changes.push({ source, target, contact, blue: outcome.blue });
+      }
+
+      const anticipatoryBlockIds = [];
+      for (const { source, target } of blocks) {
+        target.blockCount += 1;
+        app.roundStats.blocked += 1;
+        const anticipated =
+          target.vaccinatedTurn !== null &&
+          (
+            target.vaccinatedTurn < app.turn ||
+            (target.vaccinatedDistance !== null && target.vaccinatedDistance > 1)
+          );
+        if (anticipated) {
+          anticipatoryBlockIds.push(target.id);
+          app.roundStats.anticipatoryBlocks += 1;
+        }
+        addEffect("blockLink", source.col + .5, source.row + .5, {
+          x2: target.col + .5,
+          y2: target.row + .5,
+          color: GAME_CONFIG.colors.green,
+          duration: 760
+        });
+        addEffect("greenWave", target.col + .5, target.row + .5, {
+          color: GAME_CONFIG.colors.green,
+          duration: 720,
+          size: 1.25
+        });
+      }
+
+      let blueInfected = false;
+      for (const { source, target, blue } of changes) {
+        addEffect("infectionLink", source.col + .5, source.row + .5, {
+          x2: target.col + .5,
+          y2: target.row + .5,
+          color: GAME_CONFIG.colors.redActive,
+          duration: 720
+        });
+        target.kind = "redFresh";
+        target.activeTurns = 0;
+        app.roundStats.changed += 1;
+        addEffect("redFlash", target.col + .5, target.row + .5, {
+          color: GAME_CONFIG.colors.redActive,
+          duration: 430
+        });
+        addEffect("redWave", target.col + .5, target.row + .5, {
+          color: GAME_CONFIG.colors.redActive,
+          duration: 690
+        });
+        blueInfected ||= blue;
+      }
+
+      if (blocks.length) sounds.block();
+      if (changes.length) sounds.red();
+      if (changes.length) {
+        announce(`${changes.length} ${changes.length === 1 ? "pessoa foi infectada" : "pessoas foram infectadas"} nas células vizinhas.`);
+      } else if (blocks.length) {
+        announce(GAME_CONFIG.texts.blocked);
+      }
+      return {
+        contacts,
+        blueInfected,
+        blockIds: blocks.map(({ target }) => target.id),
+        anticipatoryBlockIds,
+        blockedCount: blocks.length,
+        changedCount: changes.length
+      };
+    }
+
+    function movementRenderProgress(raw, reduced = reducedMotionQuery.matches) {
+      if (reduced) return raw < .45 ? 0 : 1;
+      if (raw < .24) return 0;
+      if (raw < .68) {
+        const local = (raw - .24) / .44;
+        return local * local * (3 - 2 * local);
+      }
+      return 1;
+    }
+
+    function updateMotion(now) {
+      if (app.phase !== "motion" || !app.move) return;
+      const raw = Math.min(1, Math.max(0, (now - app.move.start) / app.move.duration));
+      app.move.rawProgress = raw;
+      app.move.renderProgress = movementRenderProgress(raw);
+      if (raw >= 1) finishMovement(now);
+    }
+
+    function computeOverlapOffsets() {
+      for (const ball of app.balls) {
+        ball.offsetX = 0;
+        ball.offsetY = 0;
+      }
+    }
+
+    function activateFreshBalls() {
+      for (const ball of app.balls) {
+        if (ball.kind === "redFresh") {
+          ball.kind = "redActive";
+          ball.activeTurns = GAME_CONFIG.motion.activeTurns;
+        }
+      }
+    }
+
+    function finishMovement(now) {
+      if (!app.move) return;
+      const completedMove = app.move;
+      for (const ball of app.balls) {
+        ball.row = ball.targetRow;
+        ball.col = ball.targetCol;
+      }
+      computeOverlapOffsets();
+      updatePositionSignature();
+      const occupiedCells = new Set(app.balls.map(cellKey));
+      if (occupiedCells.size !== app.balls.length) {
+        throw new Error("Mais de uma pessoa ocupou a mesma célula.");
+      }
+
+      sounds.land();
+      const transmission = resolveNeighborTransmission(now, app.move.activeAtStart);
+      app.move.lastContacts = transmission.contacts.slice();
+
+      for (const id of app.move.activeAtStart) {
+        const ball = app.balls.find((item) => item.id === id);
+        if (ball && ball.kind === "redActive") {
+          ball.activeTurns -= 1;
+          if (ball.activeTurns <= 0) {
+            ball.activeTurns = 0;
+            ball.kind = "redDark";
+          }
+        }
+      }
+
+      app.roundStats.turnsUsed = app.turn;
+      const lastContacts = app.move.lastContacts.slice();
+      app.move = null;
+      app.phase = "resolution";
+      app.pendingResolution = {
+        completedMove,
+        transmission,
+        lastContacts,
+        completeAt: now + (
+          reducedMotionQuery.matches ?
+            180 :
+            GAME_CONFIG.motion.blockPauseMs
+        )
+      };
+      updateHud();
+      updateControls();
+    }
+
+    function showStandaloneTutorialResult(transmission) {
+      app.tutorialDemo = false;
+      app.pendingResolution = null;
+      setState("roundResult");
+      dom.resultOverlay.classList.add("show");
+      dom.resultKicker.textContent = "COMO JOGAR";
+      dom.resultTitle.textContent = "TURNO COMPLETO";
+      dom.resultSubtitle.textContent = transmission.blockedCount ?
+        "Todos mudaram de célula. A pessoa vacinada formou uma barreira e interrompeu uma transmissão após o movimento." :
+        "Todos mudaram de célula e os contatos foram avaliados. Observe os destinos conhecidos e proteja rotas antes que as pessoas infectadas se aproximem.";
+      dom.resultStats.innerHTML =
+        statMarkup(transmission.blockedCount, "TRANSMISSÕES INTERROMPIDAS") +
+        statMarkup(transmission.changedCount, "NOVAS INFECÇÕES");
+      dom.scorePanel.style.display = "none";
+      dom.scienceCard.style.display = "none";
+      dom.resultPrimaryBtn.textContent = "VOLTAR AO MENU";
+      app.resultAction = "tutorialDone";
+      announce("Tutorial concluído.");
+    }
+
+    function completeTurnResolution(now) {
+      if (app.phase !== "resolution" || !app.pendingResolution) return;
+      const { completedMove, transmission, lastContacts } = app.pendingResolution;
+      app.pendingResolution = null;
+
+      if (app.tutorialDemo) {
+        showStandaloneTutorialResult(transmission);
+        return;
+      }
+      if (transmission.blueInfected) {
+        updateHud();
+        failRound("blue", now, transmission.contacts);
+        return;
+      }
+
+      const stillActive = app.balls.some((ball) =>
+        ball.kind === "redActive" || ball.kind === "redFresh"
+      );
+      app.phase = "choice";
+      if (!stillActive) {
+        winRound();
+        return;
+      }
+      if (app.turn >= GAME_CONFIG.board.maxTurns) {
+        failRound("active", now, lastContacts);
+        return;
+      }
+
+      const bonusResult = resolveTurnBonus(transmission, completedMove);
+      app.turn += 1;
+      grantDosesForNewTurn(bonusResult);
+      activateFreshBalls();
+      prepareTurnPreview();
+      updateHud();
+      updateControls();
+    }
+
+    function updateResolution(now) {
+      if (
+        app.phase === "resolution" &&
+        app.pendingResolution &&
+        now >= app.pendingResolution.completeAt
+      ) {
+        completeTurnResolution(now);
+      }
+    }
+
+    function failRound(reason, now = performance.now(), contacts = []) {
+      if (app.phase === "freeze") return;
+      app.resultReason = reason;
+      app.resultWin = false;
+      app.phase = "freeze";
+      app.freezeUntil = now + GAME_CONFIG.motion.lossFreezeMs;
+      app.failureHighlights = contacts.slice(-6).map((contact) => ({
+        ...contact,
+        expires: now + 2500
+      }));
+      if (app.move) {
+        app.move.renderProgress = 1;
+      }
+      updateControls();
+    }
+
+    function calculateRoundScore() {
+      const scoring = GAME_CONFIG.scoring;
+      const blues = app.balls.filter((ball) => ball.kind === "blue").length;
+      const turnsSaved = Math.max(0, GAME_CONFIG.board.maxTurns - app.roundStats.turnsUsed);
+      return Math.max(0, scoring.roundComplete +
+        blues * scoring.eachBlueSafe +
+        app.roundStats.blocked * scoring.eachBlock +
+        app.roundStats.anticipatoryBlocks * scoring.eachAnticipatoryBlock +
+        turnsSaved * scoring.eachTurnSaved -
+        app.roundStats.changed * scoring.eachInfectionPenalty);
+    }
+
+    function addRoundStatsToMatch() {
+      if (!app.matchStats) return;
+      for (const key of Object.keys(app.matchStats)) {
+        app.matchStats[key] += Number(app.roundStats[key] || 0);
+      }
+    }
+
+    function winRound() {
+      app.resultWin = true;
+      app.resultReason = "win";
+      app.roundResultScore = calculateRoundScore();
+      app.matchScore += app.roundResultScore;
+      addRoundStatsToMatch();
+      for (const ball of app.balls) {
+        if (ball.kind === "green" && ball.blockCount > 0) {
+          addEffect("victoryGreen", ball.col + .5, ball.row + .5, {
+            color: GAME_CONFIG.colors.green,
+            duration: 1800,
+            size: 1.2
+          });
+        }
+      }
+      sounds.win();
+      if (app.roundIndex === 2) {
+        showFinalResult();
+      } else {
+        showRoundResult(true);
+      }
+    }
+
+    function statMarkup(value, label) {
+      return `<div class="result-stat"><strong>${value}</strong><span>${label}</span></div>`;
+    }
+
+    function fillResultStats(stats = app.roundStats) {
+      dom.resultStats.innerHTML =
+        statMarkup(stats.turnsUsed || 0, "TURNOS USADOS") +
+        statMarkup(stats.baseDosesReceived || 0, "DOSES RECEBIDAS") +
+        statMarkup(stats.creditsUsed || 0, "DOSES UTILIZADAS") +
+        statMarkup(stats.extraDosesEarned || 0, "DOSES EXTRAS") +
+        statMarkup(stats.campaignPeople || 0, "VACINADAS EM CAMPANHAS") +
+        statMarkup(stats.persuadedPeople || 0, "MUDARAM DE DECISÃO") +
+        statMarkup(stats.blocked || 0, "TRANSMISSÕES INTERROMPIDAS") +
+        statMarkup(stats.anticipatoryBlocks || 0, "PROTEÇÕES ANTECIPADAS") +
+        statMarkup(stats.changed || 0, "PESSOAS INFECTADAS");
+    }
+
+    function showRoundResult(win) {
+      setState("roundResult");
+      dom.resultOverlay.classList.add("show");
+      dom.resultKicker.textContent = `RODADA ${app.roundIndex + 1} DE 3`;
+      dom.resultTitle.textContent = win ?
+        GAME_CONFIG.texts.win :
+        (app.resultReason === "blue" ? GAME_CONFIG.texts.blueLost : GAME_CONFIG.texts.activeAtLimit);
+      dom.resultSubtitle.textContent = win ?
+        "As barreiras de vacinação interromperam a cadeia antes que ela alcançasse as crianças." :
+        (app.resultReason === "blue" ?
+          "Observe quais células ficaram vizinhas às pessoas em vermelho e reposicione sua estratégia de vacinação." :
+          "Ainda havia pessoas transmitindo após o último turno.");
+      fillResultStats(app.roundStats);
+      dom.scorePanel.style.display = win ? "block" : "none";
+      dom.scienceCard.style.display = "none";
+      dom.scoreLabel.textContent = "PONTOS NA RODADA";
+      dom.scoreValue.textContent = app.roundResultScore.toLocaleString("pt-BR");
+      dom.resultPrimaryBtn.textContent = win ? "PRÓXIMA RODADA" : "TENTAR NOVAMENTE";
+      app.resultAction = win ? "next" : "retry";
+      if (!win) sounds.lose();
+      announce(dom.resultTitle.textContent);
+    }
+
+    function showFinalResult() {
+      setState("finalResult");
+      dom.resultOverlay.classList.add("show");
+      dom.resultKicker.textContent = GAME_CONFIG.difficulties[app.difficulty].label;
+      dom.resultTitle.textContent = GAME_CONFIG.texts.complete;
+      dom.resultSubtitle.textContent =
+        "A vacinação reduziu as rotas de transmissão e protegeu todas as crianças que não podiam receber a vacina.";
+      fillResultStats(app.matchStats || app.roundStats);
+      dom.scorePanel.style.display = "block";
+      dom.scienceCard.style.display = "block";
+      dom.scoreLabel.textContent = "PONTUAÇÃO FINAL";
+      dom.scoreValue.textContent = app.matchScore.toLocaleString("pt-BR");
+      dom.resultPrimaryBtn.textContent = "JOGAR NOVAMENTE";
+      app.resultAction = "restartMatch";
+      const bestKey = GAME_CONFIG.storage.bestPrefix + app.difficulty;
+      const previousBest = Number(safeGet(bestKey, "0")) || 0;
+      if (app.matchScore > previousBest) safeSet(bestKey, app.matchScore);
+      announce(GAME_CONFIG.texts.complete);
+    }
+
+    function revealFailureResultIfReady(now) {
+      if (app.phase !== "freeze" || now < app.freezeUntil) return;
+      app.roundStats.turnsUsed = app.turn;
+      showRoundResult(false);
+    }
+
+    function handleResultPrimary() {
+      dom.resultOverlay.classList.remove("show");
+      if (app.resultAction === "retry") {
+        startRound(app.roundIndex);
+      } else if (app.resultAction === "next") {
+        startRound(app.roundIndex + 1);
+      } else if (app.resultAction === "restartMatch") {
+        startMatch(app.difficulty);
+      } else if (app.resultAction === "tutorialDone") {
+        goToMenu();
+      }
+    }
+
+    function pauseGame(automatic = false) {
+      if (!["game", "tutorial"].includes(app.state)) return;
+      app.previousState = app.state;
+      app.pausedAt = performance.now();
+      setState("pause");
+      dom.pauseOverlay.classList.add("show");
+      dom.resumeBtn.textContent = automatic ? "CONTINUAR" : "CONTINUAR";
+      dom.pauseRestartBtn.style.display =
+        app.previousState === "game" && !app.tutorialDemo ? "block" : "none";
+      announce("Jogo pausado.");
+    }
+
+    function resumeGame() {
+      if (app.state !== "pause") return;
+      const now = performance.now();
+      if (app.move && app.phase === "motion") {
+        app.move.start += now - app.pausedAt;
+      }
+      if (app.pendingResolution && app.phase === "resolution") {
+        app.pendingResolution.completeAt += now - app.pausedAt;
+      }
+      setState(app.previousState || "game");
+      dom.pauseOverlay.classList.remove("show");
+      app.previousState = null;
+      updateControls();
+    }
+
+    function goToMenu() {
+      app.tutorial = null;
+      app.tutorialDemo = false;
+      app.move = null;
+      app.pendingResolution = null;
+      app.previewPaths = [];
+      app.effects = [];
+      app.phase = "choice";
+      app.turnActions = [];
+      app.campaignMode = false;
+      app.campaignAction = null;
+      app.meritFeedbackUntil = 0;
+      dom.gameStatus.classList.remove("bonus-active");
+      dom.gameStatus.classList.remove("merit-active");
+      dom.meritFeedback.classList.remove("show");
+      dom.tutorialBubble.classList.remove("show");
+      dom.advanceBtn.classList.remove("tutorial-focus");
+      dom.pauseOverlay.classList.remove("show");
+      dom.resultOverlay.classList.remove("show");
+      setState("menu");
+    }
+
+    function updateBestScores() {
+      const rows = Object.entries(GAME_CONFIG.difficulties).map(([key, value]) => {
+        const best = Number(safeGet(GAME_CONFIG.storage.bestPrefix + key, "0")) || 0;
+        return best > 0 ? `${value.label}: ${best.toLocaleString("pt-BR")}` : null;
+      }).filter(Boolean);
+      dom.bestScore.textContent = rows.length ? `MELHORES: ${rows.join("  ·  ")}` : "";
+    }
+
+    function resizeCanvas() {
+      if (!dom.gameScreen.classList.contains("is-active")) return;
+      const area = dom.boardArea.getBoundingClientRect();
+      const safeWidth = Math.max(1, area.width - 2);
+      const safeHeight = Math.max(1, area.height - 2);
+      const size = Math.max(1, Math.floor(Math.min(safeWidth, safeHeight)));
+      const dpr = Math.min(2.5, Math.max(1, window.devicePixelRatio || 1));
+      dom.canvasShell.style.width = `${size}px`;
+      dom.canvasShell.style.height = `${size}px`;
+      dom.canvas.width = Math.round(size * dpr);
+      dom.canvas.height = Math.round(size * dpr);
+      dom.canvas.style.width = "100%";
+      dom.canvas.style.height = "100%";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      app.layout = {
+        size,
+        cell: size / GAME_CONFIG.board.cells,
+        dpr
+      };
+    }
+
+    function canvasPointFromEvent(event) {
+      const rect = dom.canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * (app.layout.size / rect.width),
+        y: (event.clientY - rect.top) * (app.layout.size / rect.height)
+      };
+    }
+
+    function getBallPosition(ball) {
+      if (app.move && ["motion", "freeze"].includes(app.phase)) {
+        const path = app.move.paths.find((item) => item.id === ball.id);
+        if (path) {
+          const progress = app.move.renderProgress;
+          return {
+            x: path.x0 + (path.x1 - path.x0) * progress,
+            y: path.y0 + (path.y1 - path.y0) * progress
+          };
+        }
+      }
+      return {
+        x: ball.col + .5 + ball.offsetX,
+        y: ball.row + .5 + ball.offsetY
+      };
+    }
+
+    function nearestBallAt(point) {
+      const cell = app.layout.cell;
+      const targetX = point.x / cell;
+      const targetY = point.y / cell;
+      const maxDistance = GAME_CONFIG.board.touchRadiusInCells;
+      let nearest = null;
+      let nearestDistance = Infinity;
+      for (const ball of app.balls) {
+        const position = getBallPosition(ball);
+        const distance = Math.hypot(position.x - targetX, position.y - targetY);
+        if (distance <= maxDistance && distance < nearestDistance) {
+          nearest = ball;
+          nearestDistance = distance;
+        }
+      }
+      return nearest;
+    }
+
+    function handleCanvasPointer(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      unlockAudio();
+      if (app.phase !== "choice" || !["game", "tutorial"].includes(app.state)) return;
+      const point = canvasPointFromEvent(event);
+      const ball = nearestBallAt(point);
+      if (!ball) return;
+
+      if (app.state === "game" && app.campaignMode) {
+        if (ball.kind === "gray") {
+          applyCampaign(ball);
+        } else {
+          ball.shakeUntil = performance.now() + (reducedMotionQuery.matches ? 80 : 260);
+          announce("A Campanha de Vacinação deve começar em uma pessoa não vacinada.");
+        }
+        return;
+      }
+
+      if (app.state === "tutorial" && app.tutorial) {
+        const step = app.tutorial.step;
+        if (step === 0 && ball.id === app.tutorial.grayId && selectGray(ball)) {
+          setTutorialStep(1);
+        } else if (step === 2 && ball.id === app.tutorial.yellowId) {
+          touchYellow(ball);
+          setTutorialStep(3);
+        }
+        return;
+      }
+
+      if (ball.kind === "gray") {
+        selectGray(ball);
+      } else if (ball.kind === "green") {
+        const lastAction = app.turnActions[app.turnActions.length - 1];
+        if (
+          lastAction?.type === "dose" &&
+          lastAction.affectedIds[0] === ball.id
+        ) {
+          undoChoices();
+        }
+      } else if (ball.kind === "yellow") {
+        touchYellow(ball);
+      } else if (ball.kind === "blue") {
+        announce("Esta criança não pode ser vacinada.");
+      }
+    }
+
+    function handleCanvasPointerDown(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      app.pointerStart = {
+        pointerId: event.pointerId,
+        clientX: event.clientX,
+        clientY: event.clientY
+      };
+    }
+
+    function handleCanvasPointerUp(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const start = app.pointerStart;
+      app.pointerStart = null;
+      if (!start || start.pointerId !== event.pointerId) return;
+      const movement = Math.hypot(
+        event.clientX - start.clientX,
+        event.clientY - start.clientY
+      );
+      if (movement > 10) return;
+      handleCanvasPointer(event);
+    }
+
+    function handleCanvasPointerCancel(event) {
+      if (app.pointerStart?.pointerId === event.pointerId) {
+        app.pointerStart = null;
+      }
+    }
+
+    function drawGrid() {
+      const { size, cell } = app.layout;
+      ctx.fillStyle = GAME_CONFIG.colors.background;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.fillStyle = "rgba(216,225,236,.13)";
+      for (let row = 0; row < GAME_CONFIG.board.cells; row += 1) {
+        for (let col = 0; col < GAME_CONFIG.board.cells; col += 1) {
+          if ((row + col) % 2 === 0) {
+            ctx.fillRect(col * cell, row * cell, cell, cell);
+          }
+        }
+      }
+
+      ctx.strokeStyle = GAME_CONFIG.colors.grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let index = 1; index < GAME_CONFIG.board.cells; index += 1) {
+        const position = Math.round(index * cell) + .5;
+        ctx.moveTo(position, 0);
+        ctx.lineTo(position, size);
+        ctx.moveTo(0, position);
+        ctx.lineTo(size, position);
+      }
+      ctx.stroke();
+    }
+
+    function circle(x, y, radius, fill, stroke = null, lineWidth = 1) {
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(.1, radius), 0, Math.PI * 2);
+      if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+      }
+      if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+      }
+    }
+
+    function colorForBall(ball) {
+      if (ball.kind === "gray") return GAME_CONFIG.colors.gray;
+      if (ball.kind === "yellow") return GAME_CONFIG.colors.yellow;
+      if (ball.kind === "green") return GAME_CONFIG.colors.green;
+      if (ball.kind === "blue") return GAME_CONFIG.colors.blue;
+      if (ball.kind === "redDark") return GAME_CONFIG.colors.redDark;
+      return GAME_CONFIG.colors.redActive;
+    }
+
+    function movementGuideVisible(ball) {
+      return !["redActive", "redFresh"].includes(ball?.kind);
+    }
+
+    function drawMovementGuides(now) {
+      const choosing =
+        app.phase === "choice" &&
+        ["game", "tutorial"].includes(app.state) &&
+        app.previewPaths.length;
+      const moving = app.phase === "motion" && app.move?.paths?.length;
+      if (!choosing && !moving) return;
+
+      const paths = choosing ? app.previewPaths : app.move.paths;
+      const byId = new Map(app.balls.map((ball) => [ball.id, ball]));
+      const cell = app.layout.cell;
+      const baseRadius = cell * GAME_CONFIG.board.ballRadiusInCells;
+      const movementProgress = moving ? app.move.renderProgress : 0;
+      const movementRaw = moving ? app.move.rawProgress : 0;
+
+      for (const path of paths) {
+        const ball = byId.get(path.id);
+        if (!ball) continue;
+        if (!movementGuideVisible(ball)) continue;
+        const color = colorForBall(ball);
+        const x0 = path.x0 * cell;
+        const y0 = path.y0 * cell;
+        const x1 = path.x1 * cell;
+        const y1 = path.y1 * cell;
+        const dx = x1 - x0;
+        const dy = y1 - y0;
+        const length = Math.max(1, Math.hypot(dx, dy));
+        const ux = dx / length;
+        const uy = dy / length;
+        const startX = x0 + ux * baseRadius * .82;
+        const startY = y0 + uy * baseRadius * .82;
+        const endX = x1 - ux * baseRadius * .72;
+        const endY = y1 - uy * baseRadius * .72;
+        const sideX = -uy;
+        const sideY = ux;
+        const arrowSize = baseRadius * .50;
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = Math.max(1.75, cell * .095);
+
+        if (choosing) {
+          const tipX = x0 + ux * baseRadius * 1.84;
+          const tipY = y0 + uy * baseRadius * 1.84;
+          const tailX = tipX - ux * baseRadius * .74;
+          const tailY = tipY - uy * baseRadius * .74;
+          const wing = baseRadius * .47;
+          ctx.globalAlpha = ball.kind === "gray" ? .68 : .82;
+          ctx.beginPath();
+          ctx.moveTo(
+            tailX + sideX * wing,
+            tailY + sideY * wing
+          );
+          ctx.lineTo(tipX, tipY);
+          ctx.lineTo(
+            tailX - sideX * wing,
+            tailY - sideY * wing
+          );
+          ctx.stroke();
+          ctx.restore();
+          continue;
+        }
+
+        ctx.globalAlpha = .36;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(
+          endX - ux * arrowSize + sideX * arrowSize * .62,
+          endY - uy * arrowSize + sideY * arrowSize * .62
+        );
+        ctx.lineTo(
+          endX - ux * arrowSize - sideX * arrowSize * .62,
+          endY - uy * arrowSize - sideY * arrowSize * .62
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.setLineDash([Math.max(1.5, cell * .09), Math.max(1.5, cell * .08)]);
+        ctx.globalAlpha = .40 + Math.sin(now * .012 + ball.id) * .07;
+        circle(
+          x1,
+          y1,
+          baseRadius * .72,
+          null,
+          color,
+          Math.max(1, cell * .055)
+        );
+        ctx.setLineDash([]);
+
+        if (moving) {
+          ctx.globalAlpha = Math.max(.18, .58 - movementProgress * .26);
+          circle(
+            x0,
+            y0,
+            baseRadius * .76,
+            null,
+            color,
+            Math.max(1.2, cell * .07)
+          );
+          if (movementRaw >= .68) {
+            const settle = Math.min(1, (movementRaw - .68) / .32);
+            ctx.globalAlpha = (1 - settle) * .34;
+            circle(
+              x1,
+              y1,
+              baseRadius * (.8 + settle * .55),
+              null,
+              color,
+              Math.max(1, cell * .06)
+            );
+          }
+        }
+        ctx.restore();
+      }
+    }
+
+    function drawHesitationMark(x, y, radius, color) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.font =
+        `950 ${Math.max(9, radius * 1.18)}px ` +
+        "Inter, ui-sans-serif, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("?", x, y + radius * .06);
+      ctx.restore();
+    }
+
+    function drawOrbHighlight(x, y, radius, opacity = .48) {
+      circle(
+        x - radius * .27,
+        y - radius * .29,
+        radius * .14,
+        `rgba(255,255,255,${opacity})`
+      );
+    }
+
+    function drawCheck(x, y, radius) {
+      ctx.save();
+      ctx.strokeStyle = GAME_CONFIG.colors.white;
+      ctx.lineWidth = Math.max(1.8, radius * .22);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(x - radius * .42, y);
+      ctx.lineTo(x - radius * .10, y + radius * .30);
+      ctx.lineTo(x + radius * .48, y - radius * .34);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawBall(ball, now) {
+      const position = getBallPosition(ball);
+      const cell = app.layout.cell;
+      let x = position.x * cell;
+      let y = position.y * cell;
+      const baseRadius = cell * GAME_CONFIG.board.ballRadiusInCells;
+      let radius = baseRadius;
+
+      if (ball.shakeUntil > now && !reducedMotionQuery.matches) {
+        const remaining = ball.shakeUntil - now;
+        x += Math.sin(remaining * .11) * Math.min(3.5, cell * .13);
+      }
+      if (ball.selectedAt && now - ball.selectedAt < 330 && !reducedMotionQuery.matches) {
+        const local = (now - ball.selectedAt) / 330;
+        radius *= 1 + Math.sin(local * Math.PI) * .22;
+      }
+
+      ctx.save();
+      ctx.shadowColor = ball.kind === "redActive" ?
+        "rgba(239,70,85,.46)" :
+        "rgba(24,36,58,.21)";
+      ctx.shadowBlur = ball.kind === "redActive" ?
+        Math.max(5, radius * .82) :
+        Math.max(2, radius * .46);
+      ctx.shadowOffsetY = Math.max(.6, radius * .13);
+
+      if (ball.kind === "gray") {
+        circle(x, y, radius, GAME_CONFIG.colors.gray);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        circle(x, y, radius * .48, GAME_CONFIG.colors.background);
+        circle(x, y, radius, null, "rgba(23,32,51,.18)", Math.max(1, radius * .07));
+        ctx.strokeStyle = "rgba(255,255,255,.52)";
+        ctx.lineWidth = Math.max(1, radius * .09);
+        ctx.beginPath();
+        ctx.arc(x, y, radius * .79, Math.PI * .94, Math.PI * 1.62);
+        ctx.stroke();
+      } else if (ball.kind === "yellow") {
+        circle(x, y, radius, GAME_CONFIG.colors.yellow, "rgba(23,32,51,.12)", Math.max(1, radius * .06));
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .43);
+        drawHesitationMark(x, y, radius, GAME_CONFIG.colors.text);
+      } else if (ball.kind === "green") {
+        circle(x, y, radius, GAME_CONFIG.colors.green);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .38);
+        drawCheck(x, y, radius);
+      } else if (ball.kind === "redActive") {
+        const pulse = reducedMotionQuery.matches ? 1 : 1 + Math.sin(now * .006 + ball.id) * .055;
+        radius *= pulse;
+        circle(x, y, radius, GAME_CONFIG.colors.redActive);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .48);
+        const arcRadius = baseRadius * 1.33;
+        ctx.strokeStyle = "rgba(139,30,45,.18)";
+        ctx.lineWidth = Math.max(1.6, baseRadius * .17);
+        ctx.beginPath();
+        ctx.arc(x, y, arcRadius, -Math.PI / 2, Math.PI * 1.5);
+        ctx.stroke();
+        ctx.strokeStyle = GAME_CONFIG.colors.redActive;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.arc(
+          x,
+          y,
+          arcRadius,
+          -Math.PI / 2,
+          -Math.PI / 2 + Math.PI * 2 * (ball.activeTurns / GAME_CONFIG.motion.activeTurns)
+        );
+        ctx.stroke();
+      } else if (ball.kind === "redFresh") {
+        circle(x, y, radius, GAME_CONFIG.colors.redActive);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .46);
+        const blink = reducedMotionQuery.matches ? .95 : .55 + .45 * Math.sin(now * .016);
+        ctx.globalAlpha = Math.max(.22, blink);
+        circle(x, y, baseRadius * 1.34, null, GAME_CONFIG.colors.white, Math.max(2, baseRadius * .18));
+        ctx.globalAlpha = 1;
+      } else if (ball.kind === "redDark") {
+        circle(x, y, radius, GAME_CONFIG.colors.redDark);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .20);
+        circle(x, y, radius * .17, "#4E101A");
+      } else if (ball.kind === "blue") {
+        circle(x, y, radius, GAME_CONFIG.colors.blue);
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        drawOrbHighlight(x, y, radius, .56);
+        circle(x, y, radius * .78, null, GAME_CONFIG.colors.white, Math.max(1.7, radius * .14));
+        circle(x, y, radius * 1.19, null, GAME_CONFIG.colors.blue, Math.max(1.3, radius * .11));
+      }
+
+      if (app.state === "tutorial" && tutorialTargetId() === ball.id) {
+        const pulse = reducedMotionQuery.matches ? 1 : 1 + Math.sin(now * .009) * .08;
+        circle(
+          x,
+          y,
+          baseRadius * 1.75 * pulse,
+          null,
+          GAME_CONFIG.colors.text,
+          Math.max(2, baseRadius * .15)
+        );
+      }
+      ctx.restore();
+    }
+
+    function drawEffects(now) {
+      const cell = app.layout.cell;
+      app.effects = app.effects.filter((effect) => now - effect.start <= effect.duration);
+      for (const effect of app.effects) {
+        const progress = Math.max(0, Math.min(1, (now - effect.start) / effect.duration));
+        const x = effect.x * cell;
+        const y = effect.y * cell;
+        const x2 = effect.x2 * cell;
+        const y2 = effect.y2 * cell;
+        ctx.save();
+        if (effect.type === "blockLink" || effect.type === "infectionLink") {
+          const isBlock = effect.type === "blockLink";
+          const reveal = Math.min(1, progress / .24);
+          const fade = progress < .62 ? 1 : 1 - (progress - .62) / .38;
+          const endX = x + (x2 - x) * reveal;
+          const endY = y + (y2 - y) * reveal;
+          ctx.globalAlpha = Math.max(0, fade) * (isBlock ? .88 : .82);
+          ctx.strokeStyle = effect.color;
+          ctx.lineWidth = Math.max(2, cell * (isBlock ? .13 : .11));
+          ctx.lineCap = "round";
+          if (isBlock) {
+            ctx.setLineDash([Math.max(2, cell * .16), Math.max(2, cell * .11)]);
+          }
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(endX, endY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          circle(
+            endX,
+            endY,
+            cell * (isBlock ? .12 : .10),
+            effect.color
+          );
+        } else if (effect.type === "greenPop") {
+          const radius = cell * (.2 + progress * .65);
+          ctx.globalAlpha = (1 - progress) * .55;
+          circle(x, y, radius, null, GAME_CONFIG.colors.green, Math.max(2, cell * .1));
+        } else if (effect.type === "campaignWave") {
+          const radius = cell * (.22 + progress * effect.size);
+          ctx.globalAlpha = (1 - progress) * .82;
+          circle(
+            x,
+            y,
+            radius,
+            null,
+            GAME_CONFIG.colors.bonus,
+            Math.max(2.2, cell * .13 * (1 - progress * .28))
+          );
+          ctx.globalAlpha = (1 - progress) * .54;
+          circle(
+            x,
+            y,
+            radius * .72,
+            null,
+            GAME_CONFIG.colors.green,
+            Math.max(1.5, cell * .075)
+          );
+        } else if (effect.type === "redFlash") {
+          ctx.globalAlpha = 1 - progress;
+          circle(x, y, cell * (.10 + progress * .30), GAME_CONFIG.colors.white);
+          circle(x, y, cell * (.06 + progress * .18), GAME_CONFIG.colors.redActive);
+        } else if (effect.type === "redWave" || effect.type === "greenWave" || effect.type === "victoryGreen") {
+          const startRadius = effect.type === "greenWave" ? .24 : .16;
+          const growth = effect.type === "victoryGreen" ? 1.2 : effect.size;
+          const radius = cell * (startRadius + progress * growth);
+          ctx.globalAlpha = (1 - progress) * (effect.type === "victoryGreen" ? .8 : .72);
+          circle(x, y, radius, null, effect.color, Math.max(2, cell * .12 * (1 - progress * .35)));
+          if (effect.type === "victoryGreen") {
+            circle(x, y, radius * .72, null, GAME_CONFIG.colors.white, Math.max(1.5, cell * .07));
+          }
+        }
+        ctx.restore();
+      }
+    }
+
+    function drawFailureHighlights(now) {
+      app.failureHighlights = app.failureHighlights.filter((item) => item.expires > now);
+      if (!app.failureHighlights.length) return;
+      const cell = app.layout.cell;
+      for (const item of app.failureHighlights) {
+        const remaining = Math.max(0, Math.min(1, (item.expires - now) / 2500));
+        const pulse = reducedMotionQuery.matches ? 1 : .8 + Math.sin(now * .012 + item.aId) * .2;
+        ctx.save();
+        ctx.globalAlpha = .25 + remaining * .5;
+        circle(
+          item.x * cell,
+          item.y * cell,
+          cell * (.45 + .16 * pulse),
+          null,
+          GAME_CONFIG.colors.redActive,
+          Math.max(2, cell * .12)
+        );
+        ctx.restore();
+      }
+    }
+
+    function draw(now) {
+      if (!dom.gameScreen.classList.contains("is-active")) return;
+      drawGrid();
+      drawMovementGuides(now);
+      for (const ball of app.balls) drawBall(ball, now);
+      drawEffects(now);
+      drawFailureHighlights(now);
+    }
+
+    function frame(now) {
+      app.lastFrame = now;
+      if (app.state !== "pause") {
+        updateTutorial(now);
+        updateMotion(now);
+        updateResolution(now);
+        updateTransientStatus(now);
+        revealFailureResultIfReady(now);
+      }
+      draw(now);
+      requestAnimationFrame(frame);
+    }
+
+    function toggleSound() {
+      app.audioEnabled = !app.audioEnabled;
+      safeSet(GAME_CONFIG.storage.sound, app.audioEnabled ? "on" : "off");
+      if (app.audioEnabled) {
+        unlockAudio();
+        tone(540, .08, "sine", .03);
+      }
+      syncBackgroundMusic();
+      updateSoundUi();
+    }
+
+    dom.playBtn.addEventListener("click", () => {
+      unlockAudio();
+      sounds.ui();
+      updateBestScores();
+      setState("difficulty");
+    });
+    dom.howBtn.addEventListener("click", () => {
+      unlockAudio();
+      sounds.ui();
+      startStandaloneTutorial();
+    });
+    dom.soundBtn.addEventListener("click", toggleSound);
+    dom.creditsBtn.addEventListener("click", () => {
+      unlockAudio();
+      sounds.ui();
+      setState("credits");
+    });
+    dom.creditsBackBtn.addEventListener("click", () => {
+      sounds.ui();
+      goToMenu();
+    });
+    dom.difficultyBackBtn.addEventListener("click", () => {
+      sounds.ui();
+      goToMenu();
+    });
+    document.querySelectorAll("[data-difficulty]").forEach((button) => {
+      button.addEventListener("click", () => {
+        unlockAudio();
+        sounds.ui();
+        startMatch(button.dataset.difficulty);
+      });
+    });
+    dom.undoBtn.addEventListener("click", undoChoices);
+    dom.campaignBtn.addEventListener("click", toggleCampaignMode);
+    dom.advanceBtn.addEventListener("click", () => {
+      unlockAudio();
+      if (app.state === "tutorial" && app.tutorial?.step === 6) {
+        finishTutorial();
+      } else {
+        beginMovement();
+      }
+    });
+    dom.pauseBtn.addEventListener("click", () => {
+      sounds.ui();
+      pauseGame(false);
+    });
+    dom.resumeBtn.addEventListener("click", () => {
+      sounds.ui();
+      resumeGame();
+    });
+    dom.pauseSoundBtn.addEventListener("click", toggleSound);
+    dom.pauseRestartBtn.addEventListener("click", () => {
+      if (app.previousState !== "game") return;
+      dom.pauseOverlay.classList.remove("show");
+      app.previousState = null;
+      startRound(app.roundIndex);
+    });
+    dom.pauseMenuBtn.addEventListener("click", goToMenu);
+    dom.resultPrimaryBtn.addEventListener("click", handleResultPrimary);
+    dom.resultMenuBtn.addEventListener("click", goToMenu);
+    dom.canvas.addEventListener("pointerdown", handleCanvasPointerDown, { passive: false });
+    dom.canvas.addEventListener("pointerup", handleCanvasPointerUp, { passive: false });
+    dom.canvas.addEventListener("pointercancel", handleCanvasPointerCancel, { passive: false });
+    dom.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+
+    window.addEventListener("resize", () => requestAnimationFrame(resizeCanvas));
+    window.addEventListener("orientationchange", () => {
+      setTimeout(resizeCanvas, 80);
+      setTimeout(resizeCanvas, 260);
+    });
+    if ("ResizeObserver" in window) {
+      const boardResizeObserver = new ResizeObserver(() => requestAnimationFrame(resizeCanvas));
+      boardResizeObserver.observe(dom.boardArea);
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) pauseGame(true);
+    });
+    window.addEventListener("blur", () => pauseGame(true));
+
+    function runSelfTests() {
+      const results = {};
+      results.grayChanges = evaluateNeighbor("redActive", "gray").type === "changed";
+      results.yellowChanges = evaluateNeighbor("redActive", "yellow").type === "changed";
+      results.blueChanges = evaluateNeighbor("redActive", "blue").blue === true;
+      results.greenBlocks = evaluateNeighbor("redActive", "green").type === "blocked";
+      results.darkDoesNothing = evaluateNeighbor("redDark", "gray").type === "none";
+      results.freshDoesNothing = evaluateNeighbor("redFresh", "gray").type === "none";
+      results.diagonalIsNeighbor = cellsAreNeighbors(
+        { row: 4, col: 4 },
+        { row: 5, col: 5 }
+      );
+      results.twoCellsAwayIsNotNeighbor = !cellsAreNeighbors(
+        { row: 4, col: 4 },
+        { row: 6, col: 4 }
+      );
+
+      const fresh = { kind: "redFresh", activeTurns: 0 };
+      const originalBalls = app.balls;
+      app.balls = [fresh];
+      activateFreshBalls();
+      results.freshActivatesNextTurn = fresh.kind === "redActive" &&
+        fresh.activeTurns === GAME_CONFIG.motion.activeTurns;
+      app.balls = originalBalls;
+
+      let boundsValid = true;
+      for (let row = 0; row < GAME_CONFIG.board.cells; row += 1) {
+        for (let col = 0; col < GAME_CONFIG.board.cells; col += 1) {
+          for (const [dx, dy] of validDirections(row, col)) {
+            const nextRow = row + dy;
+            const nextCol = col + dx;
+            if (
+              nextRow < 0 || nextRow >= GAME_CONFIG.board.cells ||
+              nextCol < 0 || nextCol >= GAME_CONFIG.board.cells
+            ) boundsValid = false;
+          }
+        }
+      }
+      results.bounds = boundsValid;
+
+      const sample = createRoundBalls("strategic", 1);
+      const sampleRepeat = createRoundBalls("strategic", 1);
+      const firstMoves = resolveTurnTargets(
+        sample,
+        4,
+        GAME_CONFIG.difficulties.strategic.seeds[1]
+      );
+      const secondMoves = resolveTurnTargets(
+        sample,
+        4,
+        GAME_CONFIG.difficulties.strategic.seeds[1]
+      );
+      results.deterministicMoves = JSON.stringify(firstMoves) === JSON.stringify(secondMoves);
+      results.deterministicRound = JSON.stringify(sample) === JSON.stringify(sampleRepeat);
+      results.uniqueStartingCells =
+        new Set(sample.map(cellKey)).size === sample.length;
+      results.uniqueTargetCells =
+        new Set(firstMoves.map((move) => cellKey(move.target))).size === sample.length;
+      results.onlyNeighborOrDiagonal = firstMoves.every((move) => {
+        const ball = sample.find((item) => item.id === move.id);
+        const distance = chebyshev(ball, move.target);
+        return distance === 1;
+      });
+      results.renewableDoseSupply =
+        GAME_CONFIG.board.dosesPerTurn >= 2;
+      results.accumulatedStockCanBeSpent =
+        !Object.prototype.hasOwnProperty.call(
+          GAME_CONFIG.board,
+          "maxDosesPerTurn"
+        );
+      results.movementShowsOrigin =
+        movementRenderProgress(.12, false) === 0;
+      results.movementInterpolates =
+        movementRenderProgress(.46, false) > 0 &&
+        movementRenderProgress(.46, false) < 1;
+      results.movementShowsDestination =
+        movementRenderProgress(.82, false) === 1;
+      results.advancedRoundsHaveMultipleRed =
+        GAME_CONFIG.difficulties.strategic.red[1] > 1 &&
+        GAME_CONFIG.difficulties.challenge.red[2] > 1;
+      results.activeInfectedGuideIsHidden =
+        !movementGuideVisible({ kind: "redActive" }) &&
+        !movementGuideVisible({ kind: "redFresh" });
+      results.otherMovementGuidesRemainVisible =
+        movementGuideVisible({ kind: "gray" }) &&
+        movementGuideVisible({ kind: "green" }) &&
+        movementGuideVisible({ kind: "blue" }) &&
+        movementGuideVisible({ kind: "redDark" });
+      results.bonusChanceRewardsMerit =
+        bonusChanceForMerit(0, 0) === .10 &&
+        bonusChanceForMerit(1, 0) === .25 &&
+        bonusChanceForMerit(2, 0) === .50 &&
+        bonusChanceForMerit(3, 0) === .80;
+      results.bonusChanceRecoversAfterMisses =
+        Math.abs(bonusChanceForMerit(0, 2) - .30) < 0.000001 &&
+        bonusChanceForMerit(3, 5) === .95;
+      results.threeRandomBonusTypes =
+        GAME_CONFIG.bonuses.rewardTypes.length === 3 &&
+        GAME_CONFIG.bonuses.rewardTypes.includes("dose") &&
+        GAME_CONFIG.bonuses.rewardTypes.includes("campaign") &&
+        GAME_CONFIG.bonuses.rewardTypes.includes("persuasion");
+      const fullMerit = calculateTurnMerit(
+        { changedCount: 0, blockIds: [17] },
+        { selectionMeta: [{ id: 17, startedAdjacentToRed: false }] }
+      );
+      results.anticipationEarnsFullMerit =
+        fullMerit.score === 3 &&
+        fullMerit.noNewInfections &&
+        fullMerit.interruptedTransmission &&
+        fullMerit.anticipatoryVaccination;
+      const laterAnticipation = calculateTurnMerit(
+        {
+          changedCount: 0,
+          blockIds: [21],
+          anticipatoryBlockIds: [21]
+        },
+        { selectionMeta: [] }
+      );
+      results.earlierVaccinationEarnsAnticipation =
+        laterAnticipation.score === 3 &&
+        laterAnticipation.anticipatoryVaccination;
+      results.bonusDrawIsDeterministic =
+        JSON.stringify(determineTurnBonus(12345, 3, 2, 1)) ===
+        JSON.stringify(determineTurnBonus(12345, 3, 2, 1));
+
+      const red = { kind: "redActive", activeTurns: 3 };
+      red.activeTurns -= 1;
+      red.activeTurns -= 1;
+      red.activeTurns -= 1;
+      if (red.activeTurns <= 0) red.kind = "redDark";
+      results.activeExpiresAfterThree = red.kind === "redDark";
+
+      results.allPassed = Object.values(results).every(Boolean);
+      return results;
+    }
+
+    window.__IMUNIDADE_COLETIVA_TEST__ = {
+      runSelfTests,
+      evaluateNeighbor,
+      cellsAreNeighbors,
+      movementRenderProgress,
+      bonusChanceForMerit,
+      calculateTurnMerit,
+      determineTurnBonus,
+      createRoundBalls,
+      targetForBall,
+      resolveTurnTargets,
+      movementGuideVisible,
+      getSnapshot() {
+        return {
+          state: app.state,
+          phase: app.phase,
+          resultWin: app.resultWin,
+          resultAction: app.resultAction,
+          tutorialDemo: app.tutorialDemo,
+          difficulty: app.difficulty,
+          round: app.roundIndex + 1,
+          turn: app.turn,
+          credits: app.credits,
+          turnDoseGrant: app.turnDoseGrant,
+          turnLesson: dom.turnLesson.textContent,
+          audioEnabled: app.audioEnabled,
+          musicPlaying: app.musicTimer !== null,
+          choices: app.currentChoices.slice(),
+          campaignAvailable: app.campaignAvailable,
+          campaignMode: app.campaignMode,
+          campaignAction: app.campaignAction ? {
+            centerId: app.campaignAction.centerId,
+            affectedIds: app.campaignAction.affectedIds.slice()
+          } : null,
+          bonusMisses: app.bonusMisses,
+          meritFeedbackUntil: app.meritFeedbackUntil,
+          pendingResolution: app.pendingResolution ? {
+            completeAt: app.pendingResolution.completeAt,
+            blockedCount: app.pendingResolution.transmission.blockedCount,
+            changedCount: app.pendingResolution.transmission.changedCount,
+            blueInfected: app.pendingResolution.transmission.blueInfected
+          } : null,
+          lastBonusResult: app.lastBonusResult ? {
+            ...app.lastBonusResult,
+            merit: { ...app.lastBonusResult.merit }
+          } : null,
+          roundStats: app.roundStats ? { ...app.roundStats } : null,
+          matchStats: app.matchStats ? { ...app.matchStats } : null,
+          previewPaths: app.previewPaths.map((path) => ({
+            id: path.id,
+            x0: path.x0,
+            y0: path.y0,
+            x1: path.x1,
+            y1: path.y1,
+            target: { ...path.target }
+          })),
+          balls: app.balls.map((ball) => ({
+            id: ball.id,
+            kind: ball.kind,
+            row: ball.row,
+            col: ball.col,
+            routePriority: ball.routePriority,
+            activeTurns: ball.activeTurns,
+            blockCount: ball.blockCount,
+            vaccinatedTurn: ball.vaccinatedTurn,
+            vaccinatedDistance: ball.vaccinatedDistance,
+            vaccinatedBy: ball.vaccinatedBy
+          }))
+        };
+      },
+      startTestRound(difficulty = "beginner", round = 0) {
+        app.difficulty = difficulty;
+        app.matchScore = 0;
+        startRound(round);
+        return this.getSnapshot();
+      },
+      startStandaloneTutorialForTest() {
+        startStandaloneTutorial();
+        return this.getSnapshot();
+      },
+      finishTutorialForTest() {
+        if (!app.tutorial) return this.getSnapshot();
+        app.tutorial.step = 6;
+        finishTutorial();
+        return this.getSnapshot();
+      },
+      selectBall(id) {
+        const ball = app.balls.find((item) => item.id === id);
+        return ball ? selectGray(ball) : false;
+      },
+      grantCampaignForTest() {
+        app.campaignAvailable = true;
+        app.campaignMode = false;
+        updateHud();
+        updateControls();
+        return this.getSnapshot();
+      },
+      toggleCampaignForTest() {
+        return toggleCampaignMode();
+      },
+      campaignTargetsForTest(id) {
+        const ball = app.balls.find((item) => item.id === id);
+        return campaignTargets(ball).map((item) => item.id);
+      },
+      selectCampaignTargetForTest(id) {
+        const ball = app.balls.find((item) => item.id === id);
+        return applyCampaign(ball);
+      },
+      grantDosesForTest(bonusResult = null) {
+        grantDosesForNewTurn(bonusResult);
+        updateHud();
+        return this.getSnapshot();
+      },
+      persuadeHesitantForTest(meritScore = 3) {
+        const ball = persuadeHesitantPerson(meritScore);
+        updateHud();
+        return ball ? {
+          id: ball.id,
+          kind: ball.kind,
+          vaccinatedBy: ball.vaccinatedBy
+        } : null;
+      },
+      toggleSoundForTest() {
+        toggleSound();
+        return this.getSnapshot();
+      },
+      showCreditsForTest() {
+        setState("credits");
+        return this.getSnapshot();
+      },
+      showMenuForTest() {
+        goToMenu();
+        return this.getSnapshot();
+      },
+      beginMovementForTest() {
+        beginMovement();
+        return app.move ? {
+          duration: app.move.duration,
+          paths: app.move.paths.map((path) => ({
+            id: path.id,
+            x0: path.x0,
+            y0: path.y0,
+            x1: path.x1,
+            y1: path.y1,
+            target: { ...path.target }
+          }))
+        } : null;
+      },
+      setMovementProgressForTest(raw) {
+        if (!app.move) return false;
+        app.move.rawProgress = raw;
+        app.move.renderProgress = movementRenderProgress(raw, false);
+        return true;
+      },
+      finishMovementForTest(now = performance.now()) {
+        if (!app.move) return this.getSnapshot();
+        app.move.rawProgress = 1;
+        app.move.renderProgress = 1;
+        finishMovement(now);
+        if (app.pendingResolution) {
+          completeTurnResolution(app.pendingResolution.completeAt);
+        }
+        return this.getSnapshot();
+      },
+      completeResolutionForTest(now = performance.now()) {
+        completeTurnResolution(now);
+        return this.getSnapshot();
+      },
+      undoForTest() {
+        undoChoices();
+        return this.getSnapshot();
+      },
+      drawForTest(now = performance.now()) {
+        draw(now);
+      },
+      resizeCanvas
+    };
+
+    const selfTests = runSelfTests();
+    document.documentElement.dataset.selfTests = selfTests.allPassed ? "passed" : "failed";
+    if (new URLSearchParams(location.search).get("qa") === "1") {
+      const chainChecks = [];
+      const chainDetails = [];
+      for (const [difficultyKey, difficulty] of Object.entries(GAME_CONFIG.difficulties)) {
+        for (let round = 0; round < 3; round += 1) {
+          const balls = createRoundBalls(difficultyKey, round);
+          const counts = {
+            total: balls.length,
+            yellow: balls.filter((ball) => ball.kind === "yellow").length,
+            blue: balls.filter((ball) => ball.kind === "blue").length,
+            red: balls.filter((ball) => ball.kind === "redActive").length
+          };
+          const passed =
+            app.chainPlanned &&
+            counts.total === difficulty.balls &&
+            counts.yellow === difficulty.yellow[round] &&
+            counts.blue === difficulty.blue[round] &&
+            counts.red === difficulty.red[round];
+          chainChecks.push(passed);
+          chainDetails.push(`${difficultyKey}:${round + 1}:${passed ? "ok" : "fail"}`);
+        }
+      }
+      document.documentElement.dataset.chainTests = chainChecks.every(Boolean) ? "passed" : "failed";
+      document.documentElement.dataset.chainTestCount = String(chainChecks.filter(Boolean).length);
+      document.documentElement.dataset.chainTestDetails = chainDetails.join(",");
+    }
+    updateSoundUi();
+    updateBestScores();
+    setScreen("menu");
+    requestAnimationFrame(frame);
+  })();
+  </script>
+</body>
+</html>
