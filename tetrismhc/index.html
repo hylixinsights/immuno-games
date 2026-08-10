@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07111A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>TetrisMHC · Apresente o antígeno</title>
+<style>
+  /* ============ tokens · fluorescência/confocal ============ */
+  :root{
+    --bg-a:#07111A; --bg-b:#0B1B27;
+    --ink:#E8F2F7; --soft:#C4D6DF; --muted:#8AA3B1; --faint:#647C89;
+    --hair:rgba(150,196,216,.13); --hair2:rgba(150,196,216,.26);
+    --accent:#56B4E9; --accent-ink:#9AD4F5;
+    --chip:rgba(150,196,216,.06);
+    --glow:rgba(86,180,233,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Roboto Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  html,body{height:100%;overflow:hidden;background:#02060A}
+  body{
+    position:fixed;inset:0;display:flex;justify-content:center;
+    font-family:var(--sans);color:var(--ink);overscroll-behavior:none;
+  }
+  #app{
+    width:100%;max-width:620px;height:100%;height:100dvh;
+    display:flex;flex-direction:column;touch-action:none;
+    background:linear-gradient(180deg,var(--bg-a) 0%,#0A1822 52%,var(--bg-b) 100%);
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+    box-shadow:0 0 0 1px rgba(150,196,216,.10);
+  }
+
+  /* ============ topo ============ */
+  .topbar{display:flex;align-items:center;gap:8px;padding:10px 12px 2px}
+  h1{flex:1;min-width:0;text-align:center;font-weight:700;color:var(--ink);
+     font-size:clamp(12px,3.8vw,16px);letter-spacing:clamp(.2em,1.4vw,.36em);
+     text-indent:.2em;white-space:nowrap;overflow:hidden;
+     text-shadow:0 0 24px rgba(86,180,233,.25)}
+  .topbtns{display:flex;gap:6px;flex:0 0 auto}
+  .iconbtn{
+    width:32px;height:32px;border-radius:50%;border:1px solid var(--hair2);
+    background:rgba(13,28,40,.85);color:var(--muted);display:grid;place-items:center;
+    font-size:14px;font-weight:600;touch-action:none;cursor:pointer;
+  }
+  .iconbtn:active{background:rgba(86,180,233,.18);color:var(--accent-ink)}
+  .iconbtn svg{width:15px;height:15px;fill:currentColor}
+
+  .stats{display:flex;justify-content:center;gap:26px;padding:4px 12px 8px}
+  .stat{text-align:center;min-width:64px}
+  .stat label{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.16em;color:var(--faint);line-height:1.4;text-transform:uppercase}
+  .stat b{font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+  #stPep b{color:var(--accent-ink);text-shadow:0 0 16px var(--glow)}
+  .pulse{animation:pulse .5s ease}
+  @keyframes pulse{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+  /* ============ cena ============ */
+  .scenewrap{flex:1;position:relative;min-height:0}
+  #scene{display:block;width:100%;height:100%;touch-action:none}
+
+  /* legenda educativa/bônus: em fluxo, nunca sobre o campo de jogo */
+  #caption{
+    min-height:32px;display:flex;align-items:center;justify-content:center;
+    padding:0 16px 4px;text-align:center;font-size:11.5px;line-height:1.35;
+    color:var(--muted);opacity:0;transition:opacity .3s ease;pointer-events:none;
+  }
+  #caption.show{opacity:1}
+  #caption.accent{color:var(--accent-ink);font-weight:650;text-shadow:0 0 14px rgba(86,180,233,.35)}
+
+  /* ============ overlays ============ */
+  .overlay{
+    position:absolute;inset:0;z-index:8;display:grid;place-items:center;text-align:center;
+    background:rgba(4,10,16,.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.15);
+    backdrop-filter:blur(12px) saturate(1.15);
+    padding:18px;
+  }
+  .overlay[hidden]{display:none}
+  .ovcard{max-width:340px;width:100%}
+  .ovtitle{font-size:20px;font-weight:700;letter-spacing:.05em;margin-bottom:10px;color:var(--ink)}
+  .ovsub{font-size:13.5px;color:var(--soft);line-height:1.55;margin-bottom:6px}
+  .ovsmall{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:10px}
+  .ovsubtitle{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent-ink);margin-bottom:5px;text-shadow:0 0 12px rgba(86,180,233,.35)}
+  .ovpep{font-size:15px;line-height:1.5;margin:8px 0 2px}
+  .ovpep b{color:var(--accent-ink);font-size:22px}
+  .bigbtn{
+    margin-top:16px;padding:13px 34px;border:none;border-radius:26px;cursor:pointer;
+    font:700 14px/1 var(--sans);letter-spacing:.1em;color:#04121C;
+    background:linear-gradient(180deg,#7CC8F2,#2E8FC4);
+    box-shadow:0 10px 28px rgba(46,143,196,.35),inset 0 1px 0 rgba(255,255,255,.4);
+    touch-action:none;
+  }
+  .bigbtn:active{filter:brightness(.9);transform:translateY(1px)}
+  .ghostbtn{
+    margin-top:10px;padding:11px 22px;border:1px solid var(--hair2);border-radius:24px;cursor:pointer;
+    font:500 13px/1 var(--sans);color:var(--ink);background:var(--chip);touch-action:none;
+  }
+  .ghostbtn:active{background:rgba(150,196,216,.15)}
+  .recordline{font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-top:12px;letter-spacing:.08em}
+  .modes{display:flex;justify-content:center;gap:6px;margin:14px auto 0}
+  .modebtn{padding:8px 12px;border:1px solid var(--hair);border-radius:18px;background:var(--chip);color:var(--muted);font:600 11px/1 var(--sans);cursor:pointer}
+  .modebtn.active{background:rgba(86,180,233,.15);border-color:rgba(86,180,233,.55);color:var(--accent-ink)}
+
+  .ovcard{max-height:100%;overflow:auto;scrollbar-width:none}
+  .ovcard::-webkit-scrollbar{display:none}
+  .tabs{display:flex;justify-content:center;gap:5px;margin:0 auto 14px;padding:4px;background:rgba(150,196,216,.08);border-radius:22px;width:max-content;max-width:100%}
+  .tabbtn{border:0;background:transparent;color:var(--muted);padding:8px 13px;border-radius:18px;font:650 10.5px/1 var(--sans);letter-spacing:.04em;cursor:pointer;touch-action:none}
+  .tabbtn.active{background:#10222F;color:var(--ink);box-shadow:0 1px 6px rgba(0,0,0,.45),0 0 0 1px var(--hair2)}
+  .startpane[hidden]{display:none}
+  .biohero{height:112px;display:grid;place-items:center;margin:2px 0 10px;position:relative}
+  .biohero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+    transform:scale(1.42);pointer-events:none}
+  .biohero svg{width:235px;max-width:82%;height:102px;overflow:visible}
+  .biohero svg,.overhero svg{background:linear-gradient(180deg,#F3F9FB,#DEEDF2);
+    border:1px solid rgba(150,196,216,.32);border-radius:18px}
+  /* [hidden] não age em <svg> inline por padrão — garante nos fallbacks */
+  .biohero svg[hidden],.overhero svg[hidden],.stepicon svg[hidden],
+  .biohero img[hidden],.overhero img[hidden],.stepicon img[hidden]{display:none}
+  .eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:7px}
+  .tutorialcards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;text-align:left}
+  .tcard{background:var(--chip);border:1px solid var(--hair);border-radius:13px;padding:10px 11px;min-height:78px}
+  .tcard b{display:block;font-size:11px;margin-bottom:4px;color:var(--ink)}
+  .tcard span{display:block;font-size:10px;line-height:1.4;color:var(--muted)}
+  .controlhint{display:flex;justify-content:center;align-items:center;gap:5px;margin:12px 0 3px;flex-wrap:wrap}
+  .keycap{display:grid;place-items:center;min-width:31px;height:31px;padding:0 9px;border:1px solid var(--hair2);border-radius:16px;background:rgba(13,28,40,.9);color:var(--soft);font-family:var(--mono);font-size:12px;font-weight:700}
+  .keycap.wide{min-width:70px;color:var(--accent-ink)}
+  .supportgrid{display:grid;gap:8px;margin-top:12px;text-align:left}
+  .supportcard{display:flex;align-items:center;gap:12px;background:var(--chip);border:1px solid var(--hair);border-radius:14px;padding:12px 14px}
+  .supportmark{width:52px;height:40px;border-radius:10px;background:rgba(86,180,233,.12);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.02em;color:var(--accent-ink);flex:0 0 auto;text-align:center}
+  .supportcard b{display:block;font-size:11px;margin-bottom:2px;color:var(--ink)}
+  .supportcard span{display:block;font-size:10px;line-height:1.35;color:var(--muted)}
+  .creditcard{background:var(--chip);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;margin-top:9px;text-align:left}
+  .creditcard.featured{border-color:rgba(86,180,233,.45)}
+  .creditcard.featured .creditlabel{text-align:center}
+  .creditlabel{font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E3C46F;margin-bottom:5px}
+  .creditlabel.accent{color:var(--accent-ink)}
+  .creditname{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .creditaff{font-size:10.5px;line-height:1.4;color:var(--muted);margin-top:2px}
+  .creditaff.center{text-align:center;margin-top:7px}
+  .logoplate{background:linear-gradient(180deg,#FBFDFE,#E9F1F5);border:1px solid rgba(150,196,216,.35);
+    border-radius:12px;display:grid;place-items:center;padding:10px 14px;margin:8px auto 0;width:max-content;max-width:100%}
+  .logoplate img{display:block}
+  .logoplate.sbi img{height:88px;width:auto}
+  .logoplate.einstein img{height:66px;width:auto}
+  .logoplate.ctv img{width:220px;max-width:100%;height:auto}
+  .scoregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:13px 0 8px}
+  .scorebox{background:var(--chip);border:1px solid var(--hair);border-radius:13px;padding:10px 5px}
+  .scorebox b{display:block;font-family:var(--mono);font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .scorebox span{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  .scorebox.primary b{color:var(--accent-ink);text-shadow:0 0 16px var(--glow)}
+  .overfact{background:rgba(86,180,233,.09);border:1px solid rgba(86,180,233,.25);border-radius:13px;padding:10px 12px;margin-top:10px;font-size:10.5px;line-height:1.45;color:#B9D6E6;text-align:left}
+
+  .overhero{height:118px;display:grid;place-items:center;margin:6px 0 8px;position:relative}
+  .overhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+    transform:scale(1.44);pointer-events:none}
+  .overhero svg{width:240px;max-width:92%;height:106px;overflow:visible}
+  .conceptlist{display:grid;gap:7px;margin-top:10px;text-align:left}
+  .conceptitem{display:flex;gap:10px;align-items:flex-start;background:var(--chip);border:1px solid var(--hair);border-radius:12px;padding:9px 10px}
+  .conceptdot{width:24px;height:24px;border-radius:12px;background:rgba(86,180,233,.15);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:11px;flex:0 0 auto}
+  .conceptitem b{display:block;font-size:10.5px;margin-bottom:2px;color:var(--ink)}
+  .conceptitem span{display:block;font-size:9.6px;line-height:1.35;color:var(--muted)}
+  .sharecanvas{width:100%;max-width:320px;aspect-ratio:9/16;border-radius:18px;border:1px solid var(--hair2);background:#0A1822;display:block;margin:8px auto 0;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+  .sharehint{font-size:10.5px;line-height:1.45;color:var(--muted);margin-top:10px}
+
+  /* painel "como isso funciona" */
+  #ovHelp .ovcard{max-width:420px}
+  .diagram{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:2px;margin:12px 0 6px;
+    background:var(--chip);border:1px solid var(--hair2);
+    border-radius:16px;padding:12px 6px 9px;box-shadow:0 12px 28px rgba(0,0,0,.3)}
+  .step{display:flex;flex-direction:column;align-items:center;width:56px;flex:0 0 auto}
+  .step svg{width:40px;height:40px}
+  .stepicon{width:44px;height:44px;position:relative;flex:0 0 auto}
+  .stepicon img{position:absolute;max-width:none;pointer-events:none}
+  .stepicon svg{position:absolute;left:2px;top:2px;width:40px;height:40px;
+    background:linear-gradient(180deg,#F3F9FB,#DEEDF2);border-radius:10px}
+  .step span{font-size:8px;color:var(--muted);letter-spacing:.03em;line-height:1.25;margin-top:3px;text-align:center}
+  .arr{color:#8AA9B8;font-size:13px;flex:0 0 auto;padding:0 1px;transform:translateY(-7px)}
+  @media (max-width:430px){
+    .diagram{flex-wrap:wrap;row-gap:8px}
+  }
+  .helptext{font-size:12px;line-height:1.6;color:var(--soft);margin-top:10px;text-align:left}
+  .helpnote{font-size:10.5px;line-height:1.55;color:var(--muted);margin-top:10px;text-align:left}
+
+  /* ============ controles ============ */
+  .control-layer{position:absolute;inset:0;z-index:3;pointer-events:none}
+  .floatctl{
+    position:absolute;border:1px solid var(--hair2);background:rgba(9,20,29,.72);color:#CFE3ED;
+    display:grid;place-items:center;touch-action:none;cursor:pointer;pointer-events:auto;
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    box-shadow:0 14px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .floatctl:active{background:rgba(86,180,233,.24);transform:scale(.96)}
+  .floatctl svg{fill:currentColor}
+  .floatctl.side{width:58px;height:58px;border-radius:29px}
+  .floatctl.side svg{width:28px;height:28px}
+  .floatctl.rotate{width:84px;height:84px;border-radius:42px;color:var(--accent-ink);border-color:rgba(86,180,233,.5);
+    box-shadow:0 14px 30px rgba(0,0,0,.5),0 0 26px rgba(86,180,233,.22),inset 0 1px 0 rgba(255,255,255,.08)}
+  .floatctl.rotate svg{width:35px;height:35px}
+  .floatctl.down{width:56px;height:56px;border-radius:28px;color:#9FE3CC;border-color:rgba(58,219,175,.42)}
+  .floatctl.down svg{width:28px;height:28px}
+
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  @media (prefers-reduced-motion:reduce){
+    .pulse{animation:none}
+    #caption{transition:none}
+    .floatctl:active,.bigbtn:active{transform:none}
+  }
+
+  @media (max-height:600px){
+    .topbar{padding-top:6px}
+    .stats{gap:18px;padding-bottom:2px}
+    .stat b{font-size:14px}
+    #caption{min-height:26px;font-size:10.5px}
+    .biohero{height:84px;margin-bottom:5px}.biohero svg{height:74px}
+    .tutorialcards{gap:5px}.tcard{min-height:64px;padding:8px}.tcard span{font-size:9.5px}
+    .floatctl.side{width:50px;height:50px;border-radius:25px}.floatctl.side svg{width:24px;height:24px}
+    .floatctl.rotate{width:72px;height:72px;border-radius:36px}.floatctl.rotate svg{width:31px;height:31px}
+    .floatctl.down{width:50px;height:50px;border-radius:25px}.floatctl.down svg{width:24px;height:24px}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <h1>TETRISMHC</h1>
+    <div class="topbtns">
+      <button class="iconbtn" id="btnSound" aria-label="Som"></button>
+      <button class="iconbtn" id="btnPause" aria-label="Pausar">
+        <svg viewBox="0 0 24 24"><rect x="7" y="5" width="3.4" height="14" rx="1.2"/><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"/></svg>
+      </button>
+      <button class="iconbtn" id="btnHelp" aria-label="Ajuda">?</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><label>Pontos</label><b id="hudScore">0</b></div>
+    <div class="stat" id="stPep"><label>Peptídeos<br>em MHC II</label><b id="hudPep">0</b></div>
+    <div class="stat"><label>Nível</label><b id="hudLevel">1</b></div>
+  </div>
+
+  <div id="caption"></div>
+
+  <div class="scenewrap">
+    <canvas id="scene"></canvas>
+
+    <!-- tela inicial -->
+    <div class="overlay" id="ovStart">
+      <div class="ovcard" style="max-width:410px">
+        <div class="tabs" role="tablist" aria-label="Menu inicial">
+          <button class="tabbtn active" data-start-tab="play">Jogar</button>
+          <button class="tabbtn" data-start-tab="tutorial">Tutorial</button>
+          <button class="tabbtn" data-start-tab="supports">Apoios</button>
+        </div>
+
+        <div class="startpane" data-start-pane="play">
+          <div class="eyebrow">Célula dendrítica · MHC II</div>
+          <div class="ovtitle" style="margin-bottom:2px">TetrisMHC</div>
+          <div class="ovsubtitle">Apresente o antígeno</div>
+          <div class="biohero" aria-hidden="true">
+            <img src="./hero_start.png" alt="" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false">
+            <svg viewBox="0 0 240 112" hidden>
+              <g transform="translate(72 58)">
+                <g stroke="#7aa7b9" stroke-width="5" stroke-linecap="round" fill="none">
+                  <path d="M-24 -20L-45 -35L-55 -28"/><path d="M-31 0L-57 -2L-65 7"/><path d="M-22 22L-41 42L-52 40"/>
+                  <path d="M22 -20L43 -38L55 -35"/><path d="M31 1L58 -4L66 4"/><path d="M22 22L43 41L55 38"/>
+                </g>
+                <circle r="35" fill="#d8edf3" stroke="#6d9eb1" stroke-width="2"/>
+                <circle cx="-5" cy="1" r="19" fill="#b8d8e4" opacity=".9"/>
+                <g stroke="#4a6272" stroke-width="2.2" stroke-linecap="round">
+                  <path d="M7 -34q-2 9 5 9q7 0 5-9"/><path d="M29 -18q-2 8 5 8q6 0 4-8"/><path d="M33 12q-2 8 5 8q6 0 4-8"/>
+                </g>
+                <g fill="#D55E00"><circle cx="12" cy="-30" r="2.5"/><circle cx="34" cy="-14" r="2.5"/><circle cx="38" cy="16" r="2.5"/></g>
+              </g>
+              <g transform="translate(181 55)">
+                <circle r="27" fill="#e9e4f4" stroke="#7a6aae" stroke-width="2"/>
+                <circle cx="-3" cy="-2" r="16" fill="#c9bfe4"/>
+                <g stroke="#7a6aae" stroke-width="2"><path d="M-17 22l-5 8"/><path d="M0 27v8"/><path d="M17 22l5 8"/></g>
+              </g>
+              <path d="M116 58h28" stroke="#9db0ba" stroke-width="2" stroke-dasharray="4 4"/>
+              <path d="M141 53l8 5l-8 5" fill="none" stroke="#9db0ba" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="ovsub">Organize proteínas capturadas pela célula dendrítica. Ao completar uma faixa, acompanhe o peptídeo até o MHC&nbsp;II e veja se uma célula T CD4 reconhece o antígeno.</div>
+          <div class="modes" aria-label="Dificuldade">
+            <button class="modebtn" data-mode="aprender">Aprender</button>
+            <button class="modebtn active" data-mode="normal">Normal</button>
+            <button class="modebtn" data-mode="desafio">Desafio</button>
+          </div>
+          <button class="bigbtn" id="btnStart">JOGAR</button>
+          <div class="ovsmall">Quando um peptídeo entra no MHC&nbsp;II e é reconhecido por uma célula T CD4, a fase termina. A próxima começa vazia e mais rápida.</div>
+          <div class="recordline" id="startRecord" hidden></div>
+        </div>
+
+        <div class="startpane" data-start-pane="tutorial" hidden>
+          <div class="eyebrow">Tutorial</div>
+          <div class="ovtitle" style="font-size:17px">Da célula dendrítica ao linfócito T</div>
+          <div class="tutorialcards">
+            <div class="tcard"><b>1. Organize</b><span>Complete uma faixa para representar a digestão do antígeno em vesículas da célula dendrítica.</span></div>
+            <div class="tcard"><b>2. Processe</b><span>Alguns peptídeos conseguem ser carregados em MHC II, mas nem todos entram com sucesso.</span></div>
+            <div class="tcard"><b>3. Apresente</b><span>O complexo MHC II com peptídeo chega à membrana e fica visível para células T CD4.</span></div>
+            <div class="tcard"><b>4. Avance</b><span>Se a célula T CD4 reconhece o peptídeo, a fase é concluída. Se não reconhece, a partida continua.</span></div>
+          </div>
+          <div class="controlhint" aria-label="Controles">
+            <span class="keycap">◀</span><span class="keycap">▶</span><span class="keycap wide">↻ grande</span><span class="keycap">↓</span>
+          </div>
+          <div class="ovsmall">Na tela, mover fica nos botões de cima das colunas laterais. Girar fica embaixo à esquerda, e descer fica embaixo à direita. Arrastar para baixo faz a peça descer, e um gesto rápido para baixo faz a queda direta.</div>
+          <div class="overfact"><b>Células dendríticas</b><br>São células apresentadoras de antígeno especializadas na ativação de linfócitos T. Na via mais clássica, exibem peptídeos em MHC II para células T CD4. Elas também podem secretar citocinas, representadas no jogo como bônus que abrem espaço no tabuleiro.</div>
+        </div>
+
+        <div class="startpane" data-start-pane="supports" hidden>
+          <div class="eyebrow">Apoios</div>
+          <div class="ovtitle" style="font-size:17px">Realização e créditos</div>
+          <div class="creditcard">
+            <div class="creditlabel">Uma criação de</div>
+            <div class="creditname">Prof. Helder Nakaya</div>
+            <div class="creditaff">Hospital Israelita Albert Einstein · USP</div>
+          </div>
+          <div class="creditcard featured">
+            <div class="creditlabel accent">Realização</div>
+            <div class="logoplate sbi"><img src="./logo_sbi.png" alt="SBI — Sociedade Brasileira de Imunologia" onerror="this.parentNode.hidden=true"></div>
+            <div class="creditaff center">Sociedade Brasileira de Imunologia · SBI</div>
+          </div>
+          <div class="creditcard">
+            <div class="creditlabel">Apoio institucional</div>
+            <div class="logoplate einstein"><img src="./logo_einstein.png" alt="Instituto Israelita de Ensino e Pesquisa Albert Einstein" onerror="this.parentNode.hidden=true;this.parentNode.nextElementSibling.hidden=false"></div>
+            <div class="creditaff center" hidden>Instituto Israelita de Ensino e Pesquisa Albert Einstein</div>
+            <div class="logoplate ctv"><img src="./logo_ctvacinas.png" alt="CT Vacinas — Centro de Tecnologia de Vacinas" onerror="this.parentNode.hidden=true;this.parentNode.nextElementSibling.hidden=false"></div>
+            <div class="creditaff center" hidden>CT Vacinas · Centro de Tecnologia de Vacinas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pausa -->
+    <div class="overlay" id="ovPause" hidden>
+      <div class="ovcard">
+        <div class="ovtitle">Pausado</div>
+        <button class="bigbtn" id="btnResume">Continuar</button>
+        <button class="ghostbtn" id="btnHelpPause">Como isso funciona?</button>
+        <div class="controlhint" style="margin-top:16px" aria-label="Controles">
+          <span class="keycap">◀</span><span class="keycap">▶</span><span class="keycap wide">↻ girar</span><span class="keycap">↓</span>
+        </div>
+        <div class="ovsmall">Arraste no campo para mover e descer · gesto rápido para baixo solta a peça · P pausa · M som</div>
+      </div>
+    </div>
+
+    <!-- fim da partida -->
+    <div class="overlay" id="ovOver" hidden>
+      <div class="ovcard" style="max-width:392px">
+        <div class="eyebrow">Célula dendrítica · MHC II</div>
+        <div class="ovtitle">Apresentação interrompida</div>
+        <div class="ovsub">O acúmulo de antígenos chegou ao topo antes do próximo reconhecimento por célula T.</div>
+        <div class="scoregrid">
+          <div class="scorebox primary"><b id="ovPepCount">0</b><span>peptídeos</span></div>
+          <div class="scorebox"><b id="ovLevelCount">1</b><span>nível</span></div>
+          <div class="scorebox"><b id="ovScoreCount">0</b><span>pontos</span></div>
+        </div>
+        <div class="overhero" aria-hidden="true">
+          <img src="./hero_game_over.png" alt="" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false">
+          <svg viewBox="0 0 250 118" hidden>
+            <g transform="translate(70 64)">
+              <g stroke="#7aa7b9" stroke-width="5" stroke-linecap="round" fill="none">
+                <path d="M-24 -20L-45 -35L-55 -28"/><path d="M-31 0L-57 -2L-65 7"/><path d="M-22 22L-41 42L-52 40"/>
+                <path d="M22 -20L43 -38L55 -35"/><path d="M31 1L58 -4L66 4"/><path d="M22 22L43 41L55 38"/>
+              </g>
+              <circle r="34" fill="#d8edf3" stroke="#6d9eb1" stroke-width="2"/>
+              <circle cx="-5" cy="1" r="18" fill="#b8d8e4" opacity=".9"/>
+              <g opacity=".35">
+                <path d="M8 -28 Q6 -12 18 -12 Q29 -12 27 -28" fill="none" stroke="#4a6272" stroke-width="4.5" stroke-linecap="round"/>
+                <rect x="14" y="-26" width="12" height="5" rx="2.5" fill="#d9dfe3" stroke="#93a4ad" stroke-width="1.2"/>
+              </g>
+            </g>
+            <g transform="translate(182 51)">
+              <circle r="26" fill="#f3ecfd" stroke="#7a6aae" stroke-width="2"/>
+              <circle cx="-3" cy="-2" r="15" fill="#d5c8ef"/>
+              <circle cx="-7" cy="-4" r="1.7" fill="#5b4c84"/>
+              <circle cx="2" cy="-4" r="1.7" fill="#5b4c84"/>
+              <path d="M-3 3 q4 4 8 0" fill="none" stroke="#5b4c84" stroke-width="1.4" stroke-linecap="round"/>
+              <g stroke="#7a6aae" stroke-width="2"><path d="M-16 21l-4 8"/><path d="M0 26v8"/><path d="M16 21l4 8"/></g>
+            </g>
+            <path d="M110 54h24" stroke="#9db0ba" stroke-width="2" stroke-dasharray="4 4"/>
+            <path d="M131 49l8 5l-8 5" fill="none" stroke="#9db0ba" stroke-width="2"/>
+            <path d="M148 27l50 50" stroke="#d55e00" stroke-width="5" stroke-linecap="round"/>
+            <path d="M198 27l-50 50" stroke="#d55e00" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="overfact">Se não há apresentação eficaz de antígeno em MHC II, a célula T CD4 não é ativada. Sem esse reconhecimento, a resposta adaptativa perde coordenação.</div>
+        <div class="conceptlist">
+          <div class="conceptitem"><div class="conceptdot">1</div><div><b>Sem ativação de T CD4</b><span>Não há sinal forte pelo TCR, então a célula T não entra em expansão clonal.</span></div></div>
+          <div class="conceptitem"><div class="conceptdot">2</div><div><b>Menos citocinas</b><span>Sem reconhecimento, cai a produção de IL 2 e outros sinais que reforçam a resposta imune.</span></div></div>
+          <div class="conceptitem"><div class="conceptdot">3</div><div><b>Menos ajuda imune</b><span>Sem T helper ativa, há menos ajuda para linfócitos B, macrófagos e memória imunológica.</span></div></div>
+        </div>
+        <button class="bigbtn" id="btnAgain">Jogar novamente</button>
+        <button class="ghostbtn" id="btnShareOver">Compartilhar no Instagram</button>
+        <button class="ghostbtn" id="btnHelpOver">Rever tutorial</button>
+        <div class="recordline" id="overRecord"></div>
+      </div>
+    </div>
+
+    <!-- compartilhar -->
+    <div class="overlay" id="ovShare" hidden>
+      <div class="ovcard" style="max-width:390px">
+        <div class="eyebrow">Compartilhar</div>
+        <div class="ovtitle" style="font-size:17px">Seu resultado para Instagram</div>
+        <div class="ovsub">Gere um card vertical com sua pontuação. Em celulares compatíveis, o botão de compartilhar pode abrir o Instagram diretamente.</div>
+        <canvas id="shareCanvas" class="sharecanvas" width="1080" height="1920" aria-label="Card de compartilhamento"></canvas>
+        <button class="bigbtn" id="btnShareNow">Compartilhar agora</button>
+        <button class="ghostbtn" id="btnDownloadShare">Baixar imagem</button>
+        <button class="ghostbtn" id="btnCloseShare">Voltar</button>
+        <div class="sharehint">Se o Instagram não abrir automaticamente, baixe a imagem e publique nos Stories ou no feed.</div>
+      </div>
+    </div>
+
+    <!-- como isso funciona -->
+    <div class="overlay" id="ovHelp" hidden>
+      <div class="ovcard">
+        <div class="ovtitle" style="font-size:16px">Célula dendrítica e MHC II</div>
+
+        <div class="diagram">
+          <div class="step">
+            <div class="stepicon"><img src="./antigen.png" alt="" data-meta="antigen" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40"><g fill="#D55E00" stroke="#8f3f00" stroke-width="1.4">
+              <rect x="8" y="16" width="8" height="8" rx="2"/><rect x="16" y="16" width="8" height="8" rx="2"/>
+              <rect x="24" y="16" width="8" height="8" rx="2"/><rect x="16" y="8" width="8" height="8" rx="2"/>
+            </g><g fill="#8f3f00" opacity=".45"><circle cx="12" cy="20" r="1"/><circle cx="20" cy="12" r="1"/><circle cx="28" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></g></svg></div>
+            <span>Antígeno externo</span>
+          </div>
+          <div class="arr">→</div>
+          <div class="step">
+            <div class="stepicon"><img src="./endosome.png" alt="" data-meta="endosome" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40"><g fill="#e7eef2" stroke="#4a6272" stroke-width="1.6">
+              <rect x="10" y="6" width="20" height="7" rx="3.5"/><rect x="10" y="13.5" width="20" height="7" rx="3.5"/>
+              <rect x="10" y="21" width="20" height="7" rx="3.5"/><rect x="10" y="28.5" width="20" height="7" rx="3.5"/>
+            </g></svg></div>
+            <span>Endossomo</span>
+          </div>
+          <div class="arr">→</div>
+          <div class="step">
+            <div class="stepicon"><img src="./peptide_tutorial.png" alt="" data-meta="tutPeptide" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40"><rect x="9" y="16.5" width="22" height="7" rx="3.5" fill="#D55E00" stroke="#8f3f00" stroke-width="1.4"/>
+            <g fill="#8f3f00" opacity=".5"><circle cx="15" cy="20" r="1.1"/><circle cx="20" cy="20" r="1.1"/><circle cx="25" cy="20" r="1.1"/></g></svg></div>
+            <span>Peptídeo</span>
+          </div>
+          <div class="arr">→</div>
+          <div class="step">
+            <div class="stepicon"><img src="./mhc2_tutorial.png" alt="" data-meta="tutMHC" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40">
+              <path d="M12 10 Q10 22 20 23 Q30 22 28 10" fill="none" stroke="#4a6272" stroke-width="4.5" stroke-linecap="round"/>
+              <rect x="16.5" y="24" width="7" height="8" rx="3" fill="#e7eef2" stroke="#4a6272" stroke-width="1.6"/>
+              <rect x="17" y="32" width="6" height="6" rx="2.6" fill="#e7eef2" stroke="#4a6272" stroke-width="1.6"/>
+              <rect x="14" y="12" width="12" height="5" rx="2.5" fill="#D55E00" stroke="#8f3f00" stroke-width="1.2"/>
+            </svg></div>
+            <span>MHC II</span>
+          </div>
+          <div class="arr">→</div>
+          <div class="step">
+            <div class="stepicon"><img src="./membrane_tutorial.png" alt="" data-meta="tutMembrane" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40"><g stroke="#5b6d7a" stroke-width="2"><line x1="4" y1="16" x2="36" y2="16"/><line x1="4" y1="24" x2="36" y2="24"/></g>
+            <g fill="#5b6d7a" opacity=".55"><circle cx="8" cy="16" r="1.3"/><circle cx="14" cy="16" r="1.3"/><circle cx="20" cy="16" r="1.3"/><circle cx="26" cy="16" r="1.3"/><circle cx="32" cy="16" r="1.3"/><circle cx="8" cy="24" r="1.3"/><circle cx="14" cy="24" r="1.3"/><circle cx="20" cy="24" r="1.3"/><circle cx="26" cy="24" r="1.3"/><circle cx="32" cy="24" r="1.3"/></g></svg></div>
+            <span>Membrana celular</span>
+          </div>
+          <div class="arr">→</div>
+          <div class="step">
+            <div class="stepicon"><img src="./tcell_tutorial.png" alt="" data-meta="tutTcell" onerror="this.hidden=true;var s=this.parentNode.querySelector('svg');if(s)s.hidden=false"><svg hidden viewBox="0 0 40 40">
+              <circle cx="20" cy="18" r="12" fill="#e9e4f4" stroke="#7a6aae" stroke-width="1.8"/>
+              <circle cx="18.5" cy="16.5" r="7.2" fill="#c9bfe4"/>
+              <g stroke="#7a6aae" stroke-width="1.8" stroke-linecap="round"><line x1="15" y1="30" x2="15" y2="34"/><line x1="20" y1="30.8" x2="20" y2="35"/><line x1="25" y1="30" x2="25" y2="34"/></g>
+            </svg></div>
+            <span>Célula T CD4</span>
+          </div>
+        </div>
+
+        <div class="helptext">Nesta representação, o tabuleiro é um compartimento da célula dendrítica onde antígenos capturados são digeridos. Alguns peptídeos entram em moléculas de MHC&nbsp;II e o complexo segue para a membrana. Na superfície, linfócitos T CD4 podem ou não reconhecer o peptídeo apresentado.</div>
+        <div class="helpnote">Células dendríticas são apresentadoras de antígeno especializadas. Nesta versão do jogo, o foco principal é a apresentação em MHC II para células T CD4.</div>
+        <div class="helpnote">O jogo simplifica a digestão em endossomos, o carregamento do MHC II e o encontro com a célula T. Apenas uma fração dos peptídeos gerados chega a ser apresentada, e o reconhecimento também pode falhar.</div>
+        <div class="helpnote">Controles: botões laterais em duas colunas, com mover em cima e girar ou descer embaixo. Arraste para baixo para acelerar, e um gesto rápido para baixo faz a queda direta.</div>
+        <button class="bigbtn" id="btnCloseHelp" style="margin-top:14px">Fechar</button>
+      </div>
+    </div>
+    <div class="control-layer" id="controlLayer">
+      <button class="floatctl side" id="btnLeft" aria-label="Esquerda"><svg viewBox="0 0 24 24"><path d="M15.5 4.5 7.5 12l8 7.5z"/></svg></button>
+      <button class="floatctl side" id="btnRight" aria-label="Direita"><svg viewBox="0 0 24 24"><path d="M8.5 4.5 16.5 12l-8 7.5z"/></svg></button>
+      <button class="floatctl rotate" id="btnCW" aria-label="Girar"><svg viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path fill="currentColor" d="M20.8 2.6v5.6h-5.6z"/></svg></button>
+      <button class="floatctl down" id="btnDrop" aria-label="Descer"><svg viewBox="0 0 24 24"><path d="M4.5 8.5 12 16.5l7.5-8z"/></svg></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+/* =====================================================================
+   TETRISMHC · APRESENTE O ANTÍGENO (v10) — jogo educacional de blocos sobre
+   processamento de antígeno e apresentação de peptídeos via MHC II.
+   Arquivo único · Canvas 2D · sem dependências · funciona offline.
+   v10: mesma lógica/balanceamento/textos de v9; apenas a camada visual
+   passou a usar os assets PNG da mesma pasta, com fallback automático
+   para os desenhos procedurais de v9 se alguma imagem não carregar.
+   ===================================================================== */
+
+/* ------------------------- configuração ------------------------- */
+const COLS=10, ROWS=20;
+const LINE_BONUS=[0,1,3,5,8];   // multiplicador por nº de faixas de uma vez
+const MAX_RESETS=12, FLASH_MS=220;
+
+// Curva explícita de dificuldade. Cada entrada define o número mínimo de
+// faixas processadas e o intervalo de queda automática nesse nível.
+const LEVEL_CURVE=[
+  {at:0,ms:920},{at:4,ms:780},{at:8,ms:650},{at:13,ms:540},
+  {at:19,ms:450},{at:26,ms:370},{at:34,ms:300},{at:43,ms:240},
+  {at:53,ms:190},{at:64,ms:150},{at:76,ms:118},{at:90,ms:92}
+];
+const DIFFICULTIES={
+  aprender:{speed:1.25,progression:1.30,lock:1.18},
+  normal:{speed:1,progression:1,lock:1},
+  desafio:{speed:.80,progression:.82,lock:.86}
+};
+let difficulty='normal';
+
+// Paleta Okabe-Ito (segura para daltonismo) — 7 cores, 7 peças
+const COLORS={
+  I:'#56B4E9', J:'#0072B2', L:'#E69F00', O:'#F0E442',
+  S:'#009E73', T:'#CC79A7', Z:'#D55E00'
+};
+const SHAPES={
+  I:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+  J:[[1,0,0],[1,1,1],[0,0,0]],
+  L:[[0,0,1],[1,1,1],[0,0,0]],
+  O:[[1,1],[1,1]],
+  S:[[0,1,1],[1,1,0],[0,0,0]],
+  T:[[0,1,0],[1,1,1],[0,0,0]],
+  Z:[[1,1,0],[0,1,1],[0,0,0]]
+};
+function rotCW(m){const n=m.length,r=[];for(let y=0;y<n;y++){r[y]=[];for(let x=0;x<n;x++)r[y][x]=m[n-1-x][y];}return r;}
+const ROT={};
+for(const t in SHAPES){const a=[SHAPES[t]];for(let i=1;i<4;i++)a.push(rotCW(a[i-1]));ROT[t]=a;}
+
+// Wall kicks SRS (y em coordenadas de tela)
+const KJ={
+  '0>1':[[0,0],[-1,0],[-1,-1],[0,2],[-1,2]], '1>0':[[0,0],[1,0],[1,1],[0,-2],[1,-2]],
+  '1>2':[[0,0],[1,0],[1,1],[0,-2],[1,-2]],   '2>1':[[0,0],[-1,0],[-1,-1],[0,2],[-1,2]],
+  '2>3':[[0,0],[1,0],[1,-1],[0,2],[1,2]],    '3>2':[[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],
+  '3>0':[[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],'0>3':[[0,0],[1,0],[1,-1],[0,2],[1,2]]
+};
+const KI={
+  '0>1':[[0,0],[-2,0],[1,0],[-2,1],[1,-2]], '1>0':[[0,0],[2,0],[-1,0],[2,-1],[-1,2]],
+  '1>2':[[0,0],[-1,0],[2,0],[-1,-2],[2,1]], '2>1':[[0,0],[1,0],[-2,0],[1,2],[-2,-1]],
+  '2>3':[[0,0],[2,0],[-1,0],[2,-1],[-1,2]], '3>2':[[0,0],[-2,0],[1,0],[-2,1],[1,-2]],
+  '3>0':[[0,0],[1,0],[-2,0],[1,2],[-2,-1]], '0>3':[[0,0],[-1,0],[2,0],[-1,-2],[2,1]]
+};
+
+/* ------------------------- estado ------------------------- */
+let board, cur, bag=[], queue=[];
+let pieceSeq=0;
+let score=0, lines=0, level=1, peptides=0;
+let bestScore=0, bestPep=0;
+let state='idle';            // idle | playing | clearing | processing | presenting | paused | over
+let pausedFrom='playing';
+let helpReturn='idle';       // para onde voltar ao fechar a ajuda
+let phaseTransition=null;
+let acc=0, lockStart=null, resets=0;
+let clearRows=[], clearT=0;
+let bioEvents=0;             // acelera animações após as primeiras vezes
+let pGesture=null;
+
+// elementos biológicos animados
+let fragments=[];            // peptídeos se dispersando
+let pepFliers=[];            // peptídeo selecionado viajando ao MHC III
+let cxFliers=[];             // complexo MHC II + peptídeo indo à membrana
+let complexes=[];            // complexos ancorados na membrana
+let cytokines=[];            // citocinas bônus fofinhas
+let cytokineClock=0;
+let slotCounter=0;
+let tcell=null;
+
+// mensagens educativas mostradas uma única vez por sessão
+const seen={firstClear:false,loaded:false,presented:false,tcell:false};
+
+/* ------------------------- persistência ------------------------- */
+function loadRecords(){
+  try{
+    bestScore=parseInt(localStorage.getItem('proteassoma-best-score'),10)||0;
+    bestPep=parseInt(localStorage.getItem('proteassoma-best-pep'),10)||0;
+  }catch(e){}
+}
+function saveRecords(){
+  try{
+    localStorage.setItem('proteassoma-best-score',bestScore);
+    localStorage.setItem('proteassoma-best-pep',bestPep);
+  }catch(e){}
+}
+
+/* ------------------------- DOM e layout ------------------------- */
+const $=id=>document.getElementById(id);
+const canvas=$('scene'), ctx=canvas.getContext('2d');
+const wrap=document.querySelector('.scenewrap');
+const capEl=$('caption');
+let dpr=1;
+
+// L reúne todas as medidas da cena, recalculadas em resize()
+const L={W:0,H:0,cell:24,bx:0,by:0,memY:52,stationX:0,stationY:0,slotGap:26};
+let bgCanvas=null;
+const sprites={};
+
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,3);
+  L.W=wrap.clientWidth; L.H=wrap.clientHeight;
+  canvas.width=Math.round(L.W*dpr); canvas.height=Math.round(L.H*dpr);
+  L.memY=Math.round(Math.max(46,Math.min(58,L.H*0.078)));
+  const topGap=28;
+  const sideReserve=Math.max(64,Math.min(86,L.W*0.17));
+  const bottomReserve=10;
+  const availW=L.W-18-sideReserve*2, availH=L.H-(L.memY+topGap)-bottomReserve;
+  L.cell=Math.max(11,Math.min(34,Math.floor(Math.min(availW/COLS,availH/ROWS))));
+  L.bx=Math.round((L.W-L.cell*COLS)/2);
+  L.by=Math.round(L.memY+topGap+Math.max(0,(availH-L.cell*ROWS)/2));
+  L.stationX=Math.round(L.W*0.82);
+  L.stationY=Math.round(L.memY+5);
+  L.slotGap=Math.max(22,Math.min(30,Math.round(L.cell*0.84)));
+  makeMotes();
+  buildSprites();
+  buildBackground();
+  positionControls();
+}
+function positionControls(){
+  const bw=L.cell*COLS, bh=L.cell*ROWS;
+  const small=window.matchMedia('(max-height:600px)').matches;
+  const sideBox=small?50:58;
+  const rotBox=small?64:76;
+  const downBox=small?50:56;
+  const leftX=Math.max(6,L.bx-sideBox-10);
+  const rightX=Math.min(L.W-sideBox-6,L.bx+bw+10);
+  const topY=Math.max(L.memY+18,Math.min(L.by+bh-sideBox*2-18,L.by+bh*0.56));
+  const bottomY=topY+sideBox+12;
+  $('btnLeft').style.left=leftX+'px';
+  $('btnLeft').style.top=topY+'px';
+  $('btnRight').style.left=rightX+'px';
+  $('btnRight').style.top=topY+'px';
+  $('btnCW').style.left=(leftX-(rotBox-sideBox)/2)+'px';
+  $('btnCW').style.top=(bottomY-(rotBox-sideBox)/2)+'px';
+  $('btnDrop').style.left=(rightX+(sideBox-downBox)/2)+'px';
+  $('btnDrop').style.top=(bottomY+(sideBox-downBox)/2)+'px';
+}
+let motes=[];
+function makeMotes(){
+  motes=Array.from({length:16},()=>({
+    x:Math.random()*L.W, y:L.memY+10+Math.random()*(L.H-L.memY-18),
+    r:0.8+Math.random()*1.5, v:0.006+Math.random()*0.013, a:0.05+Math.random()*0.06
+  }));
+}
+window.addEventListener('resize',resize);
+window.addEventListener('orientationchange',()=>setTimeout(resize,120));
+
+/* ------------------------- utilidades gráficas ------------------------- */
+function roundRect(g,x,y,w,h,r){
+  g.beginPath();
+  g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);
+  g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();
+}
+function shade(hex,f){
+  const n=parseInt(hex.slice(1),16);
+  const r=Math.round(((n>>16)&255)*f),g=Math.round(((n>>8)&255)*f),b=Math.round((n&255)*f);
+  return 'rgb('+r+','+g+','+b+')';
+}
+const FONT_M='ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace';
+const FONT_S='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+const easeIO=t=>t*t*(3-2*t);
+function bez(p0,c,p1,t){const u=1-t;return{x:u*u*p0.x+2*u*t*c.x+t*t*p1.x,y:u*u*p0.y+2*u*t*c.y+t*t*p1.y};}
+
+/* ------------------------- assets PNG (v10) ------------------------- */
+/* Imagens na MESMA pasta do HTML. Se qualquer arquivo faltar, o jogo
+   continua com os desenhos procedurais de v9 (fallback automático). */
+const ASSET_FILES={
+  residue:'protein_residue.png', peptide:'peptide.png',
+  mhcEmpty:'mhc2_empty.png', mhcLoaded:'mhc2_loaded.png',
+  tcell:'tcell_cd4.png', tcellOn:'tcell_cd4_activated.png',
+  bg:'cell_interior_background.png', share:'share_background.png',
+  heroStart:'hero_start.png', heroRecog:'hero_recognition.png', heroOver:'hero_game_over.png',
+  cyIL2:'cytokine_il2.png', cyIL12:'cytokine_il12.png',
+  cyIFNG:'cytokine_ifng.png', cyTNFA:'cytokine_tnfa.png',
+  antigen:'antigen.png', endosome:'endosome.png',
+  tutPeptide:'peptide_tutorial.png', tutMHC:'mhc2_tutorial.png',
+  tutMembrane:'membrane_tutorial.png', tutTcell:'tcell_tutorial.png',
+  dendritic:'dendritic_cell.png'
+};
+/* caixa "core" [x,y,w,h] = objeto sólido visível (sem o glow), medida nos
+   arquivos originais. Todo posicionamento usa o centro visual do core,
+   nunca o tamanho total do PNG. */
+const ASSET_META={
+  residue:{w:1536,h:1024,core:[400,131,736,740]},
+  peptide:{w:1024,h:1024,core:[152,371,737,246]},
+  mhcEmpty:{w:1024,h:1024,core:[223,172,578,644]},
+  mhcLoaded:{w:1024,h:1024,core:[221,171,582,646]},
+  tcell:{w:1024,h:1536,core:[173,401,688,671]},
+  tcellOn:{w:1024,h:1536,core:[180,390,717,678]},
+  bg:{w:1086,h:1448,core:[0,0,1086,1448]},
+  share:{w:941,h:1672,core:[0,0,941,1672]},
+  heroStart:{w:1536,h:1024,core:[20,112,1417,720]},
+  heroRecog:{w:1536,h:1024,core:[27,100,1471,724]},
+  heroOver:{w:1536,h:1024,core:[88,171,1367,709]},
+  cyIL2:{w:1024,h:1024,core:[239,245,545,497]},
+  cyIL12:{w:1024,h:1024,core:[293,280,456,430]},
+  cyIFNG:{w:1024,h:1024,core:[317,336,388,298]},
+  cyTNFA:{w:1024,h:1024,core:[267,260,511,461]},
+  antigen:{w:1024,h:1024,core:[223,206,572,547]},
+  endosome:{w:1024,h:1024,core:[157,132,711,734]},
+  tutPeptide:{w:1024,h:1024,core:[197,339,690,307]},
+  tutMHC:{w:1024,h:1024,core:[217,172,590,646]},
+  tutMembrane:{w:1536,h:1024,core:[46,124,1446,664]},
+  tutTcell:{w:1024,h:1536,core:[235,436,571,573]},
+  dendritic:{w:1024,h:1536,core:[71,331,903,821]}
+};
+const CYTOKINE_ASSET={'IL 2':'cyIL2','IL 12':'cyIL12','IFNγ':'cyIFNG','TNFα':'cyTNFA'};
+const ASSETS={};             // key -> Image carregada com sucesso
+const scaledCache={};        // key -> versão reduzida p/ desenho por frame
+const pepSprites={};         // cor hex -> peptide.png recolorido
+let assetsReady=false, assetsPromise=null;
+
+function loadAssets(){
+  if(assetsPromise)return assetsPromise;
+  const jobs=Object.keys(ASSET_FILES).map(k=>new Promise(res=>{
+    const im=new Image();
+    im.onload=()=>{ASSETS[k]=im;res();};
+    im.onerror=()=>res();
+    im.src='./'+ASSET_FILES[k];
+  }));
+  assetsPromise=Promise.all(jobs).then(()=>{
+    assetsReady=true;
+    buildSprites();      // sprites recoloridos a partir de protein_residue/peptide
+    buildBackground();   // fundo com cell_interior_background
+  });
+  return assetsPromise;
+}
+
+/* versão reduzida (cacheada) de um asset, dimensionada pelo core em px reais;
+   nunca maior que o arquivo original */
+function getScaled(key,needPx){
+  const im=ASSETS[key];if(!im)return null;
+  const m=ASSET_META[key],c=m.core,maxC=Math.max(c[2],c[3]);
+  const want=Math.max(16,Math.min(maxC,Math.ceil(needPx/32)*32));
+  let e=scaledCache[key];
+  if(!e||e.px<want||e.px>want*2.2){
+    const s=want/maxC;
+    const cv=document.createElement('canvas');
+    cv.width=Math.max(1,Math.round(m.w*s));
+    cv.height=Math.max(1,Math.round(m.h*s));
+    cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    e={px:want,s,cv};
+    scaledCache[key]=e;
+  }
+  return e;
+}
+/* desenha um asset centralizado no CENTRO VISUAL (core), contido em maxW×maxH
+   com proporção preservada; retorna false se a imagem não estiver disponível */
+function drawAsset(g,key,cx,cy,maxW,maxH,alpha,rot){
+  const m=ASSET_META[key];if(!m||!ASSETS[key])return false;
+  const c=m.core;
+  const e=getScaled(key,Math.min(maxW/c[2],maxH/c[3])*Math.max(c[2],c[3])*dpr);
+  if(!e)return false;
+  const k=Math.min(maxW/(c[2]*e.s),maxH/(c[3]*e.s));
+  g.save();
+  if(alpha!==undefined&&alpha!==1)g.globalAlpha*=alpha;
+  g.translate(cx,cy);
+  if(rot)g.rotate(rot);
+  g.drawImage(e.cv,-(c[0]+c[2]/2)*e.s*k,-(c[1]+c[3]/2)*e.s*k,e.cv.width*k,e.cv.height*k);
+  g.restore();
+  return true;
+}
+/* recolore um asset neutro preservando brilho, transparência e textura
+   (blend 'color' para o matiz + passada 'multiply' para saturar) */
+const TINT_MULT=0.38;
+function tintedAsset(key,hex,corePx){
+  const im=ASSETS[key];if(!im)return null;
+  const m=ASSET_META[key],c=m.core;
+  const s=Math.max(0.02,corePx/Math.max(c[2],c[3]));
+  const w=Math.max(1,Math.round(m.w*s)),h=Math.max(1,Math.round(m.h*s));
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  const g=cv.getContext('2d');
+  g.drawImage(im,0,0,w,h);
+  g.globalCompositeOperation='color';
+  g.fillStyle=hex;g.fillRect(0,0,w,h);
+  g.globalCompositeOperation='multiply';
+  g.globalAlpha=TINT_MULT;g.fillStyle=hex;g.fillRect(0,0,w,h);
+  g.globalAlpha=1;
+  g.globalCompositeOperation='destination-in';
+  g.drawImage(im,0,0,w,h);
+  g.globalCompositeOperation='source-over';
+  return {cv,s};
+}
+function buildPepSprites(){
+  for(const t in COLORS)pepSprites[COLORS[t]]=ASSETS.peptide
+    ?tintedAsset('peptide',COLORS[t],Math.round(Math.max(40,L.cell*1.7)*dpr))
+    :null;
+}
+/* peptídeo recolorido desenhado pelo centro do core, com largura coreW */
+function drawTintedPep(g,color,cx,cy,coreW,alpha){
+  const e=pepSprites[color];if(!e)return false;
+  const c=ASSET_META.peptide.core;
+  const k=coreW/(c[2]*e.s);
+  g.save();
+  if(alpha!==undefined&&alpha!==1)g.globalAlpha*=alpha;
+  g.drawImage(e.cv,cx-(c[0]+c[2]/2)*e.s*k,cy-(c[1]+c[3]/2)*e.s*k,e.cv.width*k,e.cv.height*k);
+  g.restore();
+  return true;
+}
+/* ícones do tutorial: normaliza pelo tamanho visual real (core) para que
+   formas diferentes tenham o mesmo peso visual */
+function fitStepIcons(){
+  document.querySelectorAll('.stepicon img[data-meta]').forEach(img=>{
+    const m=ASSET_META[img.dataset.meta];if(!m)return;
+    const c=m.core,box=44;
+    let s=42/Math.sqrt(c[2]*c[3]);
+    if(c[2]*s>56)s=56/c[2];
+    if(c[3]*s>50)s=50/c[3];
+    img.style.width=Math.round(m.w*s)+'px';
+    img.style.height=Math.round(m.h*s)+'px';
+    img.style.left=Math.round(box/2-(c[0]+c[2]/2)*s)+'px';
+    img.style.top=Math.round(box/2-(c[1]+c[3]/2)*s)+'px';
+  });
+}
+
+/* fundo estático: campo de aquisição — espaço extracelular, membrana, citoplasma */
+function buildBackground(){
+  bgCanvas=document.createElement('canvas');
+  bgCanvas.width=Math.round(L.W*dpr); bgCanvas.height=Math.round(L.H*dpr);
+  const g=bgCanvas.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+
+  if(ASSETS.bg){
+    /* v10: interior celular ilustrado cobre toda a cena (cover, centrado
+       na horizontal, ancorado no topo para alinhar a membrana da arte).
+       As grandes ondas, vesículas decorativas e a textura procedural de
+       v9 ficaram redundantes e não são desenhadas neste modo. */
+    g.fillStyle='#050B12'; g.fillRect(0,0,L.W,L.H);
+    const im=ASSETS.bg;
+    const s=Math.max(L.W/im.width,L.H/im.height);
+    const iw=im.width*s,ih=im.height*s;
+    g.drawImage(im,Math.round((L.W-iw)/2),0,Math.round(iw),Math.round(ih));
+    // espaço extracelular permanece quase preto e legível
+    g.fillStyle='rgba(4,9,15,.72)'; g.fillRect(0,0,L.W,Math.max(0,L.memY-12));
+    const eg=g.createLinearGradient(0,Math.max(0,L.memY-12),0,L.memY+8);
+    eg.addColorStop(0,'rgba(4,9,15,.72)');eg.addColorStop(1,'rgba(4,9,15,0)');
+    g.fillStyle=eg;g.fillRect(0,Math.max(0,L.memY-12),L.W,20);
+    // camada azul-escura translúcida e discreta atrás do tabuleiro
+    g.fillStyle='rgba(6,16,26,.46)';
+    roundRect(g,L.bx-10,L.by-10,L.cell*COLS+20,L.cell*ROWS+20,14); g.fill();
+  }else{
+  // espaço extracelular (acima da membrana): quase preto
+  g.fillStyle='#050B12'; g.fillRect(0,0,L.W,L.memY);
+  // citoplasma: azul-petróleo profundo
+  const grad=g.createLinearGradient(0,L.memY,0,L.H);
+  grad.addColorStop(0,'#0A1926');
+  grad.addColorStop(1,'#0D2130');
+  g.fillStyle=grad; g.fillRect(0,L.memY,L.W,L.H-L.memY);
+
+  // halos suaves (bleed de fluorescência)
+  let rg=g.createRadialGradient(L.stationX,L.memY+10,4,L.stationX,L.memY+10,130);
+  rg.addColorStop(0,'rgba(86,180,233,.10)');rg.addColorStop(1,'rgba(86,180,233,0)');
+  g.fillStyle=rg;g.fillRect(0,0,L.W,L.H);
+  rg=g.createRadialGradient(L.W*0.12,L.H*0.9,10,L.W*0.12,L.H*0.9,170);
+  rg.addColorStop(0,'rgba(58,219,175,.05)');rg.addColorStop(1,'rgba(58,219,175,0)');
+  g.fillStyle=rg;g.fillRect(0,0,L.W,L.H);
+
+  let s=87; const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647;};
+  // poeira citoplasmática
+  g.fillStyle='rgba(160,210,232,0.05)';
+  for(let i=0;i<130;i++){
+    const x=rnd()*L.W, y=L.memY+8+rnd()*(L.H-L.memY-12), r=0.7+rnd()*1.6;
+    g.beginPath();g.arc(x,y,r,0,7);g.fill();
+  }
+
+  // rede endossomal
+  g.strokeStyle='rgba(86,180,233,0.07)'; g.lineWidth=6; g.lineCap='round';
+  for(let i=0;i<4;i++){
+    const y=L.memY+48+i*62;
+    g.beginPath();
+    g.moveTo(18,y);
+    g.bezierCurveTo(L.W*0.18,y-18,L.W*0.32,y+16,L.W*0.45,y-4);
+    g.bezierCurveTo(L.W*0.58,y-22,L.W*0.72,y+10,L.W*0.9,y-10);
+    g.stroke();
+  }
+  // vesículas com carga fluorescente
+  for(let i=0;i<9;i++){
+    const x=18+rnd()*(L.W-36), y=L.memY+28+rnd()*(L.H-L.memY-70), r=8+rnd()*14;
+    g.fillStyle='rgba(86,180,233,0.05)';g.beginPath();g.arc(x,y,r,0,7);g.fill();
+    g.strokeStyle='rgba(127,199,224,0.16)';g.lineWidth=1.4;g.stroke();
+    g.fillStyle='rgba(230,159,0,0.4)';
+    g.beginPath();g.arc(x-r*0.2,y,r*0.14,0,7);g.arc(x+r*0.15,y-r*0.08,r*0.12,0,7);g.fill();
+  }
+  }
+
+  // membrana plasmática: bicamada lipídica com halo
+  const mg=g.createLinearGradient(0,L.memY-14,0,L.memY+14);
+  mg.addColorStop(0,'rgba(86,180,233,0)');mg.addColorStop(.5,'rgba(86,180,233,.14)');mg.addColorStop(1,'rgba(86,180,233,0)');
+  g.fillStyle=mg;g.fillRect(0,L.memY-14,L.W,28);
+  g.fillStyle='rgba(140,195,220,0.08)';g.fillRect(0,L.memY-4,L.W,8);
+  g.fillStyle='rgba(159,214,238,0.85)';
+  for(let x=4;x<L.W;x+=8){
+    g.beginPath();g.arc(x,L.memY-4.6,1.5,0,7);g.fill();
+    g.beginPath();g.arc(x,L.memY+4.6,1.5,0,7);g.fill();
+  }
+  g.strokeStyle='rgba(159,214,238,0.22)';g.lineWidth=1;
+  g.beginPath();g.moveTo(0,L.memY-1.4);g.lineTo(L.W,L.memY-1.4);g.stroke();
+  g.beginPath();g.moveTo(0,L.memY+1.4);g.lineTo(L.W,L.memY+1.4);g.stroke();
+
+  // rótulos de aquisição
+  g.fillStyle='rgba(178,208,224,.42)';g.font='600 7px '+FONT_M;
+  g.fillText('ESPAÇO EXTRACELULAR',10,L.memY-8);
+  
+
+  // compartimento de processamento (tabuleiro)
+  const bw=L.cell*COLS, bh=L.cell*ROWS;
+  g.fillStyle='rgba(214,238,248,.05)';
+  roundRect(g,L.bx-3,L.by-3,bw+6,bh+6,8); g.fill();
+  // grade interna sutil (varredura)
+  g.strokeStyle='rgba(160,212,236,.05)';g.lineWidth=1;
+  for(let x=1;x<COLS;x++){g.beginPath();g.moveTo(L.bx+x*L.cell+.5,L.by);g.lineTo(L.bx+x*L.cell+.5,L.by+bh);g.stroke();}
+  for(let y=1;y<ROWS;y++){g.beginPath();g.moveTo(L.bx,L.by+y*L.cell+.5);g.lineTo(L.bx+bw,L.by+y*L.cell+.5);g.stroke();}
+  g.save();
+  g.shadowColor='rgba(86,180,233,.5)';g.shadowBlur=16;
+  g.strokeStyle='rgba(150,205,230,.4)'; g.lineWidth=1.5;
+  roundRect(g,L.bx-3,L.by-3,bw+6,bh+6,8); g.stroke();
+  g.restore();
+
+  g.strokeStyle='rgba(160,212,236,0.16)'; g.lineWidth=2;
+  for(let y=L.by+L.cell*2;y<L.by+bh;y+=L.cell*2){
+    g.beginPath();g.moveTo(L.bx-8,y);g.lineTo(L.bx-3,y);g.stroke();
+    g.beginPath();g.moveTo(L.bx+bw+3,y);g.lineTo(L.bx+bw+8,y);g.stroke();
+  }
+
+  const gateX=L.bx+L.cell*COLS/2, gateY=L.by+L.cell*ROWS+2;
+  g.fillStyle='rgba(150,196,216,.10)';g.strokeStyle='rgba(150,196,216,.35)';g.lineWidth=1.2;
+  for(let i=-1;i<=1;i++){
+    roundRect(g,gateX-25,gateY-5+i*4,50,5,2.5);g.fill();g.stroke();
+  }
+
+  // moldura de visor (aquisição ao vivo) + barra de escala
+  g.strokeStyle='rgba(178,214,232,.34)';g.lineWidth=1.5;g.lineCap='round';
+  const bl=14,pdd=7;
+  const corner=(x,y,sx,sy)=>{g.beginPath();g.moveTo(x+sx*bl,y);g.lineTo(x,y);g.lineTo(x,y+sy*bl);g.stroke();};
+  corner(pdd,pdd,1,1);corner(L.W-pdd,pdd,-1,1);corner(pdd,L.H-pdd,1,-1);corner(L.W-pdd,L.H-pdd,-1,-1);
+  g.strokeStyle='rgba(178,214,232,.5)';g.lineWidth=2;
+  g.beginPath();g.moveTo(14,L.H-16);g.lineTo(48,L.H-16);g.stroke();
+  g.lineWidth=1;
+  g.beginPath();g.moveTo(14,L.H-19);g.lineTo(14,L.H-13);g.moveTo(48,L.H-19);g.lineTo(48,L.H-13);g.stroke();
+  g.fillStyle='rgba(178,208,224,.5)';g.font='600 7px '+FONT_M;
+  g.fillText('10 µm',54,L.H-13.5);
+  g.fillText('CÉLULA DENDRÍTICA · ENDOSSOMO',14,L.H-26);
+}
+
+/* sprites das peças: cada resíduo é um fluoróforo esférico com halo de emissão */
+const BEAD_PAD=1.6;
+function hexA(hex,a){
+  const n=parseInt(hex.slice(1),16);
+  return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+}
+function tint(hex,f){
+  const n=parseInt(hex.slice(1),16);
+  const r=(n>>16)&255,g2=(n>>8)&255,b=n&255;
+  return 'rgb('+Math.round(r+(255-r)*f)+','+Math.round(g2+(255-g2)*f)+','+Math.round(b+(255-b)*f)+')';
+}
+function buildSprites(){
+  for(const t in COLORS){
+    const S=Math.max(12,Math.round(L.cell*dpr*BEAD_PAD));
+    const cv=document.createElement('canvas'); cv.width=cv.height=S;
+    const g=cv.getContext('2d');
+    const c=S/2, r=(S/BEAD_PAD)*0.42;
+    let done=false;
+    if(ASSETS.residue){
+      /* v10: resíduo = protein_residue.png recolorido para a cor da peça,
+         preservando brilho, transparência e textura do sprite */
+      const ti=tintedAsset('residue',COLORS[t],Math.round(r*2));
+      if(ti){
+        const cc=ASSET_META.residue.core;
+        g.drawImage(ti.cv,c-(cc[0]+cc[2]/2)*ti.s,c-(cc[1]+cc[3]/2)*ti.s);
+        done=true;
+      }
+    }
+    if(!done){
+      // fallback v9: fluoróforo procedural
+      const halo=g.createRadialGradient(c,c,r*0.7,c,c,S*0.5);
+      halo.addColorStop(0,hexA(COLORS[t],0.4));
+      halo.addColorStop(1,hexA(COLORS[t],0));
+      g.fillStyle=halo; g.beginPath(); g.arc(c,c,S*0.5,0,7); g.fill();
+      const gr=g.createRadialGradient(c-r*0.35,c-r*0.4,r*0.12,c,c,r);
+      gr.addColorStop(0,'rgba(255,255,255,.7)');
+      gr.addColorStop(0.42,COLORS[t]);
+      gr.addColorStop(1,shade(COLORS[t],0.62));
+      g.fillStyle=gr; g.beginPath(); g.arc(c,c,r,0,7); g.fill();
+      g.strokeStyle=tint(COLORS[t],0.5); g.lineWidth=Math.max(1,S*0.03); g.stroke();
+      g.fillStyle='rgba(255,255,255,.55)';
+      g.beginPath(); g.arc(c-r*0.34,c-r*0.42,r*0.16,0,7); g.fill();
+    }
+    sprites[t]=cv;
+    sprites[COLORS[t]]=cv;   // também acessível pela cor hex (peptídeos em trânsito)
+  }
+  buildPepSprites();
+}
+function drawBeadSprite(g,key,cx,cy,d){
+  const sp=sprites[key];if(!sp)return;
+  const D=d*BEAD_PAD;
+  g.drawImage(sp,cx-D/2,cy-D/2,D,D);
+}
+function cellCenter(x,y){return{x:L.bx+(x+0.5)*L.cell,y:L.by+(y+0.5)*L.cell};}
+function squiggle(g,cx,cy,sz,col,seed){
+  g.save();g.globalAlpha*=0.3;g.strokeStyle=tint(col,0.55);g.lineWidth=Math.max(1,sz*0.06);
+  g.beginPath();g.arc(cx,cy,sz*0.17,seed*6.28,seed*6.28+1.3);g.stroke();g.restore();
+}
+/* cadeia de resíduos: ligações peptídicas + contas (peça inteira) */
+function drawChain(g,m,px,py,type,alpha,pid,withTex){
+  const col=COLORS[type];
+  g.save();g.globalAlpha=0.42*alpha;g.strokeStyle=col;
+  g.lineWidth=Math.max(2,L.cell*0.18);g.lineCap='round';
+  g.beginPath();
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;const by=py+y;if(by<0)continue;
+    const c=cellCenter(px+x,by);
+    if(x+1<m.length&&m[y][x+1]){const c2=cellCenter(px+x+1,by);g.moveTo(c.x,c.y);g.lineTo(c2.x,c2.y);}
+    if(y+1<m.length&&m[y+1][x]&&by+1>=0){const c2=cellCenter(px+x,by+1);g.moveTo(c.x,c.y);g.lineTo(c2.x,c2.y);}
+  }
+  g.stroke();g.restore();
+  g.save();g.globalAlpha=alpha;
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;const by=py+y;if(by<0)continue;
+    const c=cellCenter(px+x,by);
+    drawBeadSprite(g,type,c.x,c.y,L.cell*0.84);
+    if(withTex)squiggle(g,c.x,c.y,L.cell,col,((pid*13+x*7+y*3)%10)/10);
+  }
+  g.restore();
+}
+
+/* fantasma: retículo de pouso (anéis vazados) */
+function drawGhostChain(g,m,px,py,type){
+  const col=COLORS[type];
+  g.save();g.lineCap='round';
+  g.strokeStyle=hexA(col,0.2);g.lineWidth=Math.max(1.5,L.cell*0.12);
+  g.beginPath();
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;const by=py+y;if(by<0)continue;
+    const c=cellCenter(px+x,by);
+    if(x+1<m.length&&m[y][x+1]){const c2=cellCenter(px+x+1,by);g.moveTo(c.x,c.y);g.lineTo(c2.x,c2.y);}
+    if(y+1<m.length&&m[y+1][x]&&by+1>=0){const c2=cellCenter(px+x,by+1);g.moveTo(c.x,c.y);g.lineTo(c2.x,c2.y);}
+  }
+  g.stroke();
+  g.strokeStyle=hexA(col,0.55);g.lineWidth=1.5;
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;const by=py+y;if(by<0)continue;
+    const c=cellCenter(px+x,by);
+    g.beginPath();g.arc(c.x,c.y,L.cell*0.34,0,7);g.stroke();
+  }
+  g.restore();
+}
+
+/* ------------------------- motor de blocos ------------------------- */
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+function nextType(){if(!bag.length){bag='IJLOSTZ'.split('');shuffle(bag);}return bag.pop();}
+function refillQueue(){while(queue.length<2)queue.push(nextType());}
+function emptyBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(0));}
+function newPiece(t){const m=ROT[t][0];return{type:t,rot:0,x:Math.floor((COLS-m.length)/2),y:(t==='I'?-1:0),pid:++pieceSeq};}
+function mat(p){return ROT[p.type][p.rot];}
+function collide(m,px,py){
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;
+    const bx=px+x,by=py+y;
+    if(bx<0||bx>=COLS||by>=ROWS)return true;
+    if(by>=0&&board[by][bx])return true;
+  }
+  return false;
+}
+function grounded(){return cur?collide(mat(cur),cur.x,cur.y+1):false;}
+function ghostY(){let gy=cur.y;while(!collide(mat(cur),cur.x,gy+1))gy++;return gy;}
+function levelForLines(n){
+  let lv=1;
+  const d=DIFFICULTIES[difficulty];
+  for(let i=0;i<LEVEL_CURVE.length;i++){
+    const threshold=Math.round(LEVEL_CURVE[i].at*d.progression);
+    if(n>=threshold)lv=i+1;
+  }
+  return lv;
+}
+function gravMs(){
+  const base=LEVEL_CURVE[Math.min(level-1,LEVEL_CURVE.length-1)].ms;
+  return Math.max(72,base*DIFFICULTIES[difficulty].speed);
+}
+function lockMs(){
+  return Math.max(280,(620-(level-1)*28)*DIFFICULTIES[difficulty].lock);
+}
+function levelMessage(lv){
+  if(lv===3)return 'Mais antígenos chegaram à célula dendrítica.';
+  if(lv===6)return 'O compartimento de processamento ficou mais cheio.';
+  if(lv===9)return 'Alta carga antigênica: processe tudo mais rápido.';
+  return 'Nível '+lv;
+}
+function presentationChance(){
+  return difficulty==='aprender'?0.78:(difficulty==='desafio'?0.58:0.68);
+}
+function recognitionChance(){
+  return difficulty==='aprender'?0.72:(difficulty==='desafio'?0.44:0.56);
+}
+
+function afterPlayerMove(){
+  if(grounded()){if(resets<MAX_RESETS){lockStart=performance.now();resets++;}}
+  else lockStart=null;
+}
+function playerMove(dx){
+  if(state!=='playing'||!cur)return false;
+  if(!collide(mat(cur),cur.x+dx,cur.y)){cur.x+=dx;afterPlayerMove();sfxMove();return true;}
+  return false;
+}
+function tryRotate(dir){
+  if(state!=='playing'||!cur)return false;
+  const from=cur.rot,to=(cur.rot+dir+4)%4;
+  const kicks=cur.type==='O'?[[0,0]]:(cur.type==='I'?KI:KJ)[from+'>'+to];
+  const m=ROT[cur.type][to];
+  for(const[dx,dy]of kicks){
+    if(!collide(m,cur.x+dx,cur.y+dy)){
+      cur.rot=to;cur.x+=dx;cur.y+=dy;afterPlayerMove();sfxRotate();return true;
+    }
+  }
+  return false;
+}
+function softStep(){
+  if(state!=='playing'||!cur)return;
+  if(!grounded()){cur.y++;score++;acc=0;lockStart=null;resets=0;}
+}
+function hardDrop(){
+  if(state!=='playing'||!cur)return;
+  const gy=ghostY();score+=(gy-cur.y)*2;cur.y=gy;
+  sfxHard();
+  lockPiece();
+}
+
+/* travamento e detecção de linhas — dispara a biologia */
+function lockPiece(){
+  if(pGesture)pGesture.dead=true;
+  let topOut=false;
+  const m=mat(cur);
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;
+    const by=cur.y+y,bx=cur.x+x;
+    if(by<0){topOut=true;continue;}
+    board[by][bx]={t:cur.type,pid:cur.pid,seed:Math.random()};
+  }
+  cur=null;
+  if(topOut)return gameOver();
+
+  const full=[];
+  for(let y=0;y<ROWS;y++)if(board[y].every(v=>v))full.push(y);
+
+  if(full.length){
+    state='clearing';clearRows=full;clearT=0;
+    const n=full.length, mult=LINE_BONUS[n], pts=100*mult*level;
+    score+=pts;
+    if(n>=2){
+      const nome=n===2?'Faixa dupla':n===3?'Faixa tripla':'Processamento máximo!';
+      showMsg(nome+' · bônus ×'+mult+' · +'+pts,2600,true);
+      sfxBonus(n);
+      const el=$('hudScore');el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+    }
+    prepareBio(full);
+    sfxClear(n);
+  }else{
+    sfxLock();
+    spawnNext();
+  }
+}
+function finishClear(){
+  board=board.filter((_,i)=>!clearRows.includes(i));
+  while(board.length<ROWS)board.unshift(Array(COLS).fill(0));
+  lines+=clearRows.length;
+  clearRows=[];state='processing';acc=0;
+  showMsg('Acompanhe o peptídeo até o MHC II.',2200);
+}
+function advancePhase(){
+  level++;
+  sfxLevel();
+  board=emptyBoard();bag=[];queue=[];refillQueue();cur=null;
+  fragments=[];pepFliers=[];cxFliers=[];complexes=[];tcell=null;slotCounter=0;
+  station.mode='ready';station.alpha=1;station.pep=null;station.snap=0;station.buffer=[];station.outcome=null;
+  phaseTransition=null;clearRows=[];acc=0;lockStart=null;resets=0;
+  cytokines=[];cytokineClock=0;
+  state='playing';spawnNext();
+  spawnCytokineBurst(1);
+  showMsg('Nível '+level+' · MHC II reconhecido por T CD4 · velocidade aumentou.',2600,true);
+}
+function resumeAfterAttempt(){
+  fragments=[];pepFliers=[];cxFliers=[];complexes=[];tcell=null;
+  station.mode='ready';station.alpha=1;station.pep=null;station.snap=0;station.buffer=[];station.outcome=null;
+  phaseTransition=null;clearRows=[];acc=0;lockStart=null;resets=0;
+  state='playing';spawnNext();
+}
+function spawnNext(){
+  refillQueue();
+  cur=newPiece(queue.shift());
+  refillQueue();
+  lockStart=null;resets=0;acc=0;
+  if(collide(mat(cur),cur.x,cur.y))gameOver();
+}
+
+/* ------------------------- ciclo da partida ------------------------- */
+/* v10: espera curta pelo preload dos PNGs antes da 1ª partida;
+   nunca trava o início — no máximo 2,2 s e o jogo começa mesmo assim */
+let startPending=false;
+function requestStart(){
+  if(assetsReady||!assetsPromise){startGame();return;}
+  if(startPending)return;
+  startPending=true;
+  let waited=false;
+  const warn=setTimeout(()=>{waited=true;showMsg('Preparando as imagens do jogo…',1600);},380);
+  const go=()=>{
+    if(!startPending)return;
+    startPending=false;clearTimeout(warn);
+    if(waited)capEl.classList.remove('show');
+    startGame();
+  };
+  assetsPromise.then(go);
+  setTimeout(go,2200);
+}
+function startGame(){
+  board=emptyBoard();bag=[];queue=[];refillQueue();
+  score=0;lines=0;level=1;peptides=0;slotCounter=0;
+  fragments=[];pepFliers=[];cxFliers=[];complexes=[];tcell=null;cytokines=[];cytokineClock=0;
+  bioEvents=0;clearRows=[];phaseTransition=null;
+  station.mode='ready';station.alpha=1;station.pep=null;station.snap=0;station.buffer=[];station.outcome=null;
+  state='playing';
+  spawnNext();
+  showOverlay(null);
+  musicReset();
+  if(!seen.firstClear)showMsg('Complete uma faixa para iniciar o processamento do antígeno.',3600);
+}
+function gameOver(){
+  state='over';cur=null;
+  sfxOver();
+  let rec=false;
+  if(score>bestScore){bestScore=score;rec=true;}
+  if(peptides>bestPep){bestPep=peptides;rec=true;}
+  if(rec)saveRecords();
+  $('ovPepCount').textContent=peptides;
+  $('ovLevelCount').textContent=level;
+  $('ovScoreCount').textContent=score;
+  $('overRecord').textContent='Recorde: '+bestScore+' pontos · '+bestPep+' peptídeos';
+  showOverlay('ovOver');
+}
+function togglePause(){
+  if(['playing','clearing','processing','presenting'].includes(state)){pausedFrom=state;state='paused';showOverlay('ovPause');}
+  else if(state==='paused'){state=pausedFrom||'playing';acc=0;showOverlay(null);}
+}
+function openHelp(){
+  if(state==='idle'){setStartTab('tutorial');showOverlay('ovStart');return;}
+  if(['playing','clearing','processing','presenting'].includes(state)){pausedFrom=state;state='paused';}
+  helpReturn=(state==='over')?'ovOver':'ovPause';
+  showOverlay('ovHelp');
+}
+function closeHelp(){showOverlay(helpReturn==='idle'?'ovStart':helpReturn);}
+function showOverlay(id){
+  for(const o of['ovStart','ovPause','ovOver','ovHelp','ovShare'])$(o).hidden=(o!==id);
+}
+
+function openShare(){
+  renderShareCard();
+  showOverlay('ovShare');
+}
+function closeShare(){
+  showOverlay('ovOver');
+}
+function renderShareCard(forceProcedural,canvasOverride){
+  const c=canvasOverride||$('shareCanvas');
+  if(!c)return;
+  const g=c.getContext('2d');
+  const W=c.width,H=c.height;
+  const M='ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace';
+  const Sf='-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif';
+  const rr=(x,y,w,h,r)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();};
+  const useImg=(!forceProcedural)&&ASSETS.share;
+  const grad=g.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#081420');
+  grad.addColorStop(1,'#0D2130');
+  g.fillStyle=grad;g.fillRect(0,0,W,H);
+  if(useImg){
+    /* v10: share_background.png cobre o card 1080×1920 (cover, proporção
+       preservada). A arte já traz citoplasma, vesículas, membrana, célula
+       dendrítica, MHC II e T CD4 — nada disso é redesenhado por cima. */
+    const im=ASSETS.share;
+    const s=Math.max(W/im.width,H/im.height);
+    const iw=im.width*s,ih=im.height*s;
+    g.drawImage(im,(W-iw)/2,(H-ih)/2,iw,ih);
+  }
+
+  if(!useImg){
+  // citoplasma: estrias e vesículas
+  g.strokeStyle='rgba(86,180,233,0.10)'; g.lineWidth=22; g.lineCap='round';
+  for(let i=0;i<6;i++){
+    const y=310+i*170;
+    g.beginPath();
+    g.moveTo(60,y);
+    g.bezierCurveTo(W*0.22,y-55,W*0.38,y+44,W*0.58,y-20);
+    g.bezierCurveTo(W*0.74,y-72,W*0.84,y+35,W-70,y-18);
+    g.stroke();
+  }
+  const drawVesicle=(x,y,r)=>{g.fillStyle='rgba(86,180,233,0.06)';g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill();g.strokeStyle='rgba(127,199,224,0.16)';g.lineWidth=3;g.stroke();};
+  drawVesicle(210,460,70);drawVesicle(840,590,56);drawVesicle(840,1320,64);drawVesicle(230,1480,48);
+
+  // fluoróforos dispersos
+  const dots=[['#56B4E9',150,700],['#E69F00',900,760],['#F0E442',520,300],['#CC79A7',180,1690],['#009E73',880,1700]];
+  g.shadowBlur=26;
+  dots.forEach(d=>{g.shadowColor=d[0];g.fillStyle=d[0];g.beginPath();g.arc(d[1],d[2],10,0,Math.PI*2);g.fill();});
+  g.shadowBlur=0;
+  }
+
+  // moldura de visor
+  g.strokeStyle='rgba(178,214,232,.4)';g.lineWidth=5;g.lineCap='round';
+  const bl=44,pdd=34;
+  const corner=(x,y,sx,sy)=>{g.beginPath();g.moveTo(x+sx*bl,y);g.lineTo(x,y);g.lineTo(x,y+sy*bl);g.stroke();};
+  corner(pdd,pdd,1,1);corner(W-pdd,pdd,-1,1);corner(pdd,H-pdd,1,-1);corner(W-pdd,H-pdd,-1,-1);
+
+  g.fillStyle='#EAF4FA';
+  g.font='700 68px '+Sf;
+  g.textAlign='center';
+  g.shadowColor='rgba(86,180,233,.5)';g.shadowBlur=34;
+  g.fillText('TETRISMHC',W/2,124);
+  g.shadowBlur=0;
+  g.font='700 27px '+M;
+  g.fillStyle='#79C4EE';
+  g.fillText('APRESENTE O ANTÍGENO · MHC II · T CD4',W/2,174);
+
+  if(!useImg){
+  // membrana: bicamada lipídica
+  const memY=420;
+  const mg=g.createLinearGradient(0,memY-40,0,memY+40);
+  mg.addColorStop(0,'rgba(86,180,233,0)');mg.addColorStop(.5,'rgba(86,180,233,.16)');mg.addColorStop(1,'rgba(86,180,233,0)');
+  g.fillStyle=mg;g.fillRect(40,memY-40,W-80,80);
+  g.fillStyle='rgba(159,214,238,0.9)';
+  for(let x=60;x<W-40;x+=24){g.beginPath();g.arc(x,memY-12,4.4,0,Math.PI*2);g.fill();g.beginPath();g.arc(x,memY+12,4.4,0,Math.PI*2);g.fill();}
+
+  // célula dendrítica
+  const cx=250, cy=570;
+  g.strokeStyle='#7aa7b9'; g.lineWidth=14; g.lineCap='round';
+  const arms=[[cx-70,cy-42,cx-150,cy-110,cx-192,cy-92],[cx-84,cy+6,cx-168,cy+2,cx-205,cy+28],[cx-68,cy+60,cx-136,cy+116,cx-182,cy+110],[cx+74,cy-42,cx+150,cy-116,cx+198,cy-100],[cx+84,cy+6,cx+174,cy-2,cx+212,cy+20],[cx+70,cy+58,cx+148,cy+112,cx+196,cy+102]];
+  arms.forEach(a=>{g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(a[2],a[3]);g.lineTo(a[4],a[5]);g.stroke();});
+  g.fillStyle='#d8edf3'; g.strokeStyle='#6d9eb1'; g.lineWidth=4; g.beginPath(); g.arc(cx,cy,100,0,Math.PI*2); g.fill(); g.stroke();
+  g.fillStyle='#b8d8e4'; g.beginPath(); g.arc(cx-16,cy+4,54,0,Math.PI*2); g.fill();
+
+  // MHC II com peptídeo
+  const mhcX=560, mhcY=566;
+  g.strokeStyle='#A7C2CF'; g.lineWidth=16; g.lineCap='round';
+  g.beginPath(); g.moveTo(mhcX-34,mhcY-52); g.quadraticCurveTo(mhcX-40,mhcY,mhcX,mhcY+4); g.quadraticCurveTo(mhcX+40,mhcY,mhcX+34,mhcY-52); g.stroke();
+  g.fillStyle='#EAF2F6'; g.strokeStyle='#A7C2CF'; g.lineWidth=4;
+  rr(mhcX-14,mhcY+6,28,42,8); g.fill(); g.stroke();
+  rr(mhcX-11,mhcY+48,22,34,8); g.fill(); g.stroke();
+  g.fillStyle='#d55e00'; g.strokeStyle='#8f3f00'; g.lineWidth=2;
+  ['-20','0','20'].forEach((dx,i)=>{g.beginPath(); g.arc(mhcX+Number(dx),mhcY-28,10,0,Math.PI*2); g.fill(); g.stroke(); if(i<2){g.beginPath(); g.moveTo(mhcX+Number(dx)+10,mhcY-28); g.lineTo(mhcX+Number(dx)+20,mhcY-28); g.stroke();}});
+
+  // célula T
+  const tx=836, ty=548;
+  g.fillStyle='#f3ecfd'; g.strokeStyle='#7a6aae'; g.lineWidth=4; g.beginPath(); g.arc(tx,ty,72,0,Math.PI*2); g.fill(); g.stroke();
+  g.fillStyle='#d5c8ef'; g.beginPath(); g.arc(tx-6,ty-4,42,0,Math.PI*2); g.fill();
+  g.fillStyle='#5b4c84'; g.beginPath(); g.arc(tx-18,ty-8,5,0,Math.PI*2); g.arc(tx+8,ty-8,5,0,Math.PI*2); g.fill();
+  g.strokeStyle='#5b4c84'; g.lineWidth=3; g.beginPath(); g.arc(tx-4,ty+12,16,0.15*Math.PI,0.85*Math.PI); g.stroke();
+  g.strokeStyle='#7a6aae'; g.lineWidth=5; [-28,0,28].forEach(dx=>{g.beginPath(); g.moveTo(tx+dx,ty+68); g.lineTo(tx+dx,ty+92); g.stroke();});
+  }
+
+  // painel de pontuação
+  g.fillStyle='rgba(13,29,42,.92)'; rr(88,820,W-176,770,34); g.fill(); g.strokeStyle='rgba(86,180,233,.3)'; g.lineWidth=3; g.stroke();
+  g.fillStyle='#DFEFF7'; g.font='600 34px '+Sf; g.fillText('Minha pontuação',W/2,896);
+  const statBox=(x,y,w,h,val,label,color)=>{g.fillStyle='rgba(150,196,216,.07)'; rr(x,y,w,h,24); g.fill(); g.strokeStyle='rgba(150,196,216,.2)'; g.lineWidth=2; g.stroke(); g.fillStyle=color||'#EAF4FA'; g.font='700 76px '+Sf; g.fillText(String(val),x+w/2,y+92); g.fillStyle='#8AA3B1'; g.font='600 22px '+M; g.fillText(label,x+w/2,y+128);};
+  statBox(120,950,260,160,score,'PONTOS','#7FD0F5');
+  statBox(410,950,260,160,level,'NÍVEL');
+  statBox(700,950,260,160,peptides,'PEPTÍDEOS');
+
+  g.fillStyle='#BBD2DE'; g.font='600 28px '+Sf;
+  g.textAlign='left';
+  g.fillText('O que eu aprendi',136,1190);
+  g.font='500 26px '+Sf;
+  g.fillStyle='#9FB9C6';
+  const lines=[
+    'Sem apresentação em MHC II, a célula T CD4 não é ativada.',
+    'Sem T helper ativa, há menos IL 2, menos expansão clonal,',
+    'e menos ajuda para linfócitos B e macrófagos.'
+  ];
+  lines.forEach((ln,i)=>g.fillText('• '+ln,136,1245+i*46));
+
+  g.textAlign='center';
+  g.fillStyle='#79C4EE'; g.font='700 30px '+Sf;
+  g.fillText('imuno.games',W/2,1756);
+  g.fillStyle='#7E97A4'; g.font='600 22px '+M;
+  g.fillText('CRIAÇÃO PROF. HELDER NAKAYA · REALIZAÇÃO SBI',W/2,1800);
+  g.fillText('APOIO EINSTEIN · CT VACINAS',W/2,1836);
+}
+function shareCanvasToBlob(){
+  const c=$('shareCanvas');
+  return new Promise(resolve=>{
+    try{
+      c.toBlob(resolve,'image/png');
+    }catch(err){
+      /* canvas contaminado (ex.: aberto via file:// em alguns navegadores):
+         um canvas contaminado não "destinge", então o card é redesenhado
+         sem imagens em um canvas NOVO só para exportar — o
+         compartilhamento nunca quebra o jogo */
+      try{
+        const tmp=document.createElement('canvas');
+        tmp.width=c.width;tmp.height=c.height;
+        renderShareCard(true,tmp);
+        tmp.toBlob(resolve,'image/png');
+      }catch(err2){
+        resolve(null);
+      }
+    }
+  });
+}
+async function shareResult(){
+  const blob=await shareCanvasToBlob();
+  if(!blob)return;
+  const file=new File([blob],'imuno_games_tetrismhc.png',{type:'image/png'});
+  const shareData={title:'TetrisMHC · Imuno Games',text:'Minha pontuação em TetrisMHC, no Imuno Games.',files:[file]};
+  try{
+    if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+      await navigator.share(shareData);
+    }else{
+      downloadShareImage();
+      showMsg('Imagem pronta. Publique no Instagram pelo seu celular.',2600,true);
+    }
+  }catch(err){}
+}
+async function downloadShareImage(){
+  const blob=await shareCanvasToBlob();
+  if(!blob)return;
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='imuno_games_tetrismhc.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),800);
+}
+
+/* ------------------------- mensagens educativas ------------------------- */
+let msgTimer=null;
+function showMsg(text,dur,accent){
+  capEl.textContent=text;
+  capEl.classList.toggle('accent',!!accent);
+  capEl.classList.add('show');
+  clearTimeout(msgTimer);
+  msgTimer=setTimeout(()=>capEl.classList.remove('show'),dur||3000);
+}
+
+/* ------------------------- camada biológica ------------------------- */
+function bioSpeed(){return bioEvents<3?1:0.62;}  // encurta após as primeiras vezes
+
+/* chamada no início da limpeza: fragmentos + peptídeo selecionado por linha */
+function prepareBio(rows){
+  bioEvents++;
+  const f=bioSpeed();
+  rows.forEach(r=>{
+    for(let x=0;x<COLS;x++){
+      const color=COLORS[board[r][x].t]||'#999';
+      for(let k=0;k<2;k++){
+        fragments.push({
+          x:L.bx+(x+0.5)*L.cell, y:L.by+(r+0.5)*L.cell,
+          vx:(Math.random()-0.5)*0.16, vy:-(0.02+Math.random()*0.1),
+          rot:Math.random()*6.3, vr:(Math.random()-0.5)*0.01,
+          life:1, decay:1/(900+Math.random()*250),
+          color, delay:FLASH_MS
+        });
+      }
+    }
+  });
+  // Cada fase produz uma tentativa principal de apresentação, mesmo quando várias faixas são processadas de uma vez.
+  const r=rows[Math.floor(rows.length/2)];
+  const filled=[];for(let x=0;x<COLS;x++)if(board[r][x])filled.push(x);
+  const cx=filled[Math.floor(Math.random()*filled.length)] ?? 5;
+  const color=COLORS[board[r][cx].t]||'#D55E00';
+  const p0={x:L.bx+(cx+0.5)*L.cell,y:L.by+(r+0.5)*L.cell};
+  const p1={x:L.stationX,y:L.stationY-4};
+  const c={x:(p0.x+p1.x)/2+10,y:Math.min(p0.y,p1.y)-42};
+  pepFliers.push({p0,c,p1,t:0,dur:720*f,delay:FLASH_MS+120,color});
+  if(!seen.firstClear){
+    seen.firstClear=true;
+    showMsg('O antígeno foi digerido em peptídeos.',3200);
+  }
+}
+
+/* estação MHC I ao lado do tabuleiro */
+const station={mode:'ready',alpha:1,pep:null,snap:0,buffer:[],outcome:null};
+function stationReceive(color){
+  const ok=Math.random()<presentationChance();
+  if(station.mode==='ready'){
+    station.mode='loaded';station.pep=color;station.snap=0;station.outcome=ok?'present':'fail';
+    sfxDock();
+    if(!seen.loaded){seen.loaded=true;showMsg('Alguns peptídeos conseguem entrar no MHC II.',3200);}
+  }else station.buffer.push(color);
+}
+function stationUpdate(dt){
+  const f=bioSpeed();
+  if(station.mode==='loaded'){
+    station.snap+=dt;
+    if(station.snap>=430*f){
+      if(station.outcome==='present')spawnComplexFlier(station.pep);
+      else startNoPresentation(station.pep);
+      station.pep=null;station.mode='respawn';station.alpha=0;station.outcome=null;
+    }
+  }else if(station.mode==='respawn'){
+    station.alpha+=dt/(420*f);
+    if(station.alpha>=1){
+      station.alpha=1;station.mode='ready';
+      if(station.buffer.length)stationReceive(station.buffer.shift());
+    }
+  }
+}
+function startNoPresentation(color){
+  complexes=[];
+  tcell={x:L.W+36,y:L.memY-28,tx:-40,mode:'pass',phase:Math.random()*6};
+  phaseTransition={t:0,dur:1450,kind:'unpresented',x:L.W*0.5,color};
+  state='presenting';
+  showMsg('Nem todo peptídeo entra no MHC II. Esta tentativa falhou.',2100);
+}
+
+/* complexo MHC I + peptídeo indo até a membrana */
+function slotX(i){
+  const usable=Math.max(1,Math.floor((L.W-48)/L.slotGap));
+  const k=i%usable;
+  return L.W-24-k*L.slotGap;
+}
+function spawnComplexFlier(color){
+  const i=slotCounter++;
+  const maxSlots=Math.max(1,Math.floor((L.W-48)/L.slotGap));
+  const sx=slotX(i);
+  const p0={x:L.stationX,y:L.stationY};
+  const p1={x:sx,y:L.memY-7};
+  const c={x:(p0.x+p1.x)/2,y:L.memY-24};
+  cxFliers.push({p0,c,p1,t:0,dur:620*bioSpeed(),color,visible:i<maxSlots});
+}
+function dockComplex(fl){
+  peptides++;
+  score+=220*level;
+  const recognized=Math.random()<recognitionChance();
+  const anchored={x:fl.p1.x,color:fl.color,born:performance.now(),recognized};
+  complexes=fl.visible?[anchored]:[];
+  const el=$('hudPep');el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+  sfxPresent();
+  state='presenting';
+  if(recognized){
+    tcell={x:L.W+40,y:L.memY-30,tx:anchored.x,mode:'inspect',state:'entering',phase:Math.random()*6};
+    phaseTransition={t:0,dur:3200,kind:'recognized',x:anchored.x,color:anchored.color};
+    showMsg('MHC II apresentou o peptídeo e a célula T CD4 reconheceu.',2600,true);
+  }else{
+    tcell={x:L.W+40,y:L.memY-30,tx:-42,mode:'pass',state:'glide',phase:Math.random()*6};
+    phaseTransition={t:0,dur:1550,kind:'missed',x:anchored.x,color:anchored.color};
+    showMsg('Peptídeo apresentado, mas esta célula T passou sem reconhecer.',2200);
+  }
+}
+function tcellUpdate(dt){
+  if(!tcell)return;
+  tcell.phase+=dt*0.002;
+  if(tcell.mode==='inspect'){
+    const speed=(tcell.state==='entering'?0.06:0.02)*dt;
+    const dx=tcell.tx-tcell.x;
+    if(Math.abs(dx)>2)tcell.x+=Math.sign(dx)*Math.min(Math.abs(dx),speed);
+    else if(tcell.state!=='hold'){tcell.state='hold';tcell.holdT=performance.now();}
+  }else if(tcell.mode==='pass'){
+    tcell.x-=0.075*dt;
+  }
+}
+
+function cytokineInfo(label){
+  return {
+    'IL 2':{spawn:'IL 2 apareceu. Se chegar ao fundo, fortalece a expansão clonal e libera uma faixa.',apply:'IL 2 promove expansão clonal de células T. Uma faixa foi liberada.'},
+    'IL 12':{spawn:'IL 12 apareceu. Se chegar ao fundo, favorece uma resposta Th1 e libera uma faixa.',apply:'IL 12 favorece diferenciação Th1. Uma faixa foi liberada.'},
+    'IFNγ':{spawn:'IFNγ apareceu. Se chegar ao fundo, aumenta ativação antimicrobiana e libera uma faixa.',apply:'IFNγ ativa mecanismos efetores. Uma faixa foi liberada.'},
+    'TNFα':{spawn:'TNFα apareceu. Se chegar ao fundo, aumenta inflamação local e abre espaço.',apply:'TNFα aumentou a inflamação local. Uma faixa foi liberada.'}
+  }[label] || {spawn:label+' apareceu.',apply:label+' ativada.'};
+}
+function spawnCytokine(label,offset){
+  const pool=['IL 2','IL 12','IFNγ','TNFα'];
+  const chosen=label||pool[Math.floor(Math.random()*pool.length)];
+  cytokines.push({
+    label:chosen,
+    x:L.bx+L.cell*(0.8+Math.random()*(COLS-1.6)),
+    y:L.by-24-(offset||0),
+    vy:0.006+Math.random()*0.006,
+    r:Math.max(11,L.cell*0.38),
+    t:0
+  });
+  showMsg(cytokineInfo(chosen).spawn,2600,true);
+}
+function spawnCytokineBurst(n){
+  for(let i=0;i<n;i++)spawnCytokine(null,18*i);
+}
+function applyCytokineBonus(cy){
+  let bestRow=-1,bestCount=0;
+  for(let y=0;y<ROWS;y++){
+    let c=0;for(let x=0;x<COLS;x++)if(board[y][x])c++;
+    if(c>bestCount){bestCount=c;bestRow=y;}
+  }
+  if(bestRow>=0&&bestCount>0){
+    board.splice(bestRow,1);board.unshift(Array(COLS).fill(0));
+    score+=140*level;
+    showMsg(cytokineInfo(cy.label).apply,2600,true);
+    sfxBonus(2);
+  }else{
+    score+=60;
+    showMsg(cy.label+' chegou cedo demais e virou bônus de pontos.',1800);
+  }
+}
+/* ------------------------- desenho ------------------------- */
+function drawMHC(g,x,y,scale,pepColor,alpha){
+  if(ASSETS.mhcEmpty){
+    /* v10: MHC II em PNG. Estados (vazio/carregado), posição, escala,
+       alpha e as animações de pop/trânsito/ancoragem continuam vindo
+       dos parâmetros, como em v9. */
+    const cc=ASSET_META.mhcEmpty.core;
+    const Hh=34*scale, Ww=Hh*(cc[2]/cc[3]);
+    const cyy=y+5.5*scale;              // centro do core alinhado à geometria de v9
+    g.save();g.globalAlpha*=alpha;
+    if(pepColor&&!pepSprites[pepColor]&&ASSETS.mhcLoaded){
+      // sem peptide.png: usa a arte já carregada (peptídeo laranja fixo)
+      drawAsset(g,'mhcLoaded',x,cyy,Ww*1.02,Hh,1);
+    }else{
+      drawAsset(g,'mhcEmpty',x,cyy,Ww,Hh,1);
+      if(pepColor){
+        // peptídeo recolorido pousado no sulco (12,7% do topo do core)
+        const gy=cyy-Hh/2+Hh*0.127;
+        if(!drawTintedPep(g,pepColor,x,gy,Ww*0.62)){
+          g.strokeStyle=pepColor;g.lineWidth=2.6*scale;g.lineCap='round';
+          g.beginPath();g.moveTo(x-5*scale,gy);g.lineTo(x+5*scale,gy);g.stroke();
+          g.fillStyle=pepColor;
+          for(const dx of[-5,0,5]){g.beginPath();g.arc(x+dx*scale,gy,2.7*scale,0,7);g.fill();}
+        }
+      }
+    }
+    g.restore();
+    return;
+  }
+  g.save();g.globalAlpha=alpha;g.translate(x,y);g.scale(scale,scale);
+  // haste: dois domínios empilhados
+  g.fillStyle='#EAF2F6';g.strokeStyle='#A7C2CF';g.lineWidth=1.7;
+  roundRect(g,-4,4,8,10,3.4);g.fill();g.stroke();
+  roundRect(g,-3.4,14.6,6.8,8,3);g.fill();g.stroke();
+  // sulco em U
+  g.beginPath();
+  g.moveTo(-8.5,-9);g.quadraticCurveTo(-10,3,0,4);g.quadraticCurveTo(10,3,8.5,-9);
+  g.lineWidth=4.6;g.lineCap='round';g.strokeStyle='#A7C2CF';g.stroke();
+  // peptídeo encaixado: três resíduos ligados
+  if(pepColor){
+    g.strokeStyle=pepColor;g.lineWidth=2.8;g.lineCap='round';
+    g.beginPath();g.moveTo(-5,-4.5);g.lineTo(5,-4.5);g.stroke();
+    g.fillStyle=pepColor;g.strokeStyle=shade(pepColor,0.6);g.lineWidth=1;
+    for(const dx of[-5,0,5]){g.beginPath();g.arc(dx,-4.5,2.7,0,7);g.fill();g.stroke();}
+  }
+  g.restore();
+}
+function drawPeptide(g,x,y,color,rot,alpha,scale){
+  g.save();g.globalAlpha=alpha;g.translate(x,y);g.rotate(rot||0);
+  const s=scale||1;
+  /* v10: peptide.png recolorido pela cor da proteína de origem; trajetória,
+     tempo, alpha e escala continuam vindo de quem chama */
+  if(!drawTintedPep(g,color,0,0,L.cell*0.95*s)){
+    const gap=L.cell*0.24*s, d=L.cell*0.3*s;
+    g.save();g.globalAlpha*=0.5;g.strokeStyle=color;g.lineWidth=Math.max(1.5,d*0.5);g.lineCap='round';
+    g.beginPath();g.moveTo(-gap,0);g.lineTo(gap,0);g.stroke();g.restore();
+    for(const dx of[-gap,0,gap])drawBeadSprite(g,color,dx,0,d);
+  }
+  g.restore();
+}
+function drawTCell(g){
+  if(!tcell)return;
+  const r=Math.max(17,Math.min(24,L.memY*0.42));
+  const x=tcell.x,y=L.memY-r-8+Math.sin(tcell.phase)*1.8;
+  if(tcell.mode==='inspect'&&tcell.state==='hold'){
+    g.save();
+    g.strokeStyle='rgba(122,106,174,0.55)';g.lineWidth=2;
+    g.beginPath();g.arc(x,y,r+5+Math.sin(tcell.phase*1.5)*1.5,0,7);g.stroke();
+    g.restore();
+  }
+  if(ASSETS.tcell){
+    /* v10: sprite da T CD4 pelo centro visual, com o mesmo diâmetro
+       aparente de v9. No reconhecimento, crossfade curto (~260 ms) para
+       tcell_cd4_activated.png mantendo o mesmo centro. */
+    const d=r*2.1;
+    let mix=0;
+    if(tcell.mode==='inspect'&&tcell.state==='hold'&&tcell.holdT&&ASSETS.tcellOn)
+      mix=Math.min(1,(performance.now()-tcell.holdT)/260);
+    if(mix<1)drawAsset(g,'tcell',x,y,d,d,1-mix);
+    if(mix>0)drawAsset(g,'tcellOn',x,y,d,d,mix);
+  }else{
+  g.lineWidth=1.8;g.strokeStyle='#7a6aae';g.fillStyle='#f3ecfd';
+  g.beginPath();g.arc(x,y,r,0,7);g.fill();g.stroke();
+  g.fillStyle='#d5c8ef';
+  g.beginPath();g.arc(x-r*0.08,y-r*0.06,r*0.6,0,7);g.fill();
+  g.fillStyle='#5b4c84';
+  g.beginPath();g.arc(x-r*0.18,y-r*0.1,1.6,0,7);g.arc(x+r*0.06,y-r*0.1,1.6,0,7);g.fill();
+  g.strokeStyle='#5b4c84';g.lineWidth=1.2;g.beginPath();g.arc(x-r*0.05,y+r*0.06,4.2,0.1*Math.PI,0.9*Math.PI);g.stroke();
+  g.strokeStyle='#7a6aae';g.lineWidth=1.8;g.lineCap='round';
+  for(const dx of[-r*0.42,0,r*0.42]){g.beginPath();g.moveTo(x+dx,y+r-1);g.lineTo(x+dx,y+r+4);g.stroke();}
+  }
+  if(tcell.mode==='inspect'&&tcell.state==='hold'){
+    g.save();
+    g.fillStyle='rgba(15,29,42,.95)';g.strokeStyle='rgba(154,212,245,.4)';g.lineWidth=1;
+    roundRect(g,x-r*0.9,y-r-18,54,18,9);g.fill();g.stroke();
+    g.fillStyle='#CFE6F5';g.font='700 9px '+FONT_S;g.textAlign='center';
+    g.fillText('Reconheci',x+27-r*0.9,y-r-6);
+    g.restore();
+  }
+}
+
+
+
+/* prévia da próxima proteína (fila) */
+function drawNextPreview(g){
+  if(!queue.length)return;
+  if(!['playing','clearing','processing','presenting'].includes(state))return;
+  const t=queue[0], m=ROT[t][0];
+  let minx=9,maxx=-1,miny=9,maxy=-1;
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++)if(m[y][x]){
+    if(x<minx)minx=x;if(x>maxx)maxx=x;if(y<miny)miny=y;if(y>maxy)maxy=y;
+  }
+  const s=Math.max(7,Math.min(10.5,L.cell*0.36));
+  const nx=Math.max(46,L.W*0.18), ny=L.stationY+14+Math.sin(performance.now()*0.0016)*1.5;
+  const w=(maxx-minx)*s, h=(maxy-miny)*s;
+  const ox=nx-w/2-minx*s, oy=ny-h/2-miny*s;
+  g.save();g.lineCap='round';g.globalAlpha=0.5;g.strokeStyle=COLORS[t];g.lineWidth=Math.max(1.5,s*0.32);
+  g.beginPath();
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;
+    const cx=ox+x*s, cyy=oy+y*s;
+    if(x+1<m.length&&m[y][x+1]){g.moveTo(cx,cyy);g.lineTo(cx+s,cyy);}
+    if(y+1<m.length&&m[y+1][x]){g.moveTo(cx,cyy);g.lineTo(cx,cyy+s);}
+  }
+  g.stroke();g.restore();
+  for(let y=0;y<m.length;y++)for(let x=0;x<m.length;x++){
+    if(!m[y][x])continue;
+    drawBeadSprite(g,t,ox+x*s,oy+y*s,s*0.92);
+  }
+  g.save();g.fillStyle='rgba(178,208,224,.55)';g.font='600 7px '+FONT_M;g.textAlign='center';
+  g.fillText('PRÓXIMA',Math.max(46,L.W*0.18),L.stationY+34);
+  g.restore();
+}
+
+function render(dt){
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,L.W,L.H);
+  ctx.drawImage(bgCanvas,0,0,L.W,L.H);
+
+  // partículas ambiente derivando no citoplasma
+  const liveDt=(['playing','clearing','processing','presenting'].includes(state))?dt:0;
+  for(const a of motes){
+    a.y-=a.v*liveDt;
+    if(a.y<L.memY+8){a.y=L.H-6;a.x=Math.random()*L.W;}
+    ctx.fillStyle='rgba(150,205,225,'+a.a.toFixed(3)+')';
+    ctx.beginPath();ctx.arc(a.x,a.y,a.r,0,7);ctx.fill();
+  }
+
+  // proteínas acumuladas: ligações entre resíduos da mesma proteína, depois as contas
+  ctx.save();ctx.lineCap='round';ctx.lineWidth=Math.max(2,L.cell*0.18);ctx.globalAlpha=0.42;
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    const b=board[y][x];if(!b)continue;
+    const c=cellCenter(x,y);ctx.strokeStyle=COLORS[b.t]||'#999';
+    const rt=x+1<COLS?board[y][x+1]:null;
+    if(rt&&rt.pid===b.pid){const c2=cellCenter(x+1,y);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(c2.x,c2.y);ctx.stroke();}
+    const dn=y+1<ROWS?board[y+1][x]:null;
+    if(dn&&dn.pid===b.pid){const c2=cellCenter(x,y+1);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(c2.x,c2.y);ctx.stroke();}
+  }
+  ctx.restore();
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    const b=board[y][x];if(!b)continue;
+    const c=cellCenter(x,y);
+    drawBeadSprite(ctx,b.t,c.x,c.y,L.cell*0.84);
+    squiggle(ctx,c.x,c.y,L.cell,COLORS[b.t]||'#999',b.seed);
+  }
+
+  // linha piscando (degradação começando)
+  if(state==='clearing'){
+    clearT+=dt;
+    const a=0.35+0.5*Math.abs(Math.sin(clearT*0.05));
+    ctx.fillStyle='rgba(205,238,255,'+a.toFixed(3)+')';
+    for(const r of clearRows)ctx.fillRect(L.bx,L.by+r*L.cell,L.cell*COLS,L.cell);
+    if(clearT>=FLASH_MS)finishClear();
+  }
+
+  // aviso visual de congestionamento quando a pilha se aproxima do topo
+  let topOccupied=0;
+  for(let y=0;y<4;y++)for(let x=0;x<COLS;x++)if(board[y][x])topOccupied++;
+  if(topOccupied){
+    const a=Math.min(.24,.05+topOccupied*.005);
+    const dg=ctx.createLinearGradient(0,L.by,0,L.by+L.cell*5);
+    dg.addColorStop(0,'rgba(190,60,45,'+a.toFixed(3)+')');dg.addColorStop(1,'rgba(190,60,45,0)');
+    ctx.fillStyle=dg;ctx.fillRect(L.bx,L.by,L.cell*COLS,L.cell*5);
+  }
+
+  // fantasma + peça atual: cadeia de resíduos
+  if(cur&&state==='playing'){
+    const m=mat(cur),gy=ghostY();
+    if(gy!==cur.y)drawGhostChain(ctx,m,cur.x,gy,cur.type);
+    drawChain(ctx,m,cur.x,cur.y,cur.type,1,cur.pid,true);
+  }
+
+  const bioDt=(['playing','clearing','processing','presenting'].includes(state))?dt:0;
+
+  for(let i=cytokines.length-1;i>=0;i--){
+    const cy=cytokines[i];
+    cy.t+=bioDt;
+    cy.y+=cy.vy*bioDt;
+    const ckey=CYTOKINE_ASSET[cy.label];
+    if(ckey&&ASSETS[ckey]){
+      /* v10: sprite próprio de cada citocina (cor original preservada,
+         sem shadowBlur — o PNG já tem glow) + nome em texto ao lado */
+      const D=Math.max(26,Math.min(34,L.cell*1.15));
+      ctx.save();
+      ctx.globalAlpha=0.97;
+      drawAsset(ctx,ckey,cy.x,cy.y,D,D,1);
+      const fs=Math.max(8,Math.round(D*0.3));
+      ctx.font='700 '+fs+'px '+FONT_M;ctx.textAlign='center';ctx.textBaseline='middle';
+      const tw=ctx.measureText(cy.label).width;
+      const ly=cy.y+D/2+fs*0.9;
+      ctx.fillStyle='rgba(6,15,24,.74)';
+      roundRect(ctx,cy.x-tw/2-5,ly-fs*0.78,tw+10,fs*1.56,fs*0.78);ctx.fill();
+      ctx.fillStyle='#D6F0FC';
+      ctx.fillText(cy.label,cy.x,ly+0.5);
+      ctx.restore();
+    }else{
+    ctx.save();
+    ctx.globalAlpha=0.96;
+    ctx.shadowColor='rgba(86,180,233,.6)';ctx.shadowBlur=14;
+    ctx.fillStyle='rgba(16,40,56,.95)';ctx.strokeStyle='rgba(134,206,240,.85)';ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.arc(cy.x,cy.y,cy.r,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#D6F0FC';ctx.font='700 '+Math.max(8,cy.r*0.5)+'px '+FONT_M;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(cy.label,cy.x,cy.y+0.5);
+    ctx.restore();
+    }
+    if(cy.y>=L.by+L.cell*ROWS+4){applyCytokineBonus(cy);cytokines.splice(i,1);}
+  }
+
+  // fragmentos de peptídeos se dispersando
+  for(let i=fragments.length-1;i>=0;i--){
+    const p=fragments[i];
+    if(p.delay>0){p.delay-=bioDt;continue;}
+    p.life-=p.decay*bioDt;
+    if(p.life<=0){fragments.splice(i,1);continue;}
+    p.x+=p.vx*bioDt;p.y+=p.vy*bioDt;p.vy+=0.00022*bioDt;
+    ctx.globalAlpha=Math.max(0,p.life);
+    drawBeadSprite(ctx,p.color,p.x,p.y,L.cell*0.32);
+  }
+  ctx.globalAlpha=1;
+
+  // peptídeo selecionado viajando ao MHC II
+  for(let i=pepFliers.length-1;i>=0;i--){
+    const f=pepFliers[i];
+    if(f.delay>0){f.delay-=bioDt;continue;}
+    f.t+=bioDt/f.dur;
+    const t=Math.min(1,f.t),pos=bez(f.p0,f.c,f.p1,easeIO(t));
+    // anel discreto de seleção no início do trajeto
+    if(t<0.4){
+      ctx.strokeStyle='rgba(205,235,250,.5)';ctx.lineWidth=1.3;
+      ctx.beginPath();ctx.arc(pos.x,pos.y,L.cell*0.5*(1-t),0,7);ctx.stroke();
+    }
+    drawPeptide(ctx,pos.x,pos.y,f.color,0.2,1,0.85);
+    if(f.t>=1){pepFliers.splice(i,1);stationReceive(f.color);}
+  }
+
+  // estação de carregamento de MHC II, separada dos complexos de superfície
+  stationUpdate(bioDt);
+  ctx.save();ctx.fillStyle='rgba(178,208,224,.55)';ctx.font='600 7px '+FONT_M;ctx.textAlign='center';
+  ctx.fillText('CARREGAMENTO MHC II',L.stationX,L.stationY+34);ctx.restore();
+  let stScale=1.15;
+  if(station.mode==='loaded'&&station.snap<160)stScale=1.15+0.12*Math.sin(station.snap/160*Math.PI);
+  drawMHC(ctx,L.stationX,L.stationY,stScale,station.mode==='loaded'?station.pep:null,station.alpha);
+  station.buffer.slice(0,3).forEach((c,i)=>{
+    drawPeptide(ctx,L.stationX-22-i*10,L.stationY+26+Math.sin(performance.now()*0.004+i)*1.5,c,0,0.75,0.62);
+  });
+
+  drawNextPreview(ctx);
+
+  // complexos em trânsito para a membrana
+  for(let i=cxFliers.length-1;i>=0;i--){
+    const f=cxFliers[i];
+    f.t+=bioDt/f.dur;
+    const t=Math.min(1,f.t),pos=bez(f.p0,f.c,f.p1,easeIO(t));
+    drawMHC(ctx,pos.x,pos.y,1.0-0.15*t,f.color,1);
+    if(f.t>=1){cxFliers.splice(i,1);dockComplex(f);}
+  }
+
+  // complexos ancorados apresentando peptídeos na superfície
+  for(const c of complexes){
+    const age=performance.now()-c.born;
+    const pop=age<260?1+0.18*Math.sin(age/260*Math.PI):1;
+    drawMHC(ctx,c.x,L.memY-8,0.78*pop,c.color,1);
+  }
+
+  // célula T CD4 do lado de fora
+  tcellUpdate(bioDt);
+  drawTCell(ctx);
+
+  if(state==='presenting'&&phaseTransition){
+    const q=Math.min(1,phaseTransition.t/phaseTransition.dur);
+    const recognized=phaseTransition.kind==='recognized';
+    /* v10: ilustração hero_recognition dentro do painel educativo do
+       reconhecimento (opcional, discreta, sem virar tela cheia) */
+    const heroH=(recognized&&ASSETS.heroRecog)?Math.round(Math.min(80,Math.max(54,L.H*0.10))):0;
+    const bw=Math.min(314,L.W-32),bh=(recognized?78:58)+(heroH?heroH+8:0),bx=(L.W-bw)/2,by=Math.min(L.by+16,L.H-bh-12);
+    if(recognized){
+      const pulse=1+0.35*Math.sin(q*Math.PI*5)*(1-q);
+      ctx.save();
+      ctx.strokeStyle='rgba(94,224,184,'+(0.55*(1-q)+0.15).toFixed(3)+')';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(phaseTransition.x,L.memY-9,24*pulse,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.fillStyle='rgba(9,21,31,.94)';roundRect(ctx,bx,by,bw,bh,14);ctx.fill();
+    ctx.strokeStyle='rgba(86,180,233,.4)';ctx.lineWidth=1;roundRect(ctx,bx,by,bw,bh,14);ctx.stroke();
+    ctx.fillStyle=recognized?'#5EE0B8':'#F0A468';ctx.textAlign='center';ctx.font='700 10.5px '+FONT_M;
+    const t1=phaseTransition.kind==='recognized'?'RECONHECIMENTO POR T CD4':(phaseTransition.kind==='missed'?'SEM RECONHECIMENTO DA CÉLULA T':'FALHA NO CARREGAMENTO DO MHC II');
+    ctx.fillText(t1,L.W/2,by+18);
+    ctx.fillStyle='#A9C3D2';ctx.font='500 9px '+FONT_S;
+    if(phaseTransition.kind==='recognized'){
+      ctx.fillText('TCR reconheceu MHC II com peptídeo.',L.W/2,by+35);
+      ctx.fillText('CD40L e coestimulação reforçam a célula dendrítica.',L.W/2,by+49);
+      ctx.fillText('IL 2 e expansão clonal iniciam a resposta adaptativa.',L.W/2,by+63);
+    }else if(phaseTransition.kind==='missed'){
+      ctx.fillText('O peptídeo foi mostrado, mas este TCR não encaixou.',L.W/2,by+36);
+    }else{
+      ctx.fillText('Este peptídeo não estabilizou o MHC II.',L.W/2,by+36);
+    }
+    if(heroH){
+      drawAsset(ctx,'heroRecog',L.W/2,by+78+heroH/2,bw-26,heroH,1);
+    }
+    ctx.restore();
+  }
+}
+
+/* ------------------------- laço principal ------------------------- */
+let lastT=0;
+function loop(now){
+  const dt=Math.min(100,now-lastT);lastT=now;
+  if(state==='presenting'&&phaseTransition){
+    phaseTransition.t+=dt;
+    if(phaseTransition.t>=phaseTransition.dur){
+      if(phaseTransition.kind==='recognized')advancePhase();
+      else resumeAfterAttempt();
+    }
+  }
+  if(state==='playing'){
+    cytokineClock+=dt;
+    const limit=Math.max(18000,26000-level*650);
+    if(lines>=1 && cytokines.length<1 && cytokineClock>=limit){cytokineClock=Math.random()*2500;spawnCytokine();}
+  }
+  if(state==='playing'&&cur){
+    acc+=dt;
+    const g=gravMs();
+    while(acc>=g){
+      acc-=g;
+      if(!grounded()){cur.y++;resets=0;lockStart=null;}
+    }
+    if(grounded()){
+      if(lockStart===null)lockStart=now;
+      else if(now-lockStart>=lockMs())lockPiece();
+    }else lockStart=null;
+  }
+  render(dt);
+  $('hudScore').textContent=score;
+  $('hudPep').textContent=peptides;
+  $('hudLevel').textContent=level;
+  requestAnimationFrame(loop);
+}
+
+/* ------------------------- controles: gestos ------------------------- */
+canvas.addEventListener('pointerdown',e=>{
+  e.preventDefault();initAudio();
+  if(state!=='playing')return;
+  try{canvas.setPointerCapture(e.pointerId);}catch(err){}
+  pGesture={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,t:performance.now(),rx:0,ry:0,moved:false,dead:false};
+});
+canvas.addEventListener('pointermove',e=>{
+  if(!pGesture||pGesture.dead||state!=='playing')return;
+  const ddx=e.clientX-pGesture.lastX,ddy=e.clientY-pGesture.lastY;
+  pGesture.lastX=e.clientX;pGesture.lastY=e.clientY;
+  pGesture.rx+=ddx;pGesture.ry+=ddy;
+  const hx=Math.max(10,L.cell*0.52),hy=Math.max(9,L.cell*0.62);
+  while(pGesture.rx>=hx){if(playerMove(1)){pGesture.rx-=hx;pGesture.moved=true;}else{pGesture.rx=0;break;}}
+  while(pGesture.rx<=-hx){if(playerMove(-1)){pGesture.rx+=hx;pGesture.moved=true;}else{pGesture.rx=0;break;}}
+  while(pGesture.ry>=hy){
+    if(!grounded()){softStep();pGesture.ry-=hy;pGesture.moved=true;}
+    else{pGesture.ry=0;break;}
+  }
+  // Movimento para cima não move a peça, mas zera o acumulado vertical para evitar uma queda tardia.
+  if(pGesture.ry<-hy)pGesture.ry=0;
+});
+canvas.addEventListener('pointerup',e=>{
+  if(pGesture&&!pGesture.dead&&state==='playing'){
+    const dt=Math.max(1,performance.now()-pGesture.t);
+    const dx=e.clientX-pGesture.x,dy=e.clientY-pGesture.y;
+    const dist=Math.hypot(dx,dy),vy=dy/dt;
+    if(dy>L.cell*1.25&&dy>Math.abs(dx)*1.25&&vy>0.55){
+      hardDrop();                                     // gesto rápido para baixo: queda direta
+    }else if(dt<230&&dist<L.cell*0.32&&!pGesture.moved){
+      tryRotate(1);                                   // toque curto ainda gira, com tolerância menor
+    }
+  }
+  pGesture=null;
+});
+canvas.addEventListener('pointercancel',()=>{pGesture=null;});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ------------------------- controles: botões ------------------------- */
+function bindRepeat(el,fn,first,rate){
+  first=first||125;rate=rate||38;
+  let t=null,iv=null;
+  const stop=()=>{clearTimeout(t);clearInterval(iv);t=iv=null;};
+  el.addEventListener('pointerdown',e=>{
+    e.preventDefault();initAudio();fn();stop();
+    t=setTimeout(()=>{iv=setInterval(fn,rate);},first);
+    try{el.setPointerCapture(e.pointerId);}catch(err){}
+  });
+  el.addEventListener('pointerup',stop);
+  el.addEventListener('pointercancel',stop);
+}
+function bindTap(el,fn){el.addEventListener('pointerdown',e=>{e.preventDefault();initAudio();fn();});}
+bindRepeat($('btnLeft'),()=>playerMove(-1));
+bindRepeat($('btnRight'),()=>playerMove(1));
+bindTap($('btnCW'),()=>tryRotate(1));
+bindRepeat($('btnDrop'),()=>softStep(),90,42);
+bindTap($('btnPause'),()=>{if(['playing','clearing','processing','presenting','paused'].includes(state))togglePause();});
+bindTap($('btnStart'),()=>requestStart());
+bindTap($('btnAgain'),()=>requestStart());
+bindTap($('btnShareOver'),()=>openShare());
+bindTap($('btnShareNow'),()=>shareResult());
+bindTap($('btnDownloadShare'),()=>downloadShareImage());
+bindTap($('btnCloseShare'),()=>closeShare());
+bindTap($('btnResume'),()=>togglePause());
+bindTap($('btnHelp'),()=>openHelp());
+bindTap($('btnHelpPause'),()=>openHelp());
+bindTap($('btnHelpOver'),()=>openHelp());
+bindTap($('btnCloseHelp'),()=>closeHelp());
+function setStartTab(name){
+  document.querySelectorAll('[data-start-tab]').forEach(b=>b.classList.toggle('active',b.dataset.startTab===name));
+  document.querySelectorAll('[data-start-pane]').forEach(p=>p.hidden=p.dataset.startPane!==name);
+}
+document.querySelectorAll('[data-start-tab]').forEach(btn=>{
+  btn.addEventListener('pointerdown',e=>{e.preventDefault();setStartTab(btn.dataset.startTab);});
+});
+document.querySelectorAll('.modebtn').forEach(btn=>{
+  btn.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    difficulty=btn.dataset.mode;
+    document.querySelectorAll('.modebtn').forEach(b=>b.classList.toggle('active',b===btn));
+  });
+});
+$('ovPause').addEventListener('pointerdown',e=>{if(e.target.id==='ovPause')togglePause();});
+
+/* ------------------------- controles: teclado ------------------------- */
+const kr={};
+function startRepeat(id,fn,first,rate){
+  first=first||160;rate=rate||42;
+  stopRepeat(id);fn();
+  kr[id]={t:setTimeout(()=>{kr[id].iv=setInterval(fn,rate);},first)};
+}
+function stopRepeat(id){if(kr[id]){clearTimeout(kr[id].t);clearInterval(kr[id].iv);delete kr[id];}}
+window.addEventListener('keydown',e=>{
+  if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp','Space'].includes(e.code))e.preventDefault();
+  if(e.repeat)return;
+  initAudio();
+  switch(e.code){
+    case 'ArrowLeft':startRepeat('L',()=>playerMove(-1));break;
+    case 'ArrowRight':startRepeat('R',()=>playerMove(1));break;
+    case 'ArrowDown':startRepeat('D',()=>softStep(),120,45);break;
+    case 'ArrowUp':case 'KeyX':tryRotate(1);break;
+    case 'KeyZ':tryRotate(-1);break;
+    case 'Space':
+      if(state==='playing')hardDrop();
+      else if(state==='idle'||state==='over')requestStart();
+      break;
+    case 'KeyP':togglePause();break;
+    case 'KeyM':toggleMute();break;
+  }
+});
+window.addEventListener('keyup',e=>{
+  if(e.code==='ArrowLeft')stopRepeat('L');
+  if(e.code==='ArrowRight')stopRepeat('R');
+  if(e.code==='ArrowDown')stopRepeat('D');
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&['playing','clearing','processing','presenting'].includes(state))togglePause();
+});
+
+/* ------------------------- áudio: efeitos + música ------------------------- */
+let actx=null,masterG=null,sfxG=null,musG=null,muted=false;
+function initAudio(){
+  if(actx){if(actx.state==='suspended')actx.resume();return;}
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    actx=new AC();
+    masterG=actx.createGain();masterG.gain.value=0.7;masterG.connect(actx.destination);
+    sfxG=actx.createGain();sfxG.gain.value=0.55;sfxG.connect(masterG);
+    musG=actx.createGain();musG.gain.value=0.5;
+    const lp=actx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;
+    musG.connect(lp);lp.connect(masterG);
+    setInterval(musicTick,40);
+  }catch(e){}
+}
+function tone(freq,dur,type,vol,when,slide){
+  if(!actx||muted)return;
+  const t=actx.currentTime+(when||0);
+  const o=actx.createOscillator(),g=actx.createGain();
+  o.type=type||'square';
+  o.frequency.setValueAtTime(freq,t);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,freq*slide),t+dur);
+  g.gain.setValueAtTime(vol,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g);g.connect(sfxG);
+  o.start(t);o.stop(t+dur+0.03);
+}
+const sfxMove   =()=>tone(190,0.03,'square',0.08);
+const sfxRotate =()=>tone(330,0.05,'square',0.13);
+const sfxLock   =()=>tone(130,0.07,'triangle',0.22);
+const sfxHard   =()=>{tone(80,0.09,'sawtooth',0.24,0,0.5);tone(190,0.03,'square',0.1);};
+function sfxClear(n){
+  tone(240,0.16,'sawtooth',0.07,0,0.4);              // "pfft" da fragmentação
+  const seq=[523,659,784,1047,1319,1568].slice(0,n+2);
+  seq.forEach((f,i)=>tone(f,0.09,'square',0.16,0.05+i*0.055));
+}
+function sfxBonus(n){
+  const seq=n>=4?[784,988,1175,1568,1976]:[784,988,1319];
+  seq.forEach((f,i)=>tone(f,0.11,'square',0.15,0.28+i*0.07));
+}
+const sfxDock   =()=>tone(880,0.07,'sine',0.16);
+const sfxPresent=()=>{tone(880,0.09,'sine',0.15);tone(1318,0.12,'sine',0.12,0.07);}
+const sfxLevel  =()=>tone(440,0.22,'square',0.14,0,1.9);
+const sfxOver   =()=>{[392,311,247,196].forEach((f,i)=>tone(f,0.22,'triangle',0.16,i*0.16));};
+
+/* música: Korobeiniki (melodia folclórica tradicional, domínio público),
+   sintetizada ao vivo; o andamento acompanha o nível */
+const NT={A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880};
+const MELODY=[ // [freq, duração em colcheias] (0 = pausa)
+  [NT.E5,2],[NT.B4,1],[NT.C5,1],[NT.D5,2],[NT.C5,1],[NT.B4,1],
+  [NT.A4,2],[NT.A4,1],[NT.C5,1],[NT.E5,2],[NT.D5,1],[NT.C5,1],
+  [NT.B4,3],[NT.C5,1],[NT.D5,2],[NT.E5,2],
+  [NT.C5,2],[NT.A4,2],[NT.A4,2],[0,2],
+  [0,1],[NT.D5,2],[NT.F5,1],[NT.A5,2],[NT.G5,1],[NT.F5,1],
+  [NT.E5,3],[NT.C5,1],[NT.E5,2],[NT.D5,1],[NT.C5,1],
+  [NT.B4,2],[NT.B4,1],[NT.C5,1],[NT.D5,2],[NT.E5,2],
+  [NT.C5,2],[NT.A4,2],[NT.A4,2],[0,2]
+];
+let mNext=0,mIdx=0;
+function musicReset(){mIdx=0;if(actx)mNext=actx.currentTime+0.1;}
+function musicTick(){
+  if(!actx||muted)return;
+  if(!['playing','clearing','processing','presenting'].includes(state))return;
+  if(mNext<actx.currentTime)mNext=actx.currentTime+0.05;
+  const eighth=0.19/Math.min(1.35,1+(level-1)*0.03);
+  while(mNext<actx.currentTime+0.16){
+    const nt=MELODY[mIdx],dur=nt[1]*eighth;
+    if(nt[0]>0){
+      const t=mNext,o=actx.createOscillator(),g=actx.createGain();
+      o.type='square';o.frequency.value=nt[0];
+      g.gain.setValueAtTime(0.001,t);
+      g.gain.exponentialRampToValueAtTime(0.055,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,t+dur*0.92);
+      o.connect(g);g.connect(musG);
+      o.start(t);o.stop(t+dur);
+    }
+    mNext+=dur;mIdx=(mIdx+1)%MELODY.length;
+  }
+}
+function updateSoundIcon(){
+  $('btnSound').innerHTML=muted
+   ?'<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>'
+   :'<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+}
+function toggleMute(){muted=!muted;if(masterG)masterG.gain.value=muted?0:0.7;updateSoundIcon();}
+bindTap($('btnSound'),toggleMute);
+
+/* ------------------------- inicialização ------------------------- */
+(function init(){
+  board=emptyBoard();
+  loadRecords();
+  updateSoundIcon();
+  loadAssets();        // v10: preload único de todos os PNGs (com fallback)
+  fitStepIcons();
+  resize();
+  if(bestScore>0||bestPep>0){
+    const el=$('startRecord');
+    el.textContent='Recorde: '+bestScore+' pontos · '+bestPep+' peptídeos';
+    el.hidden=false;
+  }
+  requestAnimationFrame(t=>{lastT=t;requestAnimationFrame(loop);});
+  setTimeout(resize,80);
+})();
+</script>
+</body>
+</html>

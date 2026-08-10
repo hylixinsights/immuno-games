@@ -71,6 +71,27 @@ const CATALOGO = {
           "Perceber que diálogo e confiança podem reduzir a hesitação vacinal"
         ]
       }
+    },
+
+    {
+      "id": "tetrismhc",
+      "url": "tetrismhc/",
+      "capa": "capas/tetrismhc.webp",
+      "publicado": "2026-08",
+      "nivel": "graduacao",
+      "duracao": 10,
+      "temas": ["adaptativa"],
+      "autores": ["Helder Nakaya"],
+      "pt": {
+        "nome": "TetrisMHC",
+        "subtitulo": "Apresente o antígeno",
+        "resumo": "Organize as proteínas capturadas pela célula dendrítica, como num Tetris. Cada faixa completa é digerida em peptídeos: alguns entram no MHC II, chegam à membrana e podem — ou não — ser reconhecidos por uma célula T CD4.",
+        "aprende": [
+          "Seguir a via do antígeno: endossomo, peptídeo, MHC II e membrana",
+          "Entender por que nem todo peptídeo é apresentado e nem todo TCR reconhece",
+          "Relacionar o reconhecimento pela T CD4 com citocinas e expansão clonal"
+        ]
+      }
     }
 
   ]
