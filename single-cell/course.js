@@ -2,7 +2,7 @@ window.COURSE = {
   "id": "single-cell-essentials",
   "version": 1,
   "title": "Single-cell Transcriptomics",
-  "subtitle": "From droplets to defensible conclusions.",
+  "subtitle": "From cells to defensible conclusions.",
   "blocks": [
     {
       "id": "A",
@@ -43,7 +43,7 @@ window.COURSE = {
     {
       "id": "D",
       "title": "Sample comparisons",
-      "subtitle": "Respect biological replication",
+      "subtitle": "Compare donors, not independent cells",
       "trophy": "Evidence Analyst",
       "question": "What changed between donors?",
       "lessons": [
@@ -69,19 +69,21 @@ window.COURSE = {
     {
       "id": 1,
       "block": "A",
-      "title": "What does 10x measure?",
+      "title": "What does single-cell RNA-seq measure?",
       "subtitle": "A barcode is a starting point, not a verified cell.",
       "steps": [
         {
           "id": "1a",
-          "title": "From droplets to molecular counts",
+          "title": "From cells to molecular counts",
           "body": [
-            "This course focuses on 10x Chromium 3′ gene expression and a compact Seurat workflow. A cell suspension is partitioned with barcoded reagents. A cell barcode links reads to a partition; a unique molecular identifier (UMI) helps distinguish captured molecules from amplification copies.",
-            "A read is not a molecule, and a detected barcode is not automatically a cell. Empty droplets can contain ambient RNA; some droplets contain more than one cell. Cell Ranger processes sequencing data and identifies cell-associated barcodes before you perform additional quality control."
+            "The compartment-based methods introduced here separate cells into reaction compartments and tag captured RNA-derived molecules so reads can be assigned to their compartment of origin. The compartment differs: droplets in 10x Chromium; nanowells in BD Rhapsody; and microfluidics-free, vortex-generated partitions in PIPseq chemistry, used in Illumina Single Cell 3′ RNA Prep. These workflows produce libraries for short-read sequencing, typically on Illumina instruments. This course uses 10x Chromium 3′ gene expression and a compact Seurat workflow as its worked example; the core reasoning transfers across platforms.",
+            "A cell barcode links reads to one compartment; a unique molecular identifier (UMI) helps distinguish captured molecules from amplification copies. A read is not a molecule, and a detected barcode is not automatically a cell. Empty compartments can carry ambient RNA; others capture more than one cell - multiplets, often called doublets.",
+            "Platform-compatible software - Cell Ranger for 10x, or the appropriate BD or Illumina analysis pipeline - processes sequencing data and identifies cell-associated barcodes before further cell-level QC. Barcode layouts and chemistry differ, so choose a pipeline that supports the exact assay. STARsolo and alevin-fry are alternatives only where the required chemistry is supported and correctly configured."
           ],
           "takeaway": "Know what a read, UMI and barcode represent before interpreting a cell count.",
           "more": [
-            "3′ gene expression emphasizes one end of transcripts for gene-level counting. The 5′ workflow is another 10x option, often paired with immune-receptor profiling. Full-length plate-based approaches such as Smart-seq and combinatorial-indexing methods exist, but are outside this course.",
+            "Platform versus sequencer: sequencing a BD or 10x library on an Illumina instrument does not make it an Illumina PIPseq assay. BD offers whole-transcriptome and targeted assays: a targeted panel measures a predefined gene set, so an unmeasured gene is not evidence of absent expression. Confirm the assay, read structure and gene coverage before importing a matrix. Do not copy QC thresholds or preprocessing settings blindly across platforms.",
+            "Drop-seq and inDrop also use droplets. Full-length plate-based approaches such as Smart-seq and combinatorial-indexing methods use other designs and are outside this compact course. The barcode-and-UMI description above applies to the UMI-based workflows introduced here, not every single-cell protocol.",
             "Tissue dissociation and cell recovery affect what reaches the instrument. A population missing from the recovered suspension is not necessarily absent from the tissue. Single-nucleus RNA-seq can address some sample constraints, but its measurement profile and QC need separate consideration."
           ],
           "questions": [
@@ -98,12 +100,12 @@ window.COURSE = {
             {
               "prompt": "A barcode has a small number of transcripts. What is still possible?",
               "options": [
-                "An empty droplet containing ambient RNA",
+                "An empty compartment containing ambient RNA",
                 "A confirmed rare cell solely because RNA is present",
                 "A technical replicate of the nearest high-count barcode"
               ],
               "answer": 0,
-              "explanation": "RNA detection alone is not proof of a cell-containing droplet."
+              "explanation": "RNA detection alone is not proof of a cell-containing compartment, whether droplets or nanowells are used."
             },
             {
               "prompt": "A cell type is rare in the recovered suspension. What can you conclude?",
@@ -118,7 +120,9 @@ window.COURSE = {
           ],
           "refs": [
             "T1",
-            "T2"
+            "T2",
+            "T3",
+            "T4"
           ],
           "interactive": null,
           "code": null
@@ -712,15 +716,17 @@ window.COURSE = {
       "steps": [
         {
           "id": "11a",
-          "title": "Sum counts within the right groups",
+          "title": "Why pseudo-bulk at all?",
           "body": [
-            "For a donor-level expression question, aggregate original RNA counts within each donor, condition and cell type. Each aggregate becomes a pseudo-bulk profile. Preserve donor identity, pairing and relevant experimental covariates.",
-            "Adding more cells can improve the estimate for one donor, but it does not increase the number of independent donors. A condition comparison made from two pooled profiles, one per condition, has discarded the replication you need."
+            "Cells from the same donor are not independent biological replicates. They share donor genetics and aspects of collection and handling. Treating every cell as an independent sample in a donor-level differential-expression test overstates biological replication and can inflate false positives.",
+            "Pseudo-bulk preserves the unit of replication: sum raw UMI counts - not normalized or log-transformed values - within each donor × condition × cell type. Each aggregate becomes one expression profile. Preserve donor identity, pairing and relevant experimental covariates for the downstream model.",
+            "Compare the profiles with an established bulk RNA-seq method. We use edgeR here; DESeq2 is a common alternative. Your biological n is the number of independent donors, not the number of cells or aggregated columns. Paired conditions remain repeated observations from the same donor. More cells improve the profile of a donor; they do not create more donors."
           ],
           "takeaway": "Aggregate counts by the biological unit, not by condition alone.",
           "more": [
             "Use AggregateExpression with explicit donor, condition and cell-type grouping. Use summed counts, not an average of log-normalized expression, for a count-based pseudo-bulk model.",
-            "Inspect how many cells contribute to each aggregate. A missing cell type in a sample is not equivalent to an observed zero-expression pseudo-bulk for that type. Define inclusion rules and compare biologically comparable populations."
+            "Inspect how many cells contribute to each aggregate. A missing cell type in a sample is not equivalent to an observed zero-expression pseudo-bulk for that type. Define inclusion rules and compare biologically comparable populations.",
+            "Pseudo-bulk does not repair missing replication or a batch perfectly confounded with condition. For non-human experiments, use the appropriate independent biological unit, such as animal or independently treated culture, rather than assuming that every sample label is a replicate."
           ],
           "questions": [
             {
@@ -755,7 +761,8 @@ window.COURSE = {
             }
           ],
           "refs": [
-            "S6"
+            "S6",
+            "S15"
           ],
           "interactive": "pseudobulk",
           "code": "pb <- AggregateExpression(\n  obj, assays = \"RNA\",\n  group.by = c(\"donor_id\", \"condition\", \"cell_type\"),\n  return.seurat = FALSE\n)$RNA\n# Retain metadata identifying each aggregated column."
@@ -1169,6 +1176,18 @@ window.COURSE = {
       "title": "10x Genomics. 3k PBMCs from a Healthy Donor. Public dataset, CC BY 4.0.",
       "url": "https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0",
       "note": "Original public dataset and attribution license."
+    },
+    "T3": {
+      "title": "BD Rhapsody single-cell multiomics: microwell capture, whole-transcriptome and targeted assays",
+      "url": "https://www.bdbiosciences.com/en-tw/learn/applications/single-cell-multiomics"
+    },
+    "T4": {
+      "title": "Illumina Single Cell 3′ RNA Prep: PIPseq chemistry and particle-templated partitions",
+      "url": "https://www.illumina.com/products/by-type/sequencing-kits/library-prep-kits/single-cell-rna-prep.html"
+    },
+    "S15": {
+      "title": "Squair et al. (2021). Confronting false discoveries in single-cell differential expression",
+      "url": "https://www.nature.com/articles/s41467-021-25960-2"
     }
   },
   "cases": [
@@ -1736,7 +1755,7 @@ window.COURSE = {
   "toolkit": [
     [
       "Technology",
-      "10x Chromium 3′ gene expression; other families briefly mentioned"
+      "10x Chromium worked example; BD Rhapsody nanowells and Illumina PIPseq compared briefly"
     ],
     [
       "Doublets / ambient RNA",

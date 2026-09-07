@@ -152,3 +152,9 @@ O conteúdo dentro das chaves segue a mesma sintaxe de JSON.
 - [Spatial Transcriptomics](https://immuno.games/spatial/) - English, illustrated lessons and quizzes. Course credit: Marcos Toquetão and CSBL.
 
 Both courses are static and self-contained. Progress is stored separately in the browser for each course; learners can export and import it. Upload each complete course folder, including its assets. See the README and attribution files inside each folder. Allow roughly 60-90 minutes for a first pass, with optional deeper reading and exercises.
+
+### Course update - platform context and knowledge journeys
+
+The single-cell introduction briefly compares 10x Chromium droplets, BD Rhapsody nanowells and Illumina PIPseq partitions, while retaining the worked Seurat example. Pseudo-bulk explicitly preserves biological replication and raw count aggregation.
+
+Both courses now show a knowledge-progress diagram with five block regions and a visible final goal. Progress comes from existing quiz records; course identifiers and saved-progress versions are unchanged. Diagrams represent learning milestones, not measured biology. Run `node verification/single-cell.cjs`, `node verification/spatial.cjs` and `node verification/journey.cjs` for the content, route-rendering and progress-rule checks. These checks do not test browser layout.
