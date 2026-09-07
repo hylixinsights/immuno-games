@@ -145,3 +145,10 @@ O conteúdo dentro das chaves segue a mesma sintaxe de JSON.
 └── imunotropa/
     └── index.html      o jogo, arquivo único e autossuficiente
 ```
+
+## Transcriptomics courses
+
+- [Single-cell Transcriptomics](https://immuno.games/single-cell/) - English, 10x and Seurat workflows, interactive exercises and quizzes.
+- [Spatial Transcriptomics](https://immuno.games/spatial/) - English, illustrated lessons and quizzes. Course credit: Marcos Toquetão and CSBL.
+
+Both courses are static and self-contained. Progress is stored separately in the browser for each course; learners can export and import it. Upload each complete course folder, including its assets. See the README and attribution files inside each folder. Allow roughly 60-90 minutes for a first pass, with optional deeper reading and exercises.

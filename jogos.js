@@ -10,27 +10,46 @@
    --------------------------------------------------------------- */
 
 const CATALOGO = {
-
   "idiomaPadrao": "pt",
-
   "temas": {
-    "inata":         { "pt": "Imunidade inata" },
-    "adaptativa":    { "pt": "Imunidade adaptativa" },
-    "infeccao":      { "pt": "Resposta a infecções" },
-    "vacinas":       { "pt": "Vacinas e imunização" },
-    "autoimunidade": { "pt": "Autoimunidade" },
-    "tumor":         { "pt": "Imunologia tumoral" },
-    "transplante":   { "pt": "Transplante" }
+    "inata": {
+      "pt": "Imunidade inata"
+    },
+    "adaptativa": {
+      "pt": "Imunidade adaptativa"
+    },
+    "infeccao": {
+      "pt": "Resposta a infecções"
+    },
+    "vacinas": {
+      "pt": "Vacinas e imunização"
+    },
+    "autoimunidade": {
+      "pt": "Autoimunidade"
+    },
+    "tumor": {
+      "pt": "Imunologia tumoral"
+    },
+    "transplante": {
+      "pt": "Transplante"
+    },
+    "transcriptomics": {
+      "pt": "Transcriptomics",
+      "en": "Transcriptomics"
+    }
   },
-
   "niveis": {
-    "medio":     { "pt": "Ensino médio" },
-    "graduacao": { "pt": "Graduação" },
-    "pos":       { "pt": "Pós-graduação" }
+    "medio": {
+      "pt": "Ensino médio"
+    },
+    "graduacao": {
+      "pt": "Graduação"
+    },
+    "pos": {
+      "pt": "Pós-graduação"
+    }
   },
-
   "jogos": [
-
     {
       "id": "imunotropa",
       "url": "imunotropa/",
@@ -38,8 +57,14 @@ const CATALOGO = {
       "publicado": "2026-07",
       "nivel": "graduacao",
       "duracao": 15,
-      "temas": ["inata", "adaptativa", "infeccao"],
-      "autores": ["Helder Nakaya"],
+      "temas": [
+        "inata",
+        "adaptativa",
+        "infeccao"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
       "pt": {
         "nome": "ImunoTropa",
         "subtitulo": "Defesa Celular",
@@ -51,7 +76,6 @@ const CATALOGO = {
         ]
       }
     },
-
     {
       "id": "imunidade-coletiva",
       "url": "imunidade-coletiva/",
@@ -59,8 +83,13 @@ const CATALOGO = {
       "publicado": "2026-08",
       "nivel": "medio",
       "duracao": 10,
-      "temas": ["vacinas", "infeccao"],
-      "autores": ["Helder Nakaya"],
+      "temas": [
+        "vacinas",
+        "infeccao"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
       "pt": {
         "nome": "Imunidade Coletiva",
         "subtitulo": "Estratégia de Vacinação",
@@ -72,7 +101,6 @@ const CATALOGO = {
         ]
       }
     },
-
     {
       "id": "tetrismhc",
       "url": "tetrismhc/",
@@ -80,8 +108,12 @@ const CATALOGO = {
       "publicado": "2026-08",
       "nivel": "graduacao",
       "duracao": 10,
-      "temas": ["adaptativa"],
-      "autores": ["Helder Nakaya"],
+      "temas": [
+        "adaptativa"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
       "pt": {
         "nome": "TetrisMHC",
         "subtitulo": "Apresente o antígeno",
@@ -92,7 +124,76 @@ const CATALOGO = {
           "Relacionar o reconhecimento pela T CD4 com citocinas e expansão clonal"
         ]
       }
+    },
+    {
+      "id": "single-cell",
+      "url": "single-cell/",
+      "capa": "capas/single-cell.svg",
+      "publicado": "2026-09",
+      "nivel": "pos",
+      "duracao": 90,
+      "temas": [
+        "transcriptomics"
+      ],
+      "autores": [
+        "immuno.games",
+        "CSBL"
+      ],
+      "pt": {
+        "nome": "Single-cell Transcriptomics",
+        "subtitulo": "From counts to biological insight - in English",
+        "resumo": "Explore 10x single-cell RNA-seq through short lessons, interactive data exercises and quizzes. Build confidence with QC, Seurat workflows and research decisions.",
+        "aprende": [
+          "Understand sparse counts, QC and normalization",
+          "Interpret clusters, UMAP, pseudo-bulk and differential expression",
+          "Explore composition, cell communication and trajectories"
+        ]
+      },
+      "en": {
+        "nome": "Single-cell Transcriptomics",
+        "subtitulo": "From counts to biological insight - in English",
+        "resumo": "Explore 10x single-cell RNA-seq through short lessons, interactive data exercises and quizzes. Build confidence with QC, Seurat workflows and research decisions.",
+        "aprende": [
+          "Understand sparse counts, QC and normalization",
+          "Interpret clusters, UMAP, pseudo-bulk and differential expression",
+          "Explore composition, cell communication and trajectories"
+        ]
+      }
+    },
+    {
+      "id": "spatial",
+      "url": "spatial/",
+      "capa": "capas/spatial.svg",
+      "publicado": "2026-09",
+      "nivel": "pos",
+      "duracao": 90,
+      "temas": [
+        "transcriptomics"
+      ],
+      "autores": [
+        "Marcos Toquetão",
+        "CSBL"
+      ],
+      "pt": {
+        "nome": "Spatial Transcriptomics",
+        "subtitulo": "Put gene expression on the map - in English",
+        "resumo": "Connect gene expression to tissue structure through illustrated lessons, quizzes and research cases. Designed for learners with basic single-cell knowledge.",
+        "aprende": [
+          "Understand core spatial technologies and data types",
+          "Reason about spatial QC, analysis and interpretation",
+          "Apply your learning to tissue-based research cases"
+        ]
+      },
+      "en": {
+        "nome": "Spatial Transcriptomics",
+        "subtitulo": "Put gene expression on the map - in English",
+        "resumo": "Connect gene expression to tissue structure through illustrated lessons, quizzes and research cases. Designed for learners with basic single-cell knowledge.",
+        "aprende": [
+          "Understand core spatial technologies and data types",
+          "Reason about spatial QC, analysis and interpretation",
+          "Apply your learning to tissue-based research cases"
+        ]
+      }
     }
-
   ]
 };

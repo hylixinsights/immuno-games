@@ -1,0 +1,9 @@
+{
+  "url": "https://raw.githubusercontent.com/chanzuckerberg/cellxgene/main/example-dataset/pbmc3k.h5ad",
+  "sha256": "0db367b991dd95809732b218539ede489bea99113807f62ebd7ccc970025fe38",
+  "source": "10x PBMC3k; processed reference distributed by Scanpy / cellxgene",
+  "umap_version": "0.5.12",
+  "input": "First 20 stored PCA components",
+  "seed": 42,
+  "labels": "Original supplied broad labels; no new annotation performed"
+}
