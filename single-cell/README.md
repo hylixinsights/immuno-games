@@ -40,8 +40,11 @@ There are no accounts, analytics, remote AI calls, external fonts or tracking se
 
 `source/build_course.py` regenerates the current course content. Keep IDs stable for compatible content edits. Use a new course ID for bulk transcriptomics or other courses; increase the content version for incompatible question changes and implement a migration if existing progress should be retained.
 
-## Verification and limits
 
-Run `node verification/check.cjs` from this extracted archive. It checks all 96 question records, scoring and repeat attempts, trophy requirements, mastery and final thresholds, progress validation and round trips, route rendering, restored completion, interactive arithmetic, local figures and both UMAP arrays. JavaScript syntax is also valid. The two generated scientific figures were visually inspected.
+## UI and assessment update
 
-Route checks use a lightweight JavaScript harness rather than a browser. A real desktop/mobile browser and native sharing were not exercised in this environment. Before announcing the public course, check the published site on the intended devices, including progress export/import and card download.
+Lessons use a focused reading layout. Quizzes open on a separate screen, one question at a time. Each answer requires confirmation and is permanently saved in the local progress record. Correct answers award 10 XP once; reviewing an error completes that decision without XP. Exploration trophies are separate from assessment accuracy. Block review checks and the final investigation each allow one submission. A separate final recovery has five new questions, one submission and no extra XP. Existing v1 achievements are preserved.
+
+The generated cell guide has neutral, happy and gently sad expressions. It is a supportive interface illustration, not a scientific figure. The complete illustration prompt is recorded in `../verification/UX-REVIEW.md`.
+
+Run the checks from the repository root: `node verification/single-cell.cjs`, `node verification/assessment.cjs`, and `node verification/journey.cjs`. See `../verification/UX-REVIEW.md` for browser checks and their scope.

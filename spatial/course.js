@@ -1696,7 +1696,7 @@ window.COURSE = {
       "id": "mastery-A",
       "block": "A",
       "title": "Mastery: Foundations",
-      "scenario": "Five new decisions. Score at least 4 out of 5 on this attempt. Feedback appears after submission. You may retry; your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "Which comparison isolates an organizational difference?",
@@ -1754,7 +1754,7 @@ window.COURSE = {
       "id": "mastery-B",
       "block": "B",
       "title": "Mastery: Technologies",
-      "scenario": "Five new decisions. Score at least 4 out of 5 on this attempt. Feedback appears after submission. You may retry; your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "A discovery question concerns genes not yet chosen. What is a suitable direction?",
@@ -1812,7 +1812,7 @@ window.COURSE = {
       "id": "mastery-C",
       "block": "C",
       "title": "Mastery: Tissue to data",
-      "scenario": "Five new decisions. Score at least 4 out of 5 on this attempt. Feedback appears after submission. You may retry; your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "Which belongs in the experimental metadata?",
@@ -1870,7 +1870,7 @@ window.COURSE = {
       "id": "mastery-D",
       "block": "D",
       "title": "Mastery: Analysis",
-      "scenario": "Five new decisions. Score at least 4 out of 5 on this attempt. Feedback appears after submission. You may retry; your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "Why retain raw counts when using SCTransform?",
@@ -1928,7 +1928,7 @@ window.COURSE = {
       "id": "mastery-E",
       "block": "E",
       "title": "Mastery: Application",
-      "scenario": "Five new decisions. Score at least 4 out of 5 on this attempt. Feedback appears after submission. You may retry; your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "What is a strong first deliverable from a public section?",

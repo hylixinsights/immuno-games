@@ -1,6 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const root=path.resolve(__dirname,'../single-cell'),ctx={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(root,'course.js'),'utf8'),ctx);
+vm.runInNewContext(fs.readFileSync(path.join(root,'recovery.js'),'utf8'),ctx);
 const C=ctx.window.COURSE,E=require(path.join(root,'engine.js')).create(C);
 let s=E.blank();const groups=[...C.lessons.flatMap(l=>l.steps),...C.cases,C.final],all=[...groups,...C.mastery];
 assert.equal(C.lessons.length,15);assert.equal(C.lessons.flatMap(l=>l.steps).length,17);
@@ -38,15 +39,15 @@ fakeWindow.Labs={render(){return ''},bind(){}};
 const sandbox={window:fakeWindow,Learning:require(path.join(root,'engine.js')),document,location:{hash:'#map',protocol:'https:',href:'https://example.org/course/'},localStorage:{getItem(){return null},setItem(){}},setTimeout(){},clearTimeout(){},console,Math,URL,Blob};
 vm.runInNewContext(fs.readFileSync(path.join(root,'app.js'),'utf8'),sandbox);
 assert.match(el('#main').innerHTML,/Your course map/);
-const routes=[...C.lessons.flatMap(l=>l.steps.map(s=>'lesson/'+s.id)),...C.cases.map(c=>'case/'+c.block),...C.mastery.map(c=>'mastery/'+c.block),'final','achievements','resources','missing'];
-for(const route of routes){sandbox.location.hash='#'+route;events.hashchange();assert.ok(el('#main').innerHTML.length>100,route);if(route.startsWith('lesson/'))assert.match(el('#main').innerHTML,/Make the call/);}
+const routes=[...C.lessons.flatMap(l=>l.steps.map(s=>'lesson/'+s.id)),...C.cases.map(c=>'case/'+c.block),...C.mastery.map(c=>'mastery/'+c.block),...C.lessons.flatMap(l=>l.steps.map(s=>'check/'+s.id)),...C.cases.map(c=>'check/'+c.id),'recovery','final','achievements','resources','missing'];
+for(const route of routes){sandbox.location.hash='#'+route;events.hashchange();assert.ok(el('#main').innerHTML.length>100,route);if(route.startsWith('lesson/'))assert.match(el('#main').innerHTML,/Start the knowledge check/);}
 console.log('PASS: map, 17 lesson routes, 5 cases, 5 mastery routes, final lock, resources and unknown route render.');
 
 // A restored completed record unlocks the final assessment and completion card.
 sandbox.localStorage.getItem=()=>JSON.stringify(s);
 sandbox.location.hash='#final';
 vm.runInNewContext(fs.readFileSync(path.join(root,'app.js'),'utf8'),sandbox);
-assert.match(el('#main').innerHTML,/Submit decisions/);
+assert.match(el('#main').innerHTML,/Course completed!/);
 sandbox.location.hash='#achievements';events.hashchange();
 assert.match(el('#main').innerHTML,/Single-cell Essentials · Completed/);
 assert.match(el('#main').innerHTML,/Download card/);

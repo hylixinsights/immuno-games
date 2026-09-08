@@ -158,3 +158,7 @@ Both courses are static and self-contained. Progress is stored separately in the
 The single-cell introduction briefly compares 10x Chromium droplets, BD Rhapsody nanowells and Illumina PIPseq partitions, while retaining the worked Seurat example. Pseudo-bulk explicitly preserves biological replication and raw count aggregation.
 
 Both courses now show a knowledge-progress diagram with five block regions and a visible final goal. Progress comes from existing quiz records; course identifiers and saved-progress versions are unchanged. Diagrams represent learning milestones, not measured biology. Run `node verification/single-cell.cjs`, `node verification/spatial.cjs` and `node verification/journey.cjs` for the content, route-rendering and progress-rule checks. These checks do not test browser layout.
+
+### UI/UX revision - 2026-09-08
+
+The two transcriptomics courses now use quieter reading layouts, collapsible course blocks, separate one-question quiz screens and a three-expression cell guide. Previous/next and return links remain explicit on narrow screens. Each confirmed answer and submitted assessment is saved once. Reviewing an error advances exploration without XP; optional block checks use different questions, and a failed final has one separate recovery set. Existing achievements remain compatible. See `verification/UX-REVIEW.md` for the exact behavior and browser-test scope.

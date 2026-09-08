@@ -76,7 +76,9 @@ window.COURSE = {
           "id": "1a",
           "title": "From cells to molecular counts",
           "body": [
-            "The compartment-based methods introduced here separate cells into reaction compartments and tag captured RNA-derived molecules so reads can be assigned to their compartment of origin. The compartment differs: droplets in 10x Chromium; nanowells in BD Rhapsody; and microfluidics-free, vortex-generated partitions in PIPseq chemistry, used in Illumina Single Cell 3′ RNA Prep. These workflows produce libraries for short-read sequencing, typically on Illumina instruments. This course uses 10x Chromium 3′ gene expression and a compact Seurat workflow as its worked example; the core reasoning transfers across platforms.",
+            "The compartment-based methods introduced here separate cells into reaction compartments and tag captured RNA-derived molecules so reads can be assigned to their compartment of origin.",
+            "The compartment differs: droplets in 10x Chromium; nanowells in BD Rhapsody; and microfluidics-free, vortex-generated partitions in PIPseq chemistry, used in Illumina Single Cell 3′ RNA Prep. These workflows produce libraries for short-read sequencing, typically on Illumina instruments.",
+            "This course uses 10x Chromium 3′ gene expression and a compact Seurat workflow as its worked example; the core reasoning transfers across platforms.",
             "A cell barcode links reads to one compartment; a unique molecular identifier (UMI) helps distinguish captured molecules from amplification copies. A read is not a molecule, and a detected barcode is not automatically a cell. Empty compartments can carry ambient RNA; others capture more than one cell - multiplets, often called doublets.",
             "Platform-compatible software - Cell Ranger for 10x, or the appropriate BD or Illumina analysis pipeline - processes sequencing data and identifies cell-associated barcodes before further cell-level QC. Barcode layouts and chemistry differ, so choose a pipeline that supports the exact assay. STARsolo and alevin-fry are alternatives only where the required chemistry is supported and correctly configured."
           ],
@@ -1387,7 +1389,7 @@ window.COURSE = {
       "id": "mastery-A",
       "block": "A",
       "title": "Mastery: The experiment",
-      "scenario": "Five new decisions. Score at least 4/5 on one attempt. Feedback appears after submission. You can retry, and your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "What distinguishes a UMI from a cell barcode?",
@@ -1445,7 +1447,7 @@ window.COURSE = {
       "id": "mastery-B",
       "block": "B",
       "title": "Mastery: Quality & preparation",
-      "scenario": "Five new decisions. Score at least 4/5 on one attempt. Feedback appears after submission. You can retry, and your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "A high-mitochondrial population is expected in this tissue. What is appropriate?",
@@ -1503,7 +1505,7 @@ window.COURSE = {
       "id": "mastery-C",
       "block": "C",
       "title": "Mastery: Cell populations",
-      "scenario": "Five new decisions. Score at least 4/5 on one attempt. Feedback appears after submission. You can retry, and your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "A UMAP rotation changes the direction of an island. What changes biologically?",
@@ -1561,7 +1563,7 @@ window.COURSE = {
       "id": "mastery-D",
       "block": "D",
       "title": "Mastery: Sample comparisons",
-      "scenario": "Five new decisions. Score at least 4/5 on one attempt. Feedback appears after submission. You can retry, and your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "A population’s proportion rises after other cells are lost during QC. What is possible?",
@@ -1619,7 +1621,7 @@ window.COURSE = {
       "id": "mastery-E",
       "block": "E",
       "title": "Mastery: Biological hypotheses",
-      "scenario": "Five new decisions. Score at least 4/5 on one attempt. Feedback appears after submission. You can retry, and your best result is retained.",
+      "scenario": "Five different questions to revisit this block. Score at least 4/5 to earn a mastery distinction. Review your selections before submitting. Feedback appears after your one saved submission; this set cannot be retried.",
       "questions": [
         {
           "prompt": "A receptor RNA is detected. What remains unmeasured by that fact?",

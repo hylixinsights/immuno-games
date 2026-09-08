@@ -42,8 +42,11 @@ Original course content and diagrams: Marcos Toquetão and CSBL. Diagram labels 
 
 Some source bibliography entries were explicitly marked for bibliographic verification. Those flags remain in the reference list. The supplementary bibliography is preserved for continuity; it is not a requirement to read every paper.
 
-## Verification
 
-Run `node verification/check.cjs` from this extracted archive. It checks content links, figure files, scoring, repeat attempts, achievement thresholds, progress validation, restored progress and route rendering. The rendering checks use a lightweight JavaScript test harness, not a browser. JavaScript syntax and local asset paths were checked. The translated figures were inspected visually. Desktop/mobile browser layout and native sharing were not tested in a real browser in this environment.
+## UI and assessment update
 
-Version: 1.0.0. Adaptation date: 7 September 2026.
+Lessons use a focused reading layout. Quizzes open on a separate screen, one question at a time. Each answer requires confirmation and is permanently saved in the local progress record. Correct answers award 10 XP once; reviewing an error completes that decision without XP. Exploration trophies are separate from assessment accuracy. Block review checks and the final investigation each allow one submission. A separate final recovery has five new questions, one submission and no extra XP. Existing v1 achievements are preserved.
+
+The generated cell guide has neutral, happy and gently sad expressions. It is a supportive interface illustration, not a scientific figure. The complete illustration prompt is recorded in `../verification/UX-REVIEW.md`.
+
+Run the checks from the repository root: `node verification/spatial.cjs`, `node verification/assessment.cjs`, and `node verification/journey.cjs`. See `../verification/UX-REVIEW.md` for browser checks and their scope.
