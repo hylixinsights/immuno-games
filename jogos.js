@@ -194,6 +194,44 @@ const CATALOGO = {
           "Apply your learning to tissue-based research cases"
         ]
       }
+    },
+    {
+      "id": "arena",
+      "url": "arena/",
+      "capa": "capas/arena.webp",
+      "publicado": "2026-09",
+      "nivel": "graduacao",
+      "duracao": 25,
+      "temas": [
+        "inata",
+        "adaptativa",
+        "vacinas",
+        "tumor"
+      ],
+      "autores": [
+        "Luca Foggia",
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "Memória Imune",
+        "subtitulo": "Resposta primária vs. secundária",
+        "resumo": "Posicione células imunes para defender o tecido de bactérias, vermes e tumores. Quando o invasor volta, a curva de anticorpos mostra como a memória acelera a resposta.",
+        "aprende": [
+          "Comparar resposta primária e secundária na curva de anticorpos",
+          "Associar cada célula e citocina ao invasor que ela combate",
+          "Ver a vacina como memória sem doença e o anti-PD-L1 no tumor"
+        ],
+        "creditos": [
+          {
+            "papel": "Idealização e primeiro protótipo",
+            "nome": "Luca Foggia"
+          },
+          {
+            "papel": "Curadoria científica e evolução do jogo",
+            "nome": "Helder Nakaya"
+          }
+        ]
+      }
     }
   ]
 };

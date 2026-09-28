@@ -97,6 +97,18 @@ Três passos. A página inicial **não** precisa ser editada.
 Os valores de `nivel` e `temas` precisam existir nos dicionários `niveis` e
 `temas`, no topo do mesmo arquivo. Para criar um tema novo, some uma linha lá.
 
+**Créditos por papel (opcional).** Quando o jogo tem mais de um autor com papéis
+diferentes, acrescente `creditos` dentro do bloco do idioma. O card passa a
+mostrar cada papel com o nome embaixo (no lugar da lista simples de `autores`,
+que continua valendo para a busca). Exemplo do `arena`:
+
+```json
+"creditos": [
+  { "papel": "Idealização e primeiro protótipo", "nome": "Luca Foggia" },
+  { "papel": "Curadoria científica e evolução do jogo", "nome": "Helder Nakaya" }
+]
+```
+
 > **Atenção à vírgula.** As entradas são separadas por vírgula, e a última
 > **não** leva vírgula depois. Um erro de sintaxe aqui deixa a página inicial
 > em branco. Se isso acontecer, abra o console do navegador com F12 — ele
@@ -141,9 +153,12 @@ O conteúdo dentro das chaves segue a mesma sintaxe de JSON.
 ├── CNAME               immuno.games
 ├── .nojekyll           impede o GitHub de processar o site com Jekyll
 ├── capas/
-│   └── imunotropa.webp
-└── imunotropa/
-    └── index.html      o jogo, arquivo único e autossuficiente
+│   ├── imunotropa.webp
+│   └── arena.webp
+├── imunotropa/
+│   └── index.html      o jogo, arquivo único e autossuficiente
+└── arena/
+    └── index.html      Memória Imune (resposta primária vs. secundária), arquivo único
 ```
 
 ## Transcriptomics courses

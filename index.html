@@ -108,6 +108,9 @@ button.well:hover{transform:scale(1.18)}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
 .tag{font-size:10px;background:var(--mint);color:var(--green);border-radius:999px;padding:4px 8px}
 .meta{display:flex;flex-wrap:wrap;gap:7px 12px;margin:14px 0;font:400 10px "DM Mono",monospace;color:var(--muted)}
+.credits{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px 14px;margin:14px 0 0;padding-top:11px;border-top:1px solid var(--line)}
+.credits dt{font:500 9px/1.35 "DM Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.credits dd{margin:2px 0 0;font-size:13px;line-height:1.3;font-weight:700;color:var(--ink)}
 .play{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;background:var(--green);border-radius:10px;padding:11px 13px;font-size:13px;font-weight:700}
 .play:hover{background:var(--green-dark)}
 .empty{padding:40px;border:1px dashed var(--line);border-radius:16px;color:var(--muted)}
@@ -234,14 +237,15 @@ function filtrados(){
 }
 function montarGrade(){
   const lista=filtrados();$('contagem').textContent=lista.length+(lista.length===1?' experiência encontrada':' experiências encontradas');$('vazio').hidden=lista.length>0;
-  $('grade').innerHTML=lista.map(j=>{const i=dados.jogos.indexOf(j),aprende=txt(j,'aprende')||[];
+  $('grade').innerHTML=lista.map(j=>{const i=dados.jogos.indexOf(j),aprende=txt(j,'aprende')||[],creditos=Array.isArray(txt(j,'creditos'))?txt(j,'creditos'):[];
     return `<li class="card" id="jogo-${esc(j.id)}">
       <div class="cover-wrap"><img class="cover" src="${esc(j.capa)}" alt="Capa de ${esc(txt(j,'nome'))}" loading="lazy" width="600" height="400"><span class="coordinate">${coordenada(i)}</span></div>
       <div class="card-body"><h3>${esc(txt(j,'nome'))}</h3>${txt(j,'subtitulo')?`<p class="subtitle">${esc(txt(j,'subtitulo'))}</p>`:''}
       <p class="summary">${esc(txt(j,'resumo'))}</p>
       ${aprende.length?`<div class="learn"><p>Ao jogar, você vai</p><ul>${aprende.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`:''}
       <div class="tags">${(j.temas||[]).map(k=>`<span class="tag">${esc(rotulo(dados.temas,k))}</span>`).join('')}</div>
-      <div class="meta"><span>${esc(rotulo(dados.niveis,j.nivel))}</span><span>~${esc(j.duracao)} min</span><span>${esc((j.autores||[]).join(', '))}</span></div>
+      ${creditos.length?`<dl class="credits">${creditos.map(c=>`<div><dt>${esc(c.papel)}</dt><dd>${esc(c.nome)}</dd></div>`).join('')}</dl>`:''}
+      <div class="meta"><span>${esc(rotulo(dados.niveis,j.nivel))}</span><span>~${esc(j.duracao)} min</span>${creditos.length?'':`<span>${esc((j.autores||[]).join(', '))}</span>`}</div>
       <a class="play" href="${esc(j.url)}"><span>Jogar agora</span><span aria-hidden="true">→</span></a></div></li>`}).join('');
 }
 function redesenhar(){
