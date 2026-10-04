@@ -232,6 +232,43 @@ const CATALOGO = {
           }
         ]
       }
+    },
+    {
+      "id": "immunorun",
+      "url": "immunorun/",
+      "capa": "capas/immunorun.webp",
+      "publicado": "2026-10",
+      "nivel": "graduacao",
+      "duracao": 8,
+      "temas": [
+        "inata",
+        "adaptativa",
+        "infeccao"
+      ],
+      "autores": [
+        "Luca Foggia",
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "ImmunoRun",
+        "subtitulo": "Fuga bacteriana",
+        "resumo": "Você é uma bactéria tentando escapar de um macrófago. Pule, deslize e descubra como fagócitos, anticorpos e sinais inflamatórios participam da resposta à infecção. Jogue no modo arcade ou explore quatro etapas guiadas.",
+        "aprende": [
+          "Distinguir reconhecimento, fagocitose e eliminação",
+          "Entender como IgG e C3b favorecem a captura",
+          "Separar sinalização por TNF e proteção por biofilme"
+        ],
+        "creditos": [
+          {
+            "papel": "Idealização e primeiro protótipo",
+            "nome": "Luca Foggia"
+          },
+          {
+            "papel": "Finalização e curadoria científica",
+            "nome": "Helder Nakaya"
+          }
+        ]
+      },
     }
   ]
 };

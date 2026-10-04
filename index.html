@@ -134,6 +134,13 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
   .card{display:block}.cover-wrap{height:280px}.card-body{padding:22px}.footer-grid{grid-template-columns:1fr}.footer-links{justify-content:flex-start}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+/* Acrescente ao CSS da página inicial para preservar a capa inteira. */
+#jogo-immunorun .cover-wrap{background:#130d25}
+#jogo-immunorun .cover{object-fit:contain}
+@media(max-width:600px){
+ #jogo-immunorun .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}
+}
+
 </style>
 <!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
      Cole o mesmo ID do painel do Umami em data-website-id abaixo. -->
