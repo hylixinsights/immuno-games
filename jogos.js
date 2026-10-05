@@ -33,6 +33,10 @@ const CATALOGO = {
     "transplante": {
       "pt": "Transplante"
     },
+    "optogenetica": {
+      "pt": "Optogenética",
+      "en": "Optogenetics"
+    },
     "transcriptomics": {
       "pt": "Transcriptomics",
       "en": "Transcriptomics"
@@ -269,6 +273,26 @@ const CATALOGO = {
           }
         ]
       },
+    },
+    {
+      "id": "lumina",
+      "url": "lumina/",
+      "capa": "capas/lumina.webp",
+      "publicado": "2026-10",
+      "nivel": "medio",
+      "duracao": 12,
+      "temas": ["optogenetica"],
+      "autores": ["Helder Nakaya"],
+      "pt": {
+        "nome": "Lúmina",
+        "subtitulo": "Missões de Luz",
+        "resumo": "Explore seis missões de optogenética: guie um verme, marque o ritmo de um coração, estimule circuitos motores e reconheça formas na retina. Compare proteínas sensíveis à luz e descubra por que os controles experimentais importam.",
+        "aprende": [
+          "Relacionar luz, opsinas e atividade celular",
+          "Explorar aplicações no movimento, no coração e na visão",
+          "Comparar ativação, inibição e controles experimentais"
+        ]
+      }
     }
   ]
 };

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102e30">
+  <meta name="description" content="Lúmina: seis missões para descobrir como a luz pode mudar a atividade de células. Uma aventura de optogenética.">
+  <title>Lúmina · Missões de luz | immuno.games</title>
+  <link rel="canonical" href="https://immuno.games/lumina/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lúmina · Missões de Luz">
+  <meta property="og:description" content="Seis missões para descobrir a optogenética: movimento, coração, circuitos, visão e controles experimentais.">
+  <meta property="og:url" content="https://immuno.games/lumina/">
+  <meta property="og:image" content="https://immuno.games/capas/lumina.webp">
+  <meta property="og:image:alt" content="Nema, Pulsar e Sinapse em um laboratório iluminado.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23102e30'/%3E%3Cpath d='M23 5 11 23h10l-4 12 14-20H20z' fill='%23c4efba'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../index.html">immuno<span>.games</span></a>
+  <nav aria-label="Navegação principal"><button class="nav active" id="nav-missions">Missões</button><button class="nav" id="nav-notebook">Caderno de descobertas <span id="discovery-count">0</span></button></nav>
+  <span class="edition">UM JOGO DE OPTOGENÉTICA</span>
+</header>
+<main>
+<section id="home" class="page">
+  <div class="hero">
+    <div class="hero-copy"><div class="eyebrow"><span class="spark">✳</span> LÚMINA / MISSÕES DE LUZ</div><h1>Pequenas luzes.<br><em>Grandes descobertas.</em></h1><p>Uma célula. Um pulso de luz. Um mundo de possibilidades. Entre no laboratório e descubra a optogenética jogando.</p><div class="hero-actions"><button class="primary" id="begin">Começar a explorar <span>↗</span></button><span class="session-note">6 missões curtas<br>Mouse, toque ou teclado</span></div><div class="hero-bottom"><span class="mini-pulse"></span> A ciência acontece quando você experimenta.</div></div>
+    <div class="hero-art"><img src="assets/laboratorio.webp" alt="Personagens de um laboratório em miniatura: um verme verde em uma placa, um coração coral e um neurônio lilás, iluminados por um pequeno projetor."><div class="art-label"><span class="status-dot"></span> LABORATÓRIO VIVO <small>Conheça Nema, Pulsar e Sinapse.</small></div><span class="art-index">EXP. 001—006</span></div>
+  </div>
+  <div class="section-head"><div><div class="eyebrow">SEU MAPA DE EXPLORAÇÃO</div><h2>Onde vamos acender a luz?</h2></div><label class="practice"><input type="checkbox" id="practice"> Modo tranquilo <small>Sem limite de tempo ou de colisões</small></label></div>
+  <div id="mission-grid" class="mission-grid"></div>
+  <div class="science-note"><span>✧</span><p><b>A luz não faz tudo sozinha.</b> A resposta depende da proteína, da célula e do circuito. Cada missão revela uma parte dessa história.</p><button class="text-button" id="how-science">Explorar a ciência ↗</button></div>
+</section>
+<section id="notebook" class="page notebook" hidden>
+  <div class="eyebrow">SEU CADERNO DE LABORATÓRIO</div><h1>Experimente.<br><em>Depois, conecte as ideias.</em></h1><p class="intro">A ciência fica disponível desde o início. Complete missões para carimbar suas descobertas.</p>
+  <div class="principle"><b>Gene → proteína → luz → atividade celular → efeito no circuito</b><p>A optogenética combina a expressão de proteínas sensíveis à luz com iluminação de células selecionadas. ChR2 é um canal de cátions: sua ativação costuma favorecer a despolarização. NpHR é uma bomba de cloreto que pode reduzir a excitabilidade. A resposta depende das condições experimentais.</p></div>
+  <div id="notes" class="notes"></div>
+  <div class="principle"><h2>Um modelo para aprender</h2><p>Personagens, cores dos organismos, coleta de itens, energia, tempos e pontuações são recursos de jogo. As curvas guiadas e as imagens da retina são simplificações, não simulações quantitativas. Uma célula excitada pode inibir outras: o efeito celular não é igual ao efeito no comportamento. As aplicações cardíacas e motoras apresentadas vêm de pesquisa experimental; a missão de visão se inspira em um estudo clínico específico, não em uma promessa de recuperação completa.</p><p>Concepção dos jogos originais: <b>Helder Nakaya</b>. Esta versão combina e amplia suas mecânicas, com arte de personagens gerada por IA.</p></div>
+  <button class="primary" id="back-missions">Voltar às missões ↗</button>
+</section>
+<section id="play" class="play-page" hidden>
+  <div class="play-head"><button class="quiet" id="exit">← Missões</button><div class="play-title"><div class="eyebrow" id="world-label"></div><h1 id="mission-title"></h1></div><button class="quiet" id="sound" aria-pressed="false" aria-label="Ativar sons">Som desligado</button><button class="quiet" id="pause">Pausar</button></div>
+  <div class="play-layout">
+    <div class="arena-column"><div class="hud"><div><small id="goal-label">COLETAS</small><strong id="goal-value">0 / 3</strong></div><div><small>TEMPO</small><strong id="time-value">90 s</strong></div><div><small id="quality-label">CHANCES</small><strong id="quality-value">● ● ●</strong></div><span class="live-label"><span class="status-dot"></span> AO VIVO</span></div>
+      <div class="arena"><canvas id="board" width="720" height="620" tabindex="0" aria-label="Área interativa da missão. As instruções e controles estão abaixo."></canvas><div class="board-badge" id="board-badge">CH​​R2 / LUZ AZUL</div><div id="overlay" class="overlay"><div class="overlay-card"><div class="eyebrow" id="overlay-label"></div><h2 id="overlay-title"></h2><p id="overlay-copy"></p><div id="quiz" hidden></div><div class="overlay-buttons"><button class="primary" id="overlay-action">Vamos experimentar ↗</button><button class="quiet" id="overlay-secondary" hidden>Repetir missão</button></div></div></div></div>
+      <div class="game-feedback" id="feedback" role="status" aria-live="polite"></div>
+      <div class="energy"><span id="energy-label">Reserva de luz</span><progress id="energy" value="100" max="100">100%</progress><b id="energy-value">100%</b></div>
+      <div id="controls" class="controls"></div>
+    </div>
+    <aside class="mission-sidebar"><div class="eyebrow">SUA MISSÃO</div><h2 id="side-title"></h2><p id="side-copy"></p><div class="instruction-box"><h3>Como jogar</h3><div id="instructions"></div></div><div class="research-card"><span class="eyebrow">O QUE ESTÁ ACONTECENDO?</span><p id="science-live"></p></div><div class="legend" id="legend"></div><button class="text-button" id="restart">↻ Recomeçar missão</button><p class="model-note" id="model-note"></p></aside>
+  </div>
+</section>
+</main>
+<footer><span><b>Lúmina</b> · Ciência em pequenas doses de luz.</span><span>Concepção original: Helder Nakaya · immuno.games</span></footer>
+<div class="sr-only" id="announcer" role="status" aria-live="polite"></div>
+</body>
+</html>

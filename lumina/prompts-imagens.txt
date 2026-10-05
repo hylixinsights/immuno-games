@@ -1,0 +1,21 @@
+LÚMINA — PROMPTS FINAIS
+Ferramenta: image_gen integrada (sem CLI/API externa).
+
+1. assets/laboratorio.webp
+Use case: stylized-concept
+Asset type: hero illustration for a Portuguese educational optogenetics browser game named Lumina (no lettering in image).
+Primary request: an enchanting miniature living laboratory, with a friendly translucent mint C. elegans worm mascot curled inside a glass Petri dish in the foreground, a small warm coral anatomical-heart mascot behind it, and a lilac branching neuron character floating at the right. Characters have tiny expressive dark eyes, charming but sophisticated and not toddler-like. A tiny hovering ivory scientific projector with an amber lens sends a delicate cyan light beam onto the worm.
+Style/medium: premium handmade 3D clay and frosted-glass diorama, tactile matte materials, beautiful soft global illumination, restrained magical scientific atmosphere.
+Scene/backdrop: deep midnight teal seamless background, subtle suspended glowing particles, low glass laboratory platform, no busy lab equipment.
+Composition/framing: landscape 3:2, full subjects visible with generous margins, central dish viewed three-quarter from above, balanced ensemble suitable for a hero art card.
+Color palette: midnight teal, seafoam green, cream, small apricot and lavender accents.
+Constraints: no text, no logos, no watermark, no UI; a stylized character illustration, not an anatomical diagram. No arms or legs on the worm, no worm segmentation, no medical gore.
+
+2. assets/coracao.webp
+Use case: stylized-concept
+Asset type: transparent in-game character sprite for a polished optogenetics educational browser game.
+Primary request: one endearing coral-peach anatomical-heart mascot, rounded stylized ventricles and three short vessels at the top, two tiny glossy dark eyes and a subtle happy smile. Full body isolated, centered, front three-quarter view with clear silhouette.
+Style/medium: premium handmade 3D clay and frosted translucent resin, warm coral, peach highlights, softly luminous internal specks; charming sophisticated scientific diorama aesthetic.
+Composition/framing: square image, entire character visible with 15 percent padding, no pedestal, no ground, no additional objects.
+Lighting: soft studio light from upper left, gentle mint rim light.
+Constraints: genuine transparent background. No text, no logos, no watermark, no arms, no legs, no blood, no gore. This is a fictional mascot, not an anatomical diagram.
