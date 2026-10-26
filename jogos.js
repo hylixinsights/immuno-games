@@ -12,6 +12,10 @@
 const CATALOGO = {
   "idiomaPadrao": "pt",
   "temas": {
+    "micologia": {
+      "pt": "Micologia",
+      "en": "Mycology"
+    },
     "inata": {
       "pt": "Imunidade inata"
     },
@@ -291,6 +295,44 @@ const CATALOGO = {
           "Relacionar luz, opsinas e atividade celular",
           "Explorar aplicações no movimento, no coração e na visão",
           "Comparar ativação, inibição e controles experimentais"
+        ]
+      }
+    },
+    {
+      "id": "hypha",
+      "url": "hypha/",
+      "capa": "capas/hypha.webp",
+      "publicado": "2026-10",
+      "nivel": "graduacao",
+      "duracao": 15,
+      "temas": ["micologia"],
+      "autores": ["Pedro H. D. Santos", "Helder Nakaya"],
+      "pt": {
+        "nome": "HYPHA",
+        "subtitulo": "Do laboratório à sobrevivência",
+        "resumo": "Você é um fungo em busca de energia. Explore madeira em decomposição, uma folha de soja e uma rocha com líquen. No laboratório, descubra a estratégia de cada habitat; depois, guie suas hifas, colete recursos e use adaptações para sobreviver a desafios cada vez maiores.",
+        "aprende": [
+          "Distinguir decomposição, biotrofia e simbiose nos fungos",
+          "Relacionar enzimas, haustórios e pigmentos a cada habitat",
+          "Entender como água, nutrientes e defesas limitam o crescimento das hifas"
+        ],
+        "creditos": [
+          { "papel": "Criação original — Hypha Lab e Hypha Run", "nome": "Prof. Pedro H. D. Santos" },
+          { "papel": "Adaptação e integração dos jogos", "nome": "Helder Nakaya" }
+        ]
+      },
+      "en": {
+        "nome": "HYPHA",
+        "subtitulo": "From lab to survival",
+        "resumo": "You are a fungus in search of energy. Explore decaying wood, a soybean leaf and lichen on rock. In the lab, discover each habitat’s strategy; then guide your hyphae, collect resources and use adaptations to survive increasingly difficult challenges.",
+        "aprende": [
+          "Distinguish decomposition, biotrophy and symbiosis in fungi",
+          "Connect enzymes, haustoria and pigments to each habitat",
+          "Understand how water, nutrients and defenses limit hyphal growth"
+        ],
+        "creditos": [
+          { "papel": "Original creation — Hypha Lab and Hypha Run", "nome": "Prof. Pedro H. D. Santos" },
+          { "papel": "Game adaptation and integration", "nome": "Helder Nakaya" }
         ]
       }
     }
