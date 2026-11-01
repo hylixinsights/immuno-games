@@ -1,7 +1,8 @@
 # immuno.games
 
-Jogos gratuitos para ensinar e aprender imunologia. Site estático, sem build,
-sem framework, sem dependência — só HTML, CSS e um catálogo em JavaScript.
+Jogos gratuitos para ensinar e aprender imunologia. Site estático, sem framework ou dependências de execução — só HTML, CSS e um
+catálogo em JavaScript. O GitHub Pages usa Jekyll apenas para preparar a
+publicação e respeitar as exclusões definidas em `_config.yml`.
 
 ---
 
@@ -151,7 +152,7 @@ O conteúdo dentro das chaves segue a mesma sintaxe de JSON.
 ├── jogos.js            catálogo — a única coisa que muda ao publicar um jogo
 ├── 404.html
 ├── CNAME               immuno.games
-├── .nojekyll           impede o GitHub de processar o site com Jekyll
+├── _config.yml        exclui da publicação os cursos arquivados
 ├── capas/
 │   ├── imunotropa.webp
 │   └── arena.webp
@@ -161,10 +162,23 @@ O conteúdo dentro das chaves segue a mesma sintaxe de JSON.
     └── index.html      Memória Imune (resposta primária vs. secundária), arquivo único
 ```
 
-## Transcriptomics courses
+## Cursos de transcriptômica arquivados
 
-- [Single-cell Transcriptomics](https://immuno.games/single-cell/) - English, 10x and Seurat workflows, interactive exercises and quizzes.
-- [Spatial Transcriptomics](https://immuno.games/spatial/) - English, illustrated lessons and quizzes. Course credit: Marcos Toquetão and CSBL.
+Em 1 de novembro de 2026, os dois cursos abaixo foram retirados do catálogo e da
+publicação em immuno.games para serem repensados como jogos. O código, os
+materiais, os créditos e as verificações continuam preservados neste repositório:
+
+- [Single-cell Transcriptomics](single-cell/) — versão original em inglês, com workflows 10x e Seurat.
+- [Spatial Transcriptomics](spatial/) — versão original em inglês, com lições ilustradas. Créditos: Marcos Toquetão e CSBL.
+
+As pastas `single-cell/` e `spatial/` estão excluídas da publicação em
+`_config.yml`; seus endereços antigos retornam a página 404 do site. Não adicione
+`.nojekyll` na raiz: isso desativaria as exclusões e republicaria os cursos.
+Os arquivos originais podem ser consultados no GitHub ou executados localmente.
+Para republicar uma versão reformulada, remova sua exclusão em `_config.yml` e
+adicione a nova entrada em `jogos.js`.
+
+### Documentação das versões arquivadas
 
 Both courses are static and self-contained. Progress is stored separately in the browser for each course; learners can export and import it. Upload each complete course folder, including its assets. See the README and attribution files inside each folder. Allow roughly 60-90 minutes for a first pass, with optional deeper reading and exercises.
 

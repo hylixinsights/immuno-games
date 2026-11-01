@@ -1,0 +1,7 @@
+# Keep archived courses in GitHub without publishing their pages or assets.
+# Root .nojekyll must stay absent so GitHub Pages honors these exclusions.
+exclude:
+  - single-cell
+  - spatial
+  - verification
+  - README.md
