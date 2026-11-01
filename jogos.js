@@ -41,6 +41,10 @@ const CATALOGO = {
       "pt": "Optogenética",
       "en": "Optogenetics"
     },
+    "morte-celular": {
+      "pt": "Morte celular regulada",
+      "en": "Regulated cell death"
+    },
     "transcriptomics": {
       "pt": "Transcriptomics",
       "en": "Transcriptomics"
@@ -333,6 +337,68 @@ const CATALOGO = {
         "creditos": [
           { "papel": "Original creation — Hypha Lab and Hypha Run", "nome": "Prof. Pedro H. D. Santos" },
           { "papel": "Game adaptation and integration", "nome": "Helder Nakaya" }
+        ]
+      }
+    },
+    {
+      "id": "cell-fate",
+      "url": "cell-fate/",
+      "capa": "capas/cell-fate.webp",
+      "publicado": "2026-11",
+      "nivel": "graduacao",
+      "duracao": 12,
+      "temas": [
+        "morte-celular"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "Cell Fate",
+        "subtitulo": "Pequena nave. Grandes destinos.",
+        "resumo": "Quatro vias de morte celular regulada em um arcade orbital. Identifique o mecanismo, aprenda a diferença entre ferroptose, apoptose, piroptose e necroptose e encare o desafio final.",
+        "aprende": [
+          "Reconhecer quatro mecanismos distintos de morte celular",
+          "Relacionar os alvos do jogo aos mecanismos moleculares",
+          "Investigar pistas e testes de resgate no desafio final"
+        ],
+        "creditos": [
+          {
+            "papel": "Concepção e desenvolvimento",
+            "nome": "Helder Nakaya"
+          },
+          {
+            "papel": "Laboratório",
+            "nome": "CSBL"
+          },
+          {
+            "papel": "Apoio",
+            "nome": "SBI · Einstein"
+          }
+        ]
+      },
+      "en": {
+        "nome": "Cell Fate",
+        "subtitulo": "Small ship. Great destinies.",
+        "resumo": "Four regulated cell death pathways in an orbital arcade. Identify the mechanism, learn how ferroptosis, apoptosis, pyroptosis and necroptosis differ, and face the final challenge.",
+        "aprende": [
+          "Recognize four distinct cell death mechanisms",
+          "Connect in-game targets to molecular pathways",
+          "Investigate clues and rescue assays in the final challenge"
+        ],
+        "creditos": [
+          {
+            "papel": "Concept and development",
+            "nome": "Helder Nakaya"
+          },
+          {
+            "papel": "Laboratory",
+            "nome": "CSBL"
+          },
+          {
+            "papel": "Support",
+            "nome": "SBI · Einstein"
+          }
         ]
       }
     }
