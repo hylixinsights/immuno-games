@@ -120,6 +120,8 @@ body.touch:not(.play) #deck{display:none}
   #title .title-layout .panel{width:100%;max-width:800px}
   .screen#title{background-image:linear-gradient(90deg,rgba(16,5,23,.9),rgba(16,5,23,.74)),url("assets/title.webp")}
 }
+/* Meet the researchers without entering a campaign. */
+a.experts-link{display:inline-flex;align-items:center;text-decoration:none;color:var(--plasma)}
 </style>
 <!-- Font attribution and license:
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
@@ -396,7 +398,7 @@ License: Apache-2.0
     </div>
   </div>
   <section class="screen" id="title" aria-labelledby="gameName">
-    <header class="masthead"><a class="home-link" href="https://immuno.games/">immuno.games</a><div class="toolbar"><button type="button" class="chip" data-audio="music">MUSIC ON</button><button type="button" class="chip" data-audio="sfx">SFX ON</button><button type="button" class="chip" data-language aria-label="Switch to Portuguese">PT-BR</button></div></header>
+    <header class="masthead"><a class="home-link" href="https://immuno.games/">immuno.games</a><div class="toolbar"><a class="chip experts-link" data-experts-link href="experts.html?lang=en"><span data-en="RESEARCHERS" data-pt="PESQUISADORES">RESEARCHERS</span></a><button type="button" class="chip" data-audio="music">MUSIC ON</button><button type="button" class="chip" data-audio="sfx">SFX ON</button><button type="button" class="chip" data-language aria-label="Switch to Portuguese">PT-BR</button></div></header>
     <div class="title-layout"><div class="panel">
       <div class="hero-brand">
         <div class="slide"><i class="signal"></i> CONNECTIVE TISSUE · 37 °C</div>
@@ -460,6 +462,8 @@ License: Apache-2.0
 const $=id=>document.getElementById(id);
 const TAU=Math.PI*2, rand=Math.random;
 const preferences=(()=>{try{const p=JSON.parse(localStorage.getItem('neutrodoom.preferences')||'{}');return p&&typeof p==='object'?p:{};}catch(_){return {};}})();
+const requestedLanguage=new URLSearchParams(location.search).get('lang');
+if(requestedLanguage==='en'||requestedLanguage==='pt')preferences.lang=requestedLanguage;
 const SETTINGS={lang:preferences.lang==='pt'?'pt':'en',music:preferences.music!==false,sfx:preferences.sfx!==false,musicVolume:Number.isFinite(preferences.musicVolume)?Math.max(0,Math.min(.6,preferences.musicVolume)):.22,sfxVolume:Number.isFinite(preferences.sfxVolume)?Math.max(0,Math.min(1,preferences.sfxVolume)):.65,sensitivity:Math.max(.5,Math.min(1.8,Number(preferences.sensitivity)||1)),reduced:preferences.reduced??!!window.matchMedia?.('(prefers-reduced-motion:reduce)').matches};
 const savePrefs=()=>{try{localStorage.setItem('neutrodoom.preferences',JSON.stringify(SETTINGS));}catch(_){}};
 
@@ -1762,6 +1766,8 @@ function initLocale(){
 function audioUI(){document.querySelectorAll('[data-audio]').forEach(b=>{const k=b.dataset.audio,on=SETTINGS[k];b.textContent=(k==='music'?L('MUSIC','MÚSICA'):L('SFX','EFEITOS'))+' '+(on?L('ON','✓'):L('OFF','—'));b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',(k==='music'?L('Music','Música'):L('Sound effects','Efeitos sonoros'))+': '+(on?L('on; click to turn off','ligados; clique para desligar'):L('off; click to turn on','desligados; clique para ligar')));});}
 function applyLocale(){
   document.documentElement.lang=SETTINGS.lang==='pt'?'pt-BR':'en';
+  if(requestedLanguage==='en'||requestedLanguage==='pt'){const url=new URL(location.href);url.searchParams.set('lang',SETTINGS.lang);try{history.replaceState(null,'',url);}catch(_){}}
+  document.querySelectorAll('[data-experts-link]').forEach(a=>{a.href='experts.html?lang='+SETTINGS.lang;});
   for(const [n,v]of staticText){const trim=v.trim();n.textContent=v.replace(trim,t(trim));}
   for(const [node,a,v]of staticAttrs)node.setAttribute(a,t(v));
   document.querySelectorAll('[data-en]').forEach(n=>n.textContent=n.dataset[SETTINGS.lang==='pt'?'pt':'en']);
