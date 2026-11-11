@@ -331,6 +331,42 @@ const CATALOGO = {
           }
         ]
       }
+    },
+    {
+      "id": "neutrodoom",
+      "url": "neutrodoom/",
+      "capa": "capas/neutrodoom.webp",
+      "publicado": "2026-11",
+      "nivel": "graduacao",
+      "duracao": 8,
+      "temas": [
+        "inata",
+        "infeccao",
+        "micologia"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "NEUTRODOOM",
+        "subtitulo": "Na linha de frente da imunidade",
+        "resumo": "Você é um neutrófilo em um FPS retrô. Enfrente sete ondas rápidas de bactérias e Candida, proteja o tecido e tente superar seu recorde. Compare sua nota de defesa de 0 a 1.000 e compartilhe o resultado.",
+        "aprende": [
+          "Combinar fagocitose, grânulos, NETs e espécies reativas de oxigênio",
+          "Distinguir invasores de células do próprio tecido",
+          "Equilibrar eliminação de microrganismos e dano colateral"
+        ]
+      },
+      "en": {
+        "nome": "NEUTRODOOM",
+        "subtitulo": "The frontline of immunity",
+        "resumo": "Become a neutrophil in a retro FPS. Face seven fast waves of bacteria and Candida, protect the tissue and beat your personal best. Compare your 0–1,000 defense rating and share your result.",
+        "aprende": [
+          "Combine phagocytosis, granules, NETs and reactive oxygen species",
+          "Distinguish invaders from host tissue cells",
+          "Balance microbial elimination against collateral damage"
+        ]
+      }
     }
   ]
 };

@@ -144,6 +144,11 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
  #jogo-hypha .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}
 }
 
+/* NEUTRODOOM keeps the full portrait and adds the title as real text. */
+#jogo-neutrodoom .cover-wrap{background:#1b0b25}
+#jogo-neutrodoom .cover{object-fit:contain}
+#jogo-neutrodoom .cover-title{position:absolute;left:8%;right:8%;bottom:8%;text-align:center;color:#f8b0cd;font:900 clamp(22px,2.1vw,32px)/1 Arial,sans-serif;letter-spacing:-.04em;text-shadow:2px 3px #663873}
+@media(max-width:620px){#jogo-neutrodoom .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}#jogo-neutrodoom .cover-title{font-size:32px}}
 </style>
 <!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
      Cole o mesmo ID do painel do Umami em data-website-id abaixo. -->
@@ -209,7 +214,7 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
   </div>
 </footer>
 
-<script src="jogos.js"></script>
+<script src="jogos.js?v=20261111-neutrodoom"></script>
 <script>
 const IDIOMA='pt',LINHAS='ABCDEFGH',COLUNAS=12;
 let dados=null,filtroTema=null,filtroNivel=null,termo='';
@@ -249,7 +254,7 @@ function montarGrade(){
   const lista=filtrados();$('contagem').textContent=lista.length+(lista.length===1?' experiência encontrada':' experiências encontradas');$('vazio').hidden=lista.length>0;
   $('grade').innerHTML=lista.map(j=>{const i=dados.jogos.indexOf(j),aprende=txt(j,'aprende')||[],creditos=Array.isArray(txt(j,'creditos'))?txt(j,'creditos'):[];
     return `<li class="card" id="jogo-${esc(j.id)}">
-      <div class="cover-wrap"><img class="cover" src="${esc(j.capa)}" alt="Capa de ${esc(txt(j,'nome'))}" loading="lazy" width="600" height="400"><span class="coordinate">${coordenada(i)}</span></div>
+      <div class="cover-wrap"><img class="cover" src="${esc(j.capa)}" alt="Capa de ${esc(txt(j,'nome'))}" loading="lazy" width="600" height="400"><span class="coordinate">${coordenada(i)}</span>${j.id==='neutrodoom'?'<span class="cover-title" aria-hidden="true">NEUTRODOOM</span>':''}</div>
       <div class="card-body"><h3>${esc(txt(j,'nome'))}</h3>${txt(j,'subtitulo')?`<p class="subtitle">${esc(txt(j,'subtitulo'))}</p>`:''}
       <p class="summary">${esc(txt(j,'resumo'))}</p>
       ${aprende.length?`<div class="learn"><p>Ao jogar, você vai</p><ul>${aprende.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`:''}
