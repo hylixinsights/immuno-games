@@ -122,6 +122,24 @@ body.touch:not(.play) #deck{display:none}
 }
 /* Meet the researchers without entering a campaign. */
 a.experts-link{display:inline-flex;align-items:center;text-decoration:none;color:var(--plasma)}
+.learning-choice{display:flex;align-items:center;gap:9px;color:var(--muted);font:11px/1.5 var(--font-body);max-width:50ch}
+.learning-choice input{width:17px;height:17px;accent-color:var(--eosin);flex:none}
+.learning-choice label{cursor:pointer}
+.learning-card{border:1px solid var(--line);border-left:3px solid var(--plasma);background:#2b1833;padding:13px 15px;margin:16px 0;font-size:12px;color:var(--muted)}
+.learning-card[hidden],#learnedBtn[hidden],#moleculeTip[hidden]{display:none!important}
+.learning-card summary{cursor:pointer;color:var(--plasma);font:700 10px/1.5 var(--font-mono)}
+.learning-card h3{font:700 15px/1.4 var(--font-body);color:var(--paper);margin:14px 0 8px}
+.learning-card p{margin:8px 0 12px}
+.learning-card .toolbar{justify-content:space-between}
+.learning-card a{color:var(--plasma);text-underline-offset:3px}
+.learning-card button:disabled{opacity:.4;cursor:default}
+#moleculeTip{position:absolute;right:16px;bottom:120px;width:min(235px,25%);padding:9px 11px;border-right:2px solid var(--eosin);background:rgba(22,11,28,.94);font:11px/1.45 var(--font-body);color:var(--paper);pointer-events:none}
+#moleculeTip strong{display:block;color:var(--plasma);font:700 9px/1.4 var(--font-mono);margin-bottom:4px}
+body.paused #moleculeTip{display:none}
+.biology-pause-link{display:inline-flex;align-items:center;min-height:44px;color:var(--plasma);font:700 11px/1.5 var(--font-mono);text-underline-offset:4px}
+.end-actions a.chip{display:inline-flex;align-items:center;text-decoration:none;color:var(--plasma)}
+@media(max-width:760px){#title .masthead{flex-wrap:wrap}#title .masthead .toolbar{justify-content:flex-end;flex:1 1 235px}#moleculeTip{right:10px;bottom:103px;width:32%;font-size:10px;padding:7px 8px}#moleculeTip strong{font-size:8px}.learning-choice{font-size:10px}}
+@media(orientation:landscape) and (max-height:540px){#title .learning-choice{grid-column:2;grid-row:8}#moleculeTip{right:10px;bottom:154px;width:24%;font-size:9px}#learnedBtn{font-size:8px}}
 </style>
 <!-- Font attribution and license:
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
@@ -370,7 +388,7 @@ License: Apache-2.0
       </div>
       <div id="chemo" aria-label="Direction to the nearest invader"><div id="chemoA"></div><span class="chemo-label">TRACKER</span></div>
       <div class="status"><div id="waveLab">WAVE 1/7</div><div id="left"></div><div id="scoreLive">0 PTS</div><div id="comboLive"></div><div id="comboMeter"><i></i></div><div id="lives" aria-label="Available neutrophils"></div></div>
-      <div class="hud-actions"><button id="snd" data-audio="sfx" type="button">SFX ON</button><button id="musicHud" data-audio="music" type="button">MUSIC ON</button><button id="pauseBtn" type="button" aria-label="Pause and open settings" title="Pause (Esc)"><span class="pause-icon" aria-hidden="true"></span></button></div>
+      <div class="hud-actions"><button id="learnedBtn" type="button" hidden></button><button id="snd" data-audio="sfx" type="button">SFX ON</button><button id="musicHud" data-audio="music" type="button">MUSIC ON</button><button id="pauseBtn" type="button" aria-label="Pause and open settings" title="Pause (Esc)"><span class="pause-icon" aria-hidden="true"></span></button></div>
       <canvas id="minimap" width="144" height="96" aria-label="Tissue map"></canvas>
       <div id="bossBar" hidden><span id="bossName">BOSS · CANDIDA</span><div class="target-track"><i id="bossHp"></i></div></div>
       <div id="targetBox" hidden><span id="targetName"></span><span id="targetState"></span><div class="target-track"><i id="targetHp"></i></div></div>
@@ -382,6 +400,7 @@ License: Apache-2.0
         <div class="pill"><span>F · ROS</span><div class="tr"><i id="pRos"></i></div></div>
       </div>
       <div id="toast" role="status"></div>
+      <div id="moleculeTip" role="status" aria-live="polite" hidden><strong id="moleculeTitle"></strong><span id="moleculeText"></span></div>
       <div id="banner"><small id="bS"></small><h2 id="bH"></h2><p id="bP"></p></div>
       <div id="vign"></div>
       <div id="resp"><b>Lytic NETosis</b><span id="respT"></span></div>
@@ -398,7 +417,7 @@ License: Apache-2.0
     </div>
   </div>
   <section class="screen" id="title" aria-labelledby="gameName">
-    <header class="masthead"><a class="home-link" href="https://immuno.games/">immuno.games</a><div class="toolbar"><a class="chip experts-link" data-experts-link href="experts.html?lang=en"><span data-en="RESEARCHERS" data-pt="PESQUISADORES">RESEARCHERS</span></a><button type="button" class="chip" data-audio="music">MUSIC ON</button><button type="button" class="chip" data-audio="sfx">SFX ON</button><button type="button" class="chip" data-language aria-label="Switch to Portuguese">PT-BR</button></div></header>
+    <header class="masthead"><a class="home-link" href="https://immuno.games/">immuno.games</a><div class="toolbar"><a class="chip experts-link" data-biology-link href="biology.html?lang=en"><span data-en="THE BIOLOGY" data-pt="A BIOLOGIA">THE BIOLOGY</span></a><a class="chip experts-link" data-experts-link href="experts.html?lang=en"><span data-en="RESEARCHERS" data-pt="PESQUISADORES">RESEARCHERS</span></a><button type="button" class="chip" data-audio="music">MUSIC ON</button><button type="button" class="chip" data-audio="sfx">SFX ON</button><button type="button" class="chip" data-language aria-label="Switch to Portuguese">PT-BR</button></div></header>
     <div class="title-layout"><div class="panel">
       <div class="hero-brand">
         <div class="slide"><i class="signal"></i> CONNECTIVE TISSUE · 37 °C</div>
@@ -418,6 +437,7 @@ License: Apache-2.0
         <li><kbd>Q</kbd><div><b>NET</b>Trap invaders in a chromatin net. Recharges in 13 seconds.</div></li>
         <li><kbd>F</kbd><div><b>OXIDIZE</b>Powerful blast that also harms nearby tissue. Costs 20 granules.</div></li>
       </ul></details>
+      <div class="learning-choice"><input type="checkbox" id="learningTitle" data-learning-setting><label for="learningTitle" data-en="Optional molecule tips during combat" data-pt="Dicas opcionais sobre moléculas durante o combate">Optional molecule tips during combat</label></div>
     </div></div>
     <footer class="credits"><span>Created by <a href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener noreferrer">Helder Nakaya · @helder_nakaya</a></span><span class="support">Supported by: SBI · Einstein</span></footer>
   </section>
@@ -431,7 +451,7 @@ License: Apache-2.0
 </div><div class="result-aside"><h2><span data-en="YOUR DEFENSE, EXPLAINED" data-pt="SUA DEFESA, EXPLICADA">YOUR DEFENSE, EXPLAINED</span></h2><div id="ratingMetrics"></div><dl class="stats" id="endStats"></dl></div></div>
 <div class="share-actions"><button type="button" class="chip" id="downloadScore"><span data-en="DOWNLOAD SCORE CARD" data-pt="BAIXAR CARD DO SCORE">DOWNLOAD SCORE CARD</span></button><button type="button" class="chip" id="copyScore"><span data-en="COPY SCORE" data-pt="COPIAR PONTUAÇÃO">COPY SCORE</span></button><button type="button" class="chip" id="shareScore"><span data-en="SHARE" data-pt="COMPARTILHAR">SHARE</span></button></div>
 <div id="shareStatus" role="status"></div><textarea id="manualShare" readonly aria-label="Score to copy" hidden></textarea>
-<div class="end-actions"><button class="go" id="again" type="button">PLAY AGAIN</button><button class="chip" id="menuBtn" type="button"><span data-en="CHANGE DIFFICULTY" data-pt="TROCAR DIFICULDADE">CHANGE DIFFICULTY</span></button></div>
+<div class="end-actions"><a class="chip" data-biology-link data-topic="quiz" href="biology.html?lang=en#quiz" target="_blank" rel="noopener noreferrer"><span data-en="BIOLOGY CHALLENGE · 5 QUESTIONS ↗" data-pt="DESAFIO DE BIOLOGIA · 5 PERGUNTAS ↗">BIOLOGY CHALLENGE · 5 QUESTIONS ↗</span></a><button class="go" id="again" type="button">PLAY AGAIN</button><button class="chip" id="menuBtn" type="button"><span data-en="CHANGE DIFFICULTY" data-pt="TROCAR DIFICULDADE">CHANGE DIFFICULTY</span></button></div>
 <p class="result-note" id="recordNote"></p><details class="score-rules"><summary><span data-en="HOW SCORING WORKS" data-pt="COMO FUNCIONA A PONTUAÇÃO">HOW SCORING WORKS</span></summary><p><span data-en="Elimination: 100 points. Engulf: 150. Chain kills within 4.5 seconds: ×2 at 3, ×3 at 6, ×4 at 9. Each cleared wave: +500. Victory: +2,000, plus up to 2,000 for tissue and 500 per unused reinforcement. Collateral damage: −15 points per damage point." data-pt="Eliminação: 100 pontos. Fagocitose: 150. Elimine em até 4,5 segundos: ×2 com 3, ×3 com 6, ×4 com 9. Onda concluída: +500. Vitória: +2.000, até 2.000 pelo tecido e 500 por reforço não usado. Dano colateral: −15 por ponto de dano.">Elimination: 100 points. Engulf: 150. Chain kills within 4.5 seconds: ×2 at 3, ×3 at 6, ×4 at 9. Each cleared wave: +500. Victory: +2,000, plus up to 2,000 for tissue and 500 per unused reinforcement. Collateral damage: −15 points per damage point.</span></p><p><span data-en="Rating: campaign 600 + tissue 250 + collateral control 100 + survival 50. Quality components scale with completed waves, so an early defeat cannot earn a high grade. This is a game rubric, not a percentile or a scientific measure." data-pt="Nota: campanha 600 + tecido 250 + controle do dano colateral 100 + sobrevivência 50. Os componentes de qualidade são proporcionais às ondas concluídas: uma derrota precoce não recebe nota alta. É um critério do jogo, não um percentil nem uma medida científica.">Rating: campaign 600 + tissue 250 + collateral control 100 + survival 50. Quality components scale with completed waves, so an early defeat cannot earn a high grade. This is a game rubric, not a percentile or a scientific measure.</span></p></details>
 </div></div></section>
   <section class="screen" id="pauseScreen" role="dialog" aria-modal="true" aria-labelledby="pauseTitle" hidden>
@@ -440,10 +460,19 @@ License: Apache-2.0
       <button class="go" id="resumeBtn" type="button">RESUME</button><p id="pauseTip"></p><div class="toolbar"><button type="button" class="chip" data-audio="music">MUSIC ON</button><button type="button" class="chip" data-audio="sfx">SFX ON</button></div><div class="audio-settings"><label><span data-en="MUSIC VOLUME" data-pt="VOLUME DA MÚSICA">MUSIC VOLUME</span><input type="range" id="musicVolume" min="0" max="0.6" step="0.02" aria-label="Music volume"></label><label><span data-en="SFX VOLUME" data-pt="VOLUME DOS EFEITOS">SFX VOLUME</span><input type="range" id="sfxVolume" min="0" max="1" step="0.05" aria-label="Sound effects volume"></label></div>
       <div class="setting range-setting"><label for="sensitivity">LOOK SENSITIVITY</label><input type="range" id="sensitivity" min="0.5" max="1.8" step="0.05" value="1"><small>Lower for precision; higher for faster reactions.</small></div>
       <div class="setting check-row"><label class="check-setting" for="reducedFx"><input type="checkbox" id="reducedFx"> Reduce motion and flashes</label></div>
+      <div class="setting learning-choice"><input type="checkbox" id="learningPause" data-learning-setting><label for="learningPause" data-en="Optional molecule tips during combat" data-pt="Dicas opcionais sobre moléculas durante o combate">Optional molecule tips during combat</label></div>
+      <details class="learning-card" id="learnedCard" hidden>
+        <summary id="learnedSummary" data-en="WHAT YOU JUST LEARNED" data-pt="O QUE VOCÊ ACABOU DE APRENDER">WHAT YOU JUST LEARNED</summary>
+        <h3 id="learnedTitle"></h3><p id="learnedText"></p>
+        <a id="learnedLink" data-biology-link data-topic="phagocytosis" href="biology.html?lang=en#phagocytosis" target="_blank" rel="noopener noreferrer"><span data-en="Explore the mechanism ↗" data-pt="Explore o mecanismo ↗">Explore the mechanism ↗</span></a>
+        <div class="toolbar"><button type="button" class="chip" id="learnedPrev"><span data-en="PREVIOUS" data-pt="ANTERIOR">PREVIOUS</span></button><span id="learnedCount"></span><button type="button" class="chip" id="learnedNext"><span data-en="NEXT" data-pt="PRÓXIMO">NEXT</span></button></div>
+      </details>
       <button class="secondary-btn" id="restartBtn" type="button">RESTART CAMPAIGN</button>
       <p class="pause-help"><b>Protect both bars.</b> Engulf at close range, use NETs to contain the horde and keep oxidation away from host cells. <span class="how"><span class="k"><kbd>Esc</kbd> returns to the game.</span></span></p>
       <details class="field-guide">
-        <summary>THE BIOLOGY</summary>
+        <summary data-en="THE BIOLOGY" data-pt="A BIOLOGIA">THE BIOLOGY</summary>
+        <a class="biology-pause-link" data-biology-link href="biology.html?lang=en" target="_blank" rel="noopener noreferrer"><span data-en="OPEN THE BIOLOGY ↗" data-pt="ABRIR A BIOLOGIA ↗">OPEN THE BIOLOGY ↗</span></a>
+        <p data-en="Interactive diagrams, molecules and a five-question challenge. Opens in a new tab; this campaign stays paused." data-pt="Diagramas interativos, moléculas e um desafio de cinco perguntas. Abre em outra aba; esta campanha continua pausada.">Interactive diagrams, molecules and a five-question challenge. Opens in a new tab; this campaign stays paused.</p>
         <p><strong>Inspired by a tissue slide.</strong> Pink and purple come from hematoxylin and eosin (H&amp;E) staining. They are an artistic choice, not the natural colors of living organisms.</p>
         <p><strong>Oxidation in two places.</strong> The F ability represents reactive oxygen species (ROS) released outside the cell, which can also damage tissue. ROS also act inside the phagosome to help destroy engulfed microorganisms.</p>
         <p><strong>Capsules and opsonization.</strong> Capsules hinder phagocytosis. Antibodies and complement components can tag invaders and aid recognition. The Y pickup symbolizes this help.</p>
@@ -464,7 +493,7 @@ const TAU=Math.PI*2, rand=Math.random;
 const preferences=(()=>{try{const p=JSON.parse(localStorage.getItem('neutrodoom.preferences')||'{}');return p&&typeof p==='object'?p:{};}catch(_){return {};}})();
 const requestedLanguage=new URLSearchParams(location.search).get('lang');
 if(requestedLanguage==='en'||requestedLanguage==='pt')preferences.lang=requestedLanguage;
-const SETTINGS={lang:preferences.lang==='pt'?'pt':'en',music:preferences.music!==false,sfx:preferences.sfx!==false,musicVolume:Number.isFinite(preferences.musicVolume)?Math.max(0,Math.min(.6,preferences.musicVolume)):.22,sfxVolume:Number.isFinite(preferences.sfxVolume)?Math.max(0,Math.min(1,preferences.sfxVolume)):.65,sensitivity:Math.max(.5,Math.min(1.8,Number(preferences.sensitivity)||1)),reduced:preferences.reduced??!!window.matchMedia?.('(prefers-reduced-motion:reduce)').matches};
+const SETTINGS={lang:preferences.lang==='pt'?'pt':'en',learning:preferences.learning===true,music:preferences.music!==false,sfx:preferences.sfx!==false,musicVolume:Number.isFinite(preferences.musicVolume)?Math.max(0,Math.min(.6,preferences.musicVolume)):.22,sfxVolume:Number.isFinite(preferences.sfxVolume)?Math.max(0,Math.min(1,preferences.sfxVolume)):.65,sensitivity:Math.max(.5,Math.min(1.8,Number(preferences.sensitivity)||1)),reduced:preferences.reduced??!!window.matchMedia?.('(prefers-reduced-motion:reduce)').matches};
 const savePrefs=()=>{try{localStorage.setItem('neutrodoom.preferences',JSON.stringify(SETTINGS));}catch(_){}};
 
 const TRANSLATIONS=[["Visão em primeira pessoa do neutrófilo dentro do tecido", "First-person view of a neutrophil inside tissue"], ["NEUTRÓFILO", "NEUTROPHIL"], ["TECIDO", "TISSUE"], ["Direção do invasor mais próximo", "Direction to the nearest invader"], ["QUIMIOTAXIA", "TRACKER"], ["ONDA 1/7", "WAVE 1/7"], ["Neutrófilos disponíveis", "Available neutrophils"], ["Ativar ou desativar som", "Toggle sound effects"], ["SOM", "SFX"], ["Pausar e abrir ajustes", "Pause and open settings"], ["Pausar (Esc)", "Pause (Esc)"], ["Mapa do tecido", "Tissue map"], ["CHEFÃO · CANDIDA", "BOSS · CANDIDA"], ["Digestão e habilidades", "Digestion and abilities"], ["Fagossomo 1", "Phagosome 1"], ["Fagossomo 2", "Phagosome 2"], ["Fagossomo 3", "Phagosome 3"], ["GRÂNULOS", "GRANULES"], ["NETose lítica", "Lytic NETosis"], ["mover ·", "move ·"], ["mirar", "aim"], ["clique", "click"], ["grânulos ·", "granules ·"], ["fagocitar", "engulf"], ["oxidar ·", "oxidize ·"], ["pausa", "pause"], ["Controles de toque", "Touch controls"], ["Joystick de movimento", "Movement joystick"], ["FAGOCITAR", "ENGULF"], ["engolir de perto", "engulf at close range"], ["descarga em cone", "cone blast"], ["prender invasores", "trap invaders"], ["OXIDAR", "OXIDIZE"], ["cuidado com o tecido", "beware of tissue damage"], ["FPS DE IMUNOLOGIA · H&E", "IMMUNOLOGY FPS · H&E"], ["INVASORES À VISTA", "INVADERS IN SIGHT"], ["BACTÉRIAS · CANDIDA", "BACTERIA · CANDIDA"], ["TECIDO SOB ATAQUE", "TISSUE UNDER ATTACK"], ["TECIDO CONJUNTIVO · 37 °C", "CONNECTIVE TISSUE · 37 °C"], ["Na linha de frente da imunidade.", "The frontline of immunity."], ["Você é o", "You are the"], ["neutrófilo", "neutrophil"], ["Elimine os invasores. Preserve o tecido que veio defender.", "Eliminate the invaders. Protect the tissue you came to defend."], ["3 EPISÓDIOS", "3 EPISODES"], ["7 ONDAS", "7 WAVES"], ["4 HABILIDADES", "4 ABILITIES"], ["JOGAR", "PLAY"], ["DIFICULDADE", "DIFFICULTY"], ["Recruta", "Recruit"], ["Veterano", "Veteran"], ["Pesadelo", "Nightmare"], ["WASD move · mouse gira · clique dispara.", "WASD moves · mouse aims · click / Space fires."], ["E fagocita · Q lança NET · F oxida · Esc pausa.", "E engulfs · Q casts NET · F oxidizes · Esc pauses."], ["Joystick move · arraste o cenário para girar.", "Joystick moves · drag the scene to aim."], ["Use os quatro botões para combater.", "Use the four buttons to fight."], ["CONHEÇA SEU ARSENAL", "KNOW YOUR ARSENAL"], ["Engula alvos pequenos que estejam ao alcance.", "Engulf small targets within reach. Digestion restores health and granules."], ["Dispare em cone para abrir espaço.", "Fire a short-range cone to make room. Costs 10 granules."], ["Prenda os invasores em uma rede de cromatina.", "Trap invaders in a chromatin net. Recharges in 13 seconds."], ["Ataque forte que também fere células do tecido.", "Powerful blast that also harms nearby tissue. Costs 20 granules."], ["Criado por", "Created by"], ["Apoio: SBI · Einstein", "Supported by: SBI · Einstein"], ["JOGAR DE NOVO", "PLAY AGAIN"], ["Voltar para immuno.games", "Back to immuno.games"], ["NEUTRODOOM · PAUSA", "NEUTRODOOM · PAUSED"], ["PAUSA TÁTICA", "TACTICAL PAUSE"], ["CONTINUAR", "RESUME"], ["SENSIBILIDADE DO GIRO", "LOOK SENSITIVITY"], ["Menor para precisão; maior para reagir rápido.", "Lower for precision; higher for faster reactions."], ["Reduzir movimento e flashes", "Reduce motion and flashes"], ["RECOMEÇAR A CAMPANHA", "RESTART CAMPAIGN"], ["Proteja as duas barras.", "Protect both bars."], ["Fagocite de perto, use NETs para conter a horda e reserve a oxidação para longe das células do hospedeiro.", "Engulf at close range, use NETs to contain the horde and keep oxidation away from host cells."], ["retorna ao jogo.", "returns to the game."], ["BIOLOGIA DO JOGO", "THE BIOLOGY"], ["Uma lâmina como inspiração.", "Inspired by a tissue slide."], ["O rosa e o roxo vêm da coloração por hematoxilina e eosina (H&E). São uma escolha visual, não as cores naturais dos organismos vivos.", "Pink and purple come from hematoxylin and eosin (H&E) staining. They are an artistic choice, not the natural colors of living organisms."], ["Oxidação em dois lugares.", "Oxidation in two places."], ["A habilidade F representa espécies reativas de oxigênio (ROS) liberadas fora da célula, que também podem lesar o tecido. ROS atuam ainda dentro do fagossomo, ajudando a combater microrganismos englobados.", "The F ability represents reactive oxygen species (ROS) released outside the cell, which can also damage tissue. ROS also act inside the phagosome to help destroy engulfed microorganisms."], ["Cápsula e opsonização.", "Capsules and opsonization."], ["Cápsulas dificultam a fagocitose. Anticorpos e componentes do complemento podem marcar o invasor e facilitar seu reconhecimento. O item Y é uma representação simbólica desse auxílio.", "Capsules hinder phagocytosis. Antibodies and complement components can tag invaders and aid recognition. The Y pickup symbolizes this help."], ["O tamanho muda a resposta.", "Size changes the response."], ["Hifas grandes resistem ao englobamento completo. A forma e o tamanho do alvo influenciam as respostas do neutrófilo, incluindo a liberação de NETs.", "Large hyphae resist complete engulfment. Target shape and size influence neutrophil responses, including NET release."], ["Regras para jogar.", "Game abstractions."], ["A digestão restaurar o recurso de ataque e toda derrota gerar uma NET são abstrações do jogo. Na biologia, nem toda morte de neutrófilo envolve NETs, e sua liberação pode ocorrer sem lise imediata.", "Digestion restoring attack resources and every defeat producing a NET are game abstractions. In biology, not all neutrophil deaths involve NETs, and NET release can occur without immediate lysis."], ["Artigos:", "Papers:"], ["tamanho do alvo e NETs", "target size and NETs"], ["NETs sem lise imediata", "NETs without immediate lysis"], ["EPISÓDIO 1 · INFECÇÃO BACTERIANA", "EPISODE 1 · BACTERIAL INFECTION"], ["O enxame", "The swarm"], ["Chegue perto e fagocite. Se for cercado, descarregue os grânulos.", "Get close and engulf. Use granules when surrounded."], ["Produtor de toxina", "Toxin producer"], ["As bolsas douradas pulsam antes de atirar: desvie e encurte a distância. Agregado grande só é engolido depois de enfraquecido.", "Golden sacs pulse before firing: strafe and close in. Weaken large aggregates before engulfing."], ["Destruidor de NETs", "NET breaker"], ["Prenda a horda com a NET. A variante magenta produz nuclease e desfaz a rede: ela é a prioridade.", "Trap the horde in a NET. The magenta variant breaks down your net: prioritize it."], ["EPISÓDIO 2 · ENCAPSULADOS", "EPISODE 2 · ENCAPSULATED"], ["A cápsula", "The capsule"], ["A cápsula dificulta a fagocitose. No jogo, pegue os anticorpos (Y) para poder engolir os encapsulados.", "Collect antibodies (Y) to engulf encapsulated bacteria."], ["Ataque combinado", "Combined assault"], ["Leia a situação e escolha uma prioridade.", "Read the fight. Choose your priority."], ["EPISÓDIO 3 · CANDIDA", "EPISODE 3 · CANDIDA"], ["Levedura e hifa", "Yeast and hyphae"], ["Fagocite as leveduras antes que filamentem. A hifa é grande demais para engolir: NET e grânulos.", "Engulf yeast before they grow hyphae. Hyphae are too large: use NETs and granules."], ["Chefão: rede de hifas", "Boss: hyphal network"], ["Prenda a rede na NET, que rende mais contra alvos grandes, e descarregue. Não deixe as leveduras filamentarem.", "Trap the boss in a NET and fire. Engulf its yeast reinforcements before they grow."], ["GRANDE DEMAIS PARA ENGOLIR: USE NET E GRÂNULOS", "TOO LARGE: USE NET + GRANULES"], ["CÁPSULA: PEGUE ANTICORPOS (Y) PARA OPSONIZAR", "CAPSULE: COLLECT ANTIBODIES (Y)"], ["AGREGADO GRANDE: ENFRAQUEÇA COM GRÂNULOS", "LARGE AGGREGATE: WEAKEN WITH GRANULES"], ["Rede de hifas: grande demais para a fagocitose.", "Hyphal network: too large to engulf."], ["Uma célula do hospedeiro foi destruída.", "A host cell was destroyed."], ["Células do hospedeiro sob ataque: proteja o tecido.", "Host cells under attack: protect the tissue."], ["Sua célula se desfez em uma grande rede e segurou a onda. Outro neutrófilo está atravessando o vaso.", "Your cell left a large NET. A fresh neutrophil is entering the tissue."], ["O último neutrófilo se desfez em rede. Não há mais reforços.", "Your last neutrophil left a NET. No reinforcements remain."], ["Diapedese: você atravessa o endotélio e entra no tecido.", "Follow the tracker. Engulf to recover health and granules."], ["INFECÇÃO CONTIDA", "INFECTION CONTAINED"], ["ONDA ", "WAVE "], [" DE ", " OF "], ["TECIDO SALVO", "TISSUE SAVED"], ["TECIDO PERDIDO", "TISSUE LOST"], ["SEM REFORÇOS", "NO REINFORCEMENTS"], ["A rede de hifas caiu e o tecido resistiu.", "The hyphal network fell. The tissue held."], ["Todas as células do hospedeiro foram destruídas. Fagocitar de perto preserva mais que oxidar.", "All host cells were lost. Engulfing is safer for tissue than oxidation."], ["Os três neutrófilos se desfizeram em NETs antes de conter a infecção.", "All three neutrophils fell before the infection was contained."], [" invasores em sequência!", " invaders in a row!"], ["Sem grânulos: fagocite para recarregar mais rápido.", "No granules: engulf to recharge faster."], ["A cápsula amortece os grânulos. Procure os anticorpos (Y).", "The capsule absorbs damage. Find antibodies (Y)."], ["Reserva insuficiente para oxidar: aguarde ou fagocite.", "Not enough granules to oxidize: wait or engulf."], ["Dano colateral: a oxidação queimou ", "Collateral damage: oxidation burned "], [" células vizinhas.", " nearby host cells."], ["uma célula vizinha.", "a nearby host cell."], ["NET lançada: quem entra na rede fica preso e sofre dano contínuo.", "NET deployed: trapped invaders take damage over time."], ["Fagossomos cheios: aguarde a digestão.", "Phagosomes full: wait for digestion."], ["O invasor é destruído no fagossomo. No jogo, a digestão também recupera sua reserva de ataque.", "Engulfed! Digestion restores health and attack resources."], ["NET em alvo grande: a rede concentra o dano na hifa.", "NET on a large target: extra damage to hyphae."], ["A levedura filamentou. Hifa é grande demais para a fagocitose: use NET e grânulos.", "Yeast grew hyphae. Too large to engulf: use NETs and granules."], ["As bolsas douradas pulsam antes de lançar a toxina: desvie para o lado.", "Golden sacs pulse before firing: strafe to dodge."], ["Nuclease: sua NET está sendo degradada. Elimine a variante magenta.", "Nuclease is breaking your NET. Eliminate the magenta variant."], ["Reforço: um novo neutrófilo entra no tecido.", "Reinforcement: a fresh neutrophil enters the tissue."], ["A nuclease desfez a NET: os invasores estão soltos.", "Nuclease broke the NET: invaders are free."], ["Anticorpos chegaram ao tecido. Siga o brilho amarelo.", "Antibodies arrived. Follow the yellow Y tracker."], ["Opsonização: os anticorpos marcaram as cápsulas. Agora dá para fagocitar.", "Opsonized! Encapsulated bacteria can now be engulfed."], ["Anticorpos coletados.", "Antibodies collected."], ["Leucocidina: a toxina abre poros na sua membrana.", "Leukocidin: toxin damages your membrane."], ["1 INVASOR", "1 INVADER"], [" INVASORES", " INVADERS"], ["BACTÉRIA", "BACTERIUM"], ["AGREGADO TOXIGÊNICO", "TOXIN AGGREGATE"], ["PRODUTOR DE NUCLEASE", "NUCLEASE PRODUCER"], ["BACTÉRIA ENCAPSULADA", "ENCAPSULATED BACTERIUM"], ["CANDIDA · LEVEDURA", "CANDIDA · YEAST"], ["CANDIDA · HIFA", "CANDIDA · HYPHA"], ["CANDIDA · REDE DE HIFAS", "CANDIDA · HYPHAL NETWORK"], ["APROXIME-SE · GRÂNULOS DE CURTO ALCANCE", "GET CLOSER · SHORT-RANGE GRANULES"], ["OPSONIZADA · FAGOCITOSE LIBERADA", "OPSONIZED · READY TO ENGULF"], ["CÁPSULA · PROCURE OS Y", "CAPSULE · FIND ANTIBODIES (Y)"], ["FILAMENTAÇÃO IMINENTE", "HYPHAL GROWTH IMMINENT"], ["PRESA NA NET", "TRAPPED IN NET"], ["AO ALCANCE DA FAGOCITOSE", "IN ENGULF RANGE"], ["AO ALCANCE DOS GRÂNULOS", "IN GRANULE RANGE"], [" s para reutilizar", " s to recharge"], ["reserva insuficiente", "not enough granules"], ["RISCO AO TECIDO", "TISSUE AT RISK"], ["20 de reserva", "20 granules"], ["recarregando…", "recharging…"], ["cone de curto alcance", "short-range cone"], ["digerindo…", "digesting…"], ["MUDO", "SFX OFF"]];
@@ -941,6 +970,43 @@ function toast(msg,dur){ el.toast.textContent=msg; el.toast.classList.add('on');
 function once(key,msg,dur){ if(G.seen[key]) return; G.seen[key]=1; toast(msg,dur||4.5); }
 function banner(ep,title,tip){$('bS').textContent=t(ep);$('bH').textContent=t(title);$('bP').textContent=t(tip);el.banner.classList.add('on');document.body.classList.add('wave-intro');clearTimeout(bannerTm);bannerTm=setTimeout(()=>{el.banner.classList.remove('on');document.body.classList.remove('wave-intro');},1100);}
 
+/* Optional learning only reads combat events; it never changes combat state. */
+const BIO_TIPS={
+  phago:['PHAGOCYTOSIS · E','FAGOCITOSE · E','IgG–FcγR; C3b/iC3b–CR1/CR3. NOX2 and granule proteins act inside the phagosome.','IgG–FcγR; C3b/iC3b–CR1/CR3. NOX2 e proteínas dos grânulos atuam dentro do fagossomo.'],
+  fire:['GRANULES · CLICK / SPACE','GRÂNULOS · CLIQUE / ESPAÇO','MPO, NE/ELANE, CTSG, α-defensins, LTF, LYZ, MMP9. Cargo differs by granule type.','MPO, NE/ELANE, CTSG, α-defensinas, LTF, LYZ, MMP9. O conteúdo varia por tipo de grânulo.'],
+  ros:['OXIDATIVE BURST · F','BURST OXIDATIVO · F','NOX2 → O₂•⁻ → H₂O₂. MPO uses H₂O₂ + Cl⁻ to form HOCl. Extracellular ROS may injure tissue.','NOX2 → O₂•⁻ → H₂O₂. MPO usa H₂O₂ + Cl⁻ para formar HOCl. ROS extracelulares podem lesar o tecido.'],
+  net:['NET RELEASE · Q','LIBERAÇÃO DE NETs · Q','DNA + histones, NE, MPO. Lytic or non-lytic release; PAD4/ROS depend on the pathway.','DNA + histonas, NE, MPO. Liberação lítica ou não; PAD4/ROS dependem da via.']
+};
+const LEARNING_CARDS=[
+  {wave:1,topic:'phagocytosis',title:['Contact, engulf, destroy','Reconhecer, englobar, destruir'],text:['Phagocytosis brings a small target into a phagosome. Granule proteins and NOX2 cooperate there. In the game, digestion restores resources; real neutrophils do not gain health points.','A fagocitose leva um alvo pequeno ao fagossomo. Proteínas dos grânulos e NOX2 cooperam nesse compartimento. No jogo, a digestão repõe recursos; neutrófilos reais não ganham pontos de vida.']},
+  {wave:3,topic:'nets',title:['A trap can be dismantled','Uma armadilha pode ser desfeita'],text:['NETs contain chromatin and antimicrobial proteins. Some microbes secrete nucleases that cut their DNA scaffold. Trapping does not guarantee killing; NET damage and immunity in this game are simplified rules.','NETs contêm cromatina e proteínas antimicrobianas. Alguns microrganismos secretam nucleases que cortam seu arcabouço de DNA. Aprisionar não garante matar; dano e imunidade às NETs no jogo são regras simplificadas.']},
+  {wave:5,topic:'phagocytosis',title:['Opsonization improves recognition','A opsonização facilita o reconhecimento'],text:['IgG and complement fragments help neutrophils recognize encapsulated microbes through Fcγ and complement receptors. The Y pickup models this help; it does not mean the capsule disappears.','IgG e fragmentos do complemento ajudam os neutrófilos a reconhecer microrganismos encapsulados por receptores Fcγ e de complemento. O item Y representa essa ajuda; a cápsula não desaparece.']},
+  {wave:6,topic:'enemies',title:['Size changes the response','O tamanho muda a resposta'],text:['Candida yeast can be engulfed; long hyphae can exceed the capacity for complete phagocytosis. Extracellular defenses may help, but NET trapping does not guarantee fungal killing.','Leveduras de Candida podem ser fagocitadas; hifas longas podem exceder a capacidade de englobamento completo. Defesas extracelulares podem ajudar, mas prender em NETs não garante matar o fungo.']}
+];
+const learning={cards:[],selected:0,lastTip:-Infinity,tipKey:null,tipTimer:0,tipTimes:{},failureTimes:{}};
+function updateBiologyLinks(){document.querySelectorAll('[data-biology-link]').forEach(a=>{a.href='biology.html?lang='+SETTINGS.lang+(a.dataset.topic?'#'+a.dataset.topic:'');});}
+function hideMoleculeTip(){clearTimeout(learning.tipTimer);learning.tipKey=null;$('moleculeTip').hidden=true;}
+function resetLearning(){hideMoleculeTip();learning.cards=[];learning.selected=0;learning.lastTip=-Infinity;learning.tipTimes={};learning.failureTimes={};$('learnedCard').open=false;syncLearningUI();}
+function syncLearningUI(){
+  document.querySelectorAll('[data-learning-setting]').forEach(n=>{n.checked=SETTINGS.learning;});
+  const count=learning.cards.length,card=learning.cards[learning.selected];
+  $('learnedBtn').hidden=!count;$('learnedCard').hidden=!count;
+  $('learnedBtn').textContent=L('RECAP','REVISÃO')+' · '+count;
+  $('learnedBtn').setAttribute('aria-label',L('Pause and read optional biology cards','Pausar e ler cartões opcionais de biologia'));
+  if(card){$('learnedTitle').textContent=L('WAVE ','ONDA ')+card.wave+' · '+L(...card.title);$('learnedText').textContent=L(...card.text);$('learnedLink').dataset.topic=card.topic;$('learnedCount').textContent=(learning.selected+1)+' / '+count;}
+  $('learnedPrev').disabled=learning.selected<=0;$('learnedNext').disabled=learning.selected>=count-1;
+  if(learning.tipKey){const tip=BIO_TIPS[learning.tipKey];$('moleculeTitle').textContent=L(tip[0],tip[1]);$('moleculeText').textContent=L(tip[2],tip[3]);}
+  updateBiologyLinks();
+}
+function moleculeTip(key){
+  if(!SETTINGS.learning||G.state!=='play')return;
+  const now=performance.now();if(now-learning.lastTip<6500||now-(learning.tipTimes[key]??-Infinity)<18000)return;
+  learning.lastTip=now;learning.tipTimes[key]=now;learning.tipKey=key;
+  syncLearningUI();$('moleculeTip').hidden=false;clearTimeout(learning.tipTimer);learning.tipTimer=setTimeout(hideMoleculeTip,5500);
+}
+function failureTip(key,en,pt){const now=performance.now();if(now-(learning.failureTimes[key]??-Infinity)<2200)return;learning.failureTimes[key]=now;toast(L(en,pt),3.6);}
+function unlockLearning(wave){const card=LEARNING_CARDS.find(c=>c.wave===wave);if(!card||learning.cards.includes(card))return;learning.cards.push(card);learning.selected=learning.cards.length-1;syncLearningUI();}
+
 /* ================= REGRAS ================= */
 const tissue=()=>{let s=0,m=0; for(const c of CELLS){s+=c.hp;m+=c.max;} return s/m;};
 function why(e){
@@ -1030,6 +1096,7 @@ function spawnNext(){
 
 }
 function newGame(from){
+  resetLearning();
   G.modeKey=$('difficulty')?.value||'veteran';mode=MODES[G.modeKey]||MODES.veteran;resetInputs();result=null;G.cleared=0;G.maxCombo=0;G.hostAim=null;clearTimeout(toastTm);clearTimeout(bannerTm);el.banner.classList.remove('on');el.toast.classList.remove('on');document.activeElement?.blur();
   $('pauseScreen').hidden=true; document.body.classList.remove('paused');
   Object.assign(G,{state:'play',time:0,queue:[],enemies:[],births:[],shots:[],nets:[],picks:[],parts:[],lives:2,kills:0,phago:0,collateral:0,seen:{},tgt:null,tgtWhy:'',aim:null,hitMark:0,combo:0,comboT:0,score:0});
@@ -1040,6 +1107,7 @@ function newGame(from){
   toast(t("Follow the tracker. Engulf to recover health and granules."),3);
 }
 function endGame(kind){
+  hideMoleculeTip();
   G.state=kind; resetInputs(); $('pauseScreen').hidden=true; document.body.classList.remove('paused'); document.body.classList.remove('play');
   try{ if(document.pointerLockElement) document.exitPointerLock(); }catch(_){}
   el.resp.classList.remove('on'); el.banner.classList.remove('on'); el.hint.className='';
@@ -1065,43 +1133,55 @@ function inCone(e,range,half){
 }
 function fire(){
   if(P.dead||P.fireCd>0||P.engulf>0) return;
-  if(P.gran<10){ P.fireCd=.3; sfx('no'); once('nogran',t("No granules: engulf to recharge faster.")); return; }
+  if(P.gran<10){ P.fireCd=.3; sfx('no'); once('nogran',L('Granule resource empty (game rule). Engulf or wait.','Recurso de grânulos esgotado (regra do jogo). Fagocite ou aguarde.')); return; }
   P.gran-=10; P.fireCd=.32; P.kick=1; sfx('gran');
+  moleculeTip('fire');
   for(let i=0;i<24;i++){const a=-Math.PI/2+(rand()-.5)*1.0, s=H*(1.1+rand()*.9); FX.push({x:W/2+(rand()-.5)*W*.08,y:H*.84,vx:Math.cos(a)*s*.6,vy:Math.sin(a)*s*.5,life:.2+rand()*.14,max:.34,c:i%3?'#fff1c9':'#ff9db5'});}
   for(const e of G.enemies){
     const d=inCone(e,4.2,.38); if(d<0) continue;
     let dm=34*(1-clamp(d/4.2,0,1)*.6);
-    if(e.type==='capsule'&&e.ops<=0){ dm*=.35; once('cap',t("The capsule absorbs damage. Find antibodies (Y).")); }
+    if(e.type==='capsule'&&e.ops<=0){ dm*=.35; once('cap',L('Capsule: reduced granule damage in this game. Collect antibodies (Y).','Cápsula: dano dos grânulos reduzido neste jogo. Colete anticorpos (Y).')); }
     hit(e,dm);
   }
 }
 function ros(){
-  if(P.dead||P.rosCd>0) return;
-  if(P.gran<20){ sfx('no'); toast(t("Not enough granules to oxidize: wait or engulf."),2); return; }
+  if(P.dead) return;
+  if(P.rosCd>0){failureTip('rosCooldown','ROS recharging: this timer is a game rule.','ROS em recarga: esse tempo é uma regra do jogo.');return;}
+  if(P.gran<20){ sfx('no'); failureTip('rosResource','Need 20 resource points in this game. NOX2 uses NADPH, not granules.','São necessários 20 pontos de recurso no jogo. NOX2 usa NADPH, não grânulos.'); return; }
   P.gran-=20; P.rosCd=7; P.rosFx=.35; P.kick=1; sfx('ros');
+  moleculeTip('ros');
   for(const e of G.enemies){ const d=inCone(e,3.3,.3); if(d>=0) hit(e,130); }
   let col=0;
   for(const c of CELLS){ if(c.hp>0&&Math.hypot(c.x-P.x,c.y-P.y)<2.6&&los(P.x,P.y,c.x,c.y,true)){ const before=c.hp; dmgCell(c,14,true); G.collateral+=Math.round(before-c.hp); col++; } }
   if(col){ toast(t("Collateral damage: oxidation burned ")+(col>1?col+t(" nearby host cells."):t("a nearby host cell."))); }
 }
 function net(){
-  if(P.dead||P.netCd>0) return;
+  if(P.dead) return;
+  if(P.netCd>0){failureTip('netCooldown','NET recharging: a game timer, not a fixed biological interval.','NET em recarga: um tempo do jogo, não um intervalo biológico fixo.');return;}
   let x=P.x, y=P.y; const dx=Math.cos(P.a), dy=Math.sin(P.a);
   for(let s=.2;s<=3;s+=.2){ if(solidAt(P.x+dx*s,P.y+dy*s)) break; x=P.x+dx*s; y=P.y+dy*s; }
   makeNet(x,y,1.9,9,false); P.netCd=13; P.netFx=.25; sfx('net');
-  once('net',t("NET deployed: trapped invaders take damage over time."));
+  moleculeTip('net');
+  once('net',L('NET deployed. Trapped invaders take damage here; real NETs do not always kill.','NET liberada. Invasores presos recebem dano aqui; NETs reais nem sempre matam.'));
 }
 function phago(){
   if(P.dead||P.engulf>0) return;
   findTarget();
   const e=G.tgt;
-  if(!e||e.dead){ P.engulf=.001; return; }
-  if(G.tgtWhy){ sfx('no'); toast(G.tgtWhy.charAt(0)+G.tgtWhy.slice(1).toLowerCase()+'.'); return; }
+  if(!e||e.dead){ P.engulf=.001; failureTip('contact','Move closer and aim: phagocytosis requires direct contact.','Aproxime-se e mire: a fagocitose exige contato direto.'); return; }
+  if(G.tgtWhy){
+    sfx('no');
+    if(e.type==='capsule')failureTip('capsule','Capsule hinders uptake. IgG/complement help recognition; collect Y here.','A cápsula dificulta a captura. IgG/complemento ajudam no reconhecimento; colete Y aqui.');
+    else if(e.type==='hypha'||e.type==='boss')failureTip('size','Too large for complete engulfment. Use NETs and granules.','Grande demais para englobamento completo. Use NETs e grânulos.');
+    else failureTip('aggregate','Weaken this aggregate first. Its 50% health threshold is a game abstraction.','Enfraqueça este agregado. O limite de 50% de vida é uma abstração do jogo.');
+    return;
+  }
   const i=P.slots.findIndex(s=>s<=0);
-  if(i<0){ sfx('no'); toast(t("Phagosomes full: wait for digestion.")); return; }
+  if(i<0){ sfx('no'); failureTip('slots','Wait for digestion. Three phagosome slots are a game limit.','Aguarde a digestão. Os três espaços para fagossomos são um limite do jogo.'); return; }
   e.dead=true; G.kills++; G.phago++; awardKill(true); G.hitMark=.2;
   P.slotMax[i]=e.type==='capsule'?4:e.type==='toxin'?3.4:2.6; P.slots[i]=P.slotMax[i];
   P.engulf=.001; sfx('glup');
+  moleculeTip('phago');
   once('phago',t("Engulfed! Digestion restores health and attack resources."));
 }
 function findTarget(){
@@ -1242,7 +1322,7 @@ function update(dt){
   if(P.rosFx>0)P.rosFx-=dt; if(P.netFx>0)P.netFx-=dt; if(P.abFx>0)P.abFx-=dt;
   // ondas
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0){for(let k=0;k<mode.batch&&G.queue.length;k++)spawnNext();G.spawnT=mode.spawn*(.8+rand()*.4);}}
-  else if(!G.enemies.length&&!G.births.length&&!G.waveDone){ G.waveDone=true; G.cleared=Math.min(7,(G.cleared||0)+1);G.nextT=.75; }
+  else if(!G.enemies.length&&!G.births.length&&!G.waveDone){ G.waveDone=true; G.cleared=Math.min(7,(G.cleared||0)+1);G.nextT=.75; unlockLearning(G.cleared); }
   if(G.waveDone&&!P.dead){ G.nextT-=dt; if(G.nextT<=0){ if(G.wave+1<WAVES.length) startWave(G.wave+1); else {endGame('win');return;} } }
   if(!G.queue.length&&G.enemies.length<=2&&G.time-(G.waveStart||0)>7){for(const e of G.enemies)if(E[e.type].sp)e.target=null;}
   updEnemies(dt);
@@ -1607,6 +1687,7 @@ function resetInputs(){
 }
 function pauseGame(){
   if(G.state!=='play')return;
+  hideMoleculeTip();
   G.state='pause';syncAudio();$('pauseTip').textContent=t(WAVES[G.wave].tip);resetInputs();$('pauseScreen').hidden=false;document.body.classList.add('paused');
   if(document.pointerLockElement)document.exitPointerLock?.();
   $('resumeBtn').focus({preventScroll:true});
@@ -1626,6 +1707,10 @@ function settingsUI(){
 }
 $('sensitivity').addEventListener('input',e=>{SETTINGS.sensitivity=Number(e.target.value);savePrefs();});
 $('reducedFx').addEventListener('change',e=>{SETTINGS.reduced=e.target.checked;settingsUI();savePrefs();});
+document.querySelectorAll('[data-learning-setting]').forEach(input=>input.addEventListener('change',()=>{SETTINGS.learning=input.checked;if(!SETTINGS.learning)hideMoleculeTip();syncLearningUI();savePrefs();}));
+$('learnedBtn').addEventListener('click',()=>{pauseGame();$('learnedCard').open=true;$('learnedSummary').focus();});
+$('learnedPrev').addEventListener('click',()=>{learning.selected=Math.max(0,learning.selected-1);syncLearningUI();});
+$('learnedNext').addEventListener('click',()=>{learning.selected=Math.min(learning.cards.length-1,learning.selected+1);syncLearningUI();});
 $('pauseBtn').addEventListener('click',pauseGame);$('resumeBtn').addEventListener('click',resumeGame);
 $('restartBtn').addEventListener('click',()=>{initAudio();newGame(0);});
 addEventListener('keydown',e=>{
@@ -1748,7 +1833,7 @@ function makeScoreCanvas(){
 }
 async function downloadScore(){if(!result)return;try{const c=makeScoreCanvas(),blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));if(!blob)throw Error('png');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='NEUTRODOOM-'+result.mode+'-'+result.score+'.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);$('shareStatus').textContent=L('Score card downloaded. Ready to share.','Card baixado. Pronto para compartilhar.');}catch(_){$('shareStatus').textContent=L('Could not save the image. Use Copy score.','Não foi possível salvar a imagem. Use Copiar pontuação.');}}
 async function shareScore(){if(!result)return;if(!navigator.share){await copyScore();return;}try{await navigator.share({title:'NEUTRODOOM',text:shareText()});$('shareStatus').textContent=L('Score shared.','Pontuação compartilhada.');}catch(e){if(e.name!=='AbortError')await copyScore();}}
-function backToTitle(){G.state='title';resetInputs();document.exitPointerLock?.();$('pauseScreen').hidden=true;$('end').hidden=true;$('title').hidden=false;document.body.classList.remove('play','paused','wave-intro');clearTimeout(bannerTm);clearTimeout(toastTm);el.banner.classList.remove('on');el.toast.classList.remove('on');syncAudio();updateTitleRecord();$('play').focus();}
+function backToTitle(){hideMoleculeTip();G.state='title';resetInputs();document.exitPointerLock?.();$('pauseScreen').hidden=true;$('end').hidden=true;$('title').hidden=false;document.body.classList.remove('play','paused','wave-intro');clearTimeout(bannerTm);clearTimeout(toastTm);el.banner.classList.remove('on');el.toast.classList.remove('on');syncAudio();updateTitleRecord();$('play').focus();}
 function scoreHud(){const current=scoreResult();$('scoreLive').textContent=fmt(current.score)+' '+L('PTS','PTS');const mult=G.comboT>0?Math.min(4,1+Math.floor(G.combo/3)):1;$('comboLive').textContent=G.comboT>0?'×'+mult+' · '+G.combo+' '+L('STREAK','EM SÉRIE'):L('ENGULF FOR BONUS','FAGOCITE PARA BÔNUS');$('comboMeter').firstElementChild.style.transform='scaleX('+(G.comboT/4.5)+')';}
 $('copyScore').addEventListener('click',copyScore);$('downloadScore').addEventListener('click',downloadScore);$('shareScore').addEventListener('click',shareScore);$('menuBtn').addEventListener('click',backToTitle);$('difficulty').addEventListener('change',updateTitleRecord);
 
@@ -1772,6 +1857,7 @@ function applyLocale(){
   for(const [node,a,v]of staticAttrs)node.setAttribute(a,t(v));
   document.querySelectorAll('[data-en]').forEach(n=>n.textContent=n.dataset[SETTINGS.lang==='pt'?'pt':'en']);
   document.querySelectorAll('[data-language]').forEach(b=>{b.textContent=SETTINGS.lang==='en'?'PT-BR':'ENGLISH';b.setAttribute('aria-label',L('Switch to Portuguese','Trocar para inglês'));});
+  syncLearningUI();
   $('musicVolume').setAttribute('aria-label',L('Music volume','Volume da música'));$('sfxVolume').setAttribute('aria-label',L('Sound effects volume','Volume dos efeitos'));$('manualShare').setAttribute('aria-label',L('Score to copy','Pontuação para copiar'));
   audioUI();updateTitleRecord();if(result)renderResult();if(G.state==='play'||G.state==='pause'){$('pauseTip').textContent=t(WAVES[G.wave].tip);lastCompass=-1;findTarget();findAim();hud();}
   if(el.banner.classList.contains('on')){$('bS').textContent=t(WAVES[G.wave].ep);$('bH').textContent=t(WAVES[G.wave].t);$('bP').textContent=t(WAVES[G.wave].tip);}
