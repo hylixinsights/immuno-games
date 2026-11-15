@@ -367,6 +367,44 @@ const CATALOGO = {
           "Balance microbial elimination against collateral damage"
         ]
       }
+    },
+    {
+      "id": "coccichain",
+      "url": "coccichain/",
+      "capa": "capas/coccichain.webp",
+      "publicado": "2026-11",
+      "nivel": "graduacao",
+      "duracao": 10,
+      "temas": [
+        "inata",
+        "adaptativa",
+        "infeccao"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "CocciChain",
+        "subtitulo": "Cresça em cadeia. Escape da defesa.",
+        "resumo": "Guie uma cadeia de cocos Gram-positivos por quatro fases, da garganta à válvula cardíaca. Consuma glicose para crescer, ative a cápsula e escape de fagócitos, anticorpos e antibióticos enquanto explora a ciência por trás das regras.",
+        "aprende": [
+          "Relacionar divisão bacteriana e formação de cadeias de cocos",
+          "Explorar o papel da cápsula na evasão do reconhecimento imune e da fagocitose",
+          "Entender como a opsonização favorece a captura de bactérias por fagócitos",
+          "Distinguir mecanismos biológicos das simplificações do jogo"
+        ]
+      },
+      "en": {
+        "nome": "CocciChain",
+        "subtitulo": "Grow your chain. Escape the defenses.",
+        "resumo": "Guide a chain of Gram-positive cocci through four levels, from the throat to a heart valve. Consume glucose to grow, activate your capsule, and escape phagocytes, antibodies, and antibiotics while exploring the science behind the rules.",
+        "aprende": [
+          "Connect bacterial division with the formation of chains of cocci",
+          "Explore how the capsule helps bacteria evade immune recognition and phagocytosis",
+          "Understand how opsonization helps phagocytes capture bacteria",
+          "Distinguish biological mechanisms from the game's simplifications"
+        ]
+      }
     }
   ]
 };

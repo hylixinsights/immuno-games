@@ -149,6 +149,10 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
 #jogo-neutrodoom .cover{object-fit:contain}
 #jogo-neutrodoom .cover-title{position:absolute;left:8%;right:8%;bottom:8%;text-align:center;color:#f8b0cd;font:900 clamp(22px,2.1vw,32px)/1 Arial,sans-serif;letter-spacing:-.04em;text-shadow:2px 3px #663873}
 @media(max-width:620px){#jogo-neutrodoom .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}#jogo-neutrodoom .cover-title{font-size:32px}}
+/* CocciChain keeps the full portrait cover visible. */
+#jogo-coccichain .cover-wrap{background:#140f1c}
+#jogo-coccichain .cover{object-fit:contain}
+@media(max-width:620px){#jogo-coccichain .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}}
 </style>
 <!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
      Cole o mesmo ID do painel do Umami em data-website-id abaixo. -->
@@ -214,7 +218,7 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
   </div>
 </footer>
 
-<script src="jogos.js?v=20261111-neutrodoom"></script>
+<script src="jogos.js?v=20261115-coccichain"></script>
 <script>
 const IDIOMA='pt',LINHAS='ABCDEFGH',COLUNAS=12;
 let dados=null,filtroTema=null,filtroNivel=null,termo='';
