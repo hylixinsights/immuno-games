@@ -405,6 +405,44 @@ const CATALOGO = {
           "Distinguish biological mechanisms from the game's simplifications"
         ]
       }
+    },
+    {
+      "id": "monocraft",
+      "url": "monocraft/",
+      "capa": "capas/monocraft.webp",
+      "publicado": "2026-11",
+      "nivel": "graduacao",
+      "duracao": 20,
+      "temas": [
+        "inata",
+        "adaptativa",
+        "infeccao"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "MonoCraft",
+        "subtitulo": "Um mundo vivo. Seis missões.",
+        "resumo": "Explore o interior de um macrófago em um mundo 3D de blocos. Investigue alvos, escolha rotas e transforme a célula em seis missões. Conheça pesquisadores da área e compartilhe a precisão das suas decisões.",
+        "aprende": [
+          "Conectar transporte do fagossomo, lisossomos e mitofagia seletiva",
+          "Explorar ubiquitinação, proteassomo e sinalização por TLR4",
+          "Relacionar apresentação de antígenos em MHC II e ativação do inflamassoma NLRP3",
+          "Distinguir processos biológicos das simplificações do jogo"
+        ]
+      },
+      "en": {
+        "nome": "MonoCraft",
+        "subtitulo": "One living world. Six missions.",
+        "resumo": "Explore the inside of a macrophage in a 3D voxel world. Investigate targets, choose pathways, and transform the cell across six missions. Meet researchers in the field and share your decision accuracy.",
+        "aprende": [
+          "Connect phagosome transport, lysosomes, and selective mitophagy",
+          "Explore ubiquitination, the proteasome, and TLR4 signaling",
+          "Connect MHC II antigen presentation and NLRP3 inflammasome activation",
+          "Distinguish biological processes from game simplifications"
+        ]
+      }
     }
   ]
 };

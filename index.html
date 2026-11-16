@@ -153,6 +153,10 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
 #jogo-coccichain .cover-wrap{background:#140f1c}
 #jogo-coccichain .cover{object-fit:contain}
 @media(max-width:620px){#jogo-coccichain .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}}
+/* Preserve the full portrait artwork on the MonoCraft catalogue card. */
+#jogo-monocraft .cover-wrap{background:#14352c}
+#jogo-monocraft .cover{object-fit:contain}
+@media(max-width:620px){#jogo-monocraft .cover-wrap{width:100%;height:auto;aspect-ratio:2/3;max-height:480px}}
 </style>
 <!-- ═══ Métricas de uso · Umami (privacy-first, sem cookie) ═══
      Cole o mesmo ID do painel do Umami em data-website-id abaixo. -->
@@ -218,7 +222,7 @@ footer{background:var(--ink);color:#e5e8e2;padding:54px 0}
   </div>
 </footer>
 
-<script src="jogos.js?v=20261115-coccichain"></script>
+<script src="jogos.js?v=20261116-monocraft"></script>
 <script>
 const IDIOMA='pt',LINHAS='ABCDEFGH',COLUNAS=12;
 let dados=null,filtroTema=null,filtroNivel=null,termo='';
