@@ -696,6 +696,25 @@ export function drawNerve(ctx, width, height, frame = {}) {
     const end = launch + (id + 1) * span - gap;
     drawSleeve(ctx, start, end, centerY, r, stage, injured && id === 0, Math.abs(id) % 3, store);
   }
+  // A separate axial pulse follows the same piece of cord after the landing.
+  // The injured segment visibly delays transmission irrespective of the player's grade.
+  const relay = frame.relay;
+  if (relay >= 0 && relay <= 1) {
+    const x = launch + (target - launch) * relay;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (let k=3;k>=0;k--) {
+      const tail=Math.max(launch, x - r * (.16 + k*.19));
+      ctx.globalAlpha = 1-k*.19;
+      ctx.beginPath();
+      ctx.moveTo(tail, centerY(tail));
+      ctx.lineTo(x, centerY(x));
+      stroke(ctx, '#ffdc84', Math.max(2,r*.14));
+    }
+    ctx.globalAlpha=1;
+    ctx.beginPath();ctx.arc(x,centerY(x),Math.max(2.8,r*.16),0,TAU);
+    ctx.fillStyle='#fff2c2';ctx.fill();stroke(ctx,INK,Math.max(1,r*.038));ctx.restore();
+  }
   nodeTarget(ctx, target, toY, perfect, r, time, frame.feedback ?? 0, frame.quality ?? 0);
   if (frame.prediction !== false) {
     trajectory(ctx, launch, fromY, (frame.landingX ?? .55) * width, (frame.landingY ?? frame.targetY ?? .68) * height, (frame.arcHeight ?? .24) * height, r, frame.holding);

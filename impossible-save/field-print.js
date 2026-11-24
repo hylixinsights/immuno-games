@@ -384,7 +384,7 @@ function cleat(c,x,y,s,reverse=1) {
 }
 function glove(c,x,y,angle,flex,scale=1) {
   c.save();c.translate(x,y);c.rotate(angle);c.scale(scale,scale);
-  // Centre of the upper palm meets the physical hand anchor.
+  // The caller places the leading fingertip at the same contact anchor as the 3D rig.
   const gloveShape=[[-4,8],[-6.2,3],[-7.8,.8],[-9.1,-2],[-7.6,-3.8],[-4.1,-1.6],[-5,-5.6],[-4.4,-8.2],[-2.3,-8.2],[-1.6,-3.9],[-1.3,-9.1],[.8,-9.6],[2,-8.5],[2.1,-4.4],[3.3,-8.4],[5.1,-8.1],[5.5,-6.3],[4.7,-3.2],[6.3,-6],[8,-5],[7.6,-2.1],[6.4,3.4],[3.2,7.1],[3.1,10],[-3.2,10]];
   polygon(c,gloveShape.map(([a,b])=>b< -2?[a+(a<0?.55:-.55)*flex,-2+(b+2)*(1-flex*.59)]:[a,b]),'#f2be4f','#715941',1.05);
   polygon(c,[[-3,-2],[-.1,-4],[3,-3.5],[4,1.6],[2.1,5.5],[-2.4,5.6],[-4.2,2]],'#faD77e');
@@ -429,9 +429,12 @@ function drawKeeper(c,f) {
     const sign=i?1:-1, shoulders=i?right:left, hand=hands[i];
     const elbow=[mix(shoulders[0],hand[0],.52)+sign*(4-2*dive),mix(shoulders[1],hand[1],.49)+6.5*(1-dive)];
     strip(c,shoulders,elbow,4.2,3.4,i?'#298e86':'#267e77','#82b6a0');
-    strip(c,elbow,hand,3.4,2.8,'#56a795','#90c5a6');
     const rot=Math.atan2(hand[0]-elbow[0],elbow[1]-hand[1]);
-    glove(c,hand[0],hand[1],rot,saturate(f.flex),.75+(.09*dive));
+    const gloveScale=.75+.09*dive, flex=saturate(f.flex);
+    const length=supplied&&sign===side?(2+7.6*(1-.59*flex))*gloveScale*dive:0;
+    const palm=[hand[0]-length*Math.sin(rot),hand[1]+length*Math.cos(rot)];
+    strip(c,elbow,palm,3.4,2.8,'#56a795','#90c5a6');
+    glove(c,palm[0],palm[1],rot,flex,gloveScale);
   }
   polygon(c,[[-9.8,chest-.1],[-4.5,chest-3],[4.7,chest-3],[10.2,chest+1],[8,chest+10],[8.7,hip-.3],[3,hip+1.5],[-8.8,hip-.7],[-8.3,chest+10]],'#359386','#245957',1.4);
   polygon(c,[[-9,chest+1],[-5.5,chest-1],[0,chest+3.8],[6,chest-1],[9.6,chest+1],[.1,chest+7.3]],'#e6c473');

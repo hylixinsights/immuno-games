@@ -57,6 +57,11 @@ export function makeWorld(mount){
       p.copy(anchor).add(v.set(-f.side*.22,.18,1).multiplyScalar(near));
       p.lerp(wide,smooth(far)*.88);at.copy(anchor);at.z-=.27*(1-smooth(t/.27));at.lerp(target,smooth(far)*.82);
       tunnel.position.copy(anchor);tunnel.visible=t<.245;
+    }else if(f.camera==='miss'){
+      const u=smooth(f.cameraT/.27)*(1-smooth((f.cameraT-.65)/.35));
+      anchor.copy(finger).lerp(ball.position,.55);
+      p.lerp(v.copy(anchor).add(new THREE.Vector3(-f.side*.70,.56,2.9)),u);
+      at.lerp(anchor,u);
     }else if(f.camera==='result'){
       p.copy(wide).multiplyScalar(.91);at.set(shot.side*.44,1.15,-1.4);
     }

@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#10272b">
 <title>The Impossible Save · immuno.games</title><meta name="description" content="Ride the nerve signals of a Brazilian goalkeeper in a paper stadium. A free one-button penalty arcade, in English and Portuguese.">
 <meta property="og:title" content="The Impossible Save · immuno.games"><meta property="og:description" content="One goalkeeper. Three jumps. A penalty in the top corner."><meta property="og:image" content="https://immuno.games/capas/impossible-save.webp">
-<link rel="icon" href="../favicon.svg"><link rel="preload" href="assets/display-italic.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="style.css">
+<link rel="icon" href="../favicon.svg"><link rel="preload" href="assets/display-italic.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="style.css?v=2">
 <script type="importmap">{"imports":{"three":"./vendor/three.js","papercraft/":"./paper/"}}</script>
 </head>
 <body data-mode="home">
@@ -32,7 +32,7 @@
 <div class="home-best home-only"><svg><use href="#i-cup"/></svg><span data-t="record"></span><strong id="homeRecord">0</strong></div>
 <div id="matchHud" class="match-hud" hidden><div class="live-stats"><button class="dark-icon" data-a="pause" data-aria="pause"><svg><use href="#i-pause"/></svg></button><div class="hud-kick"><small id="kickLabel"></small><b id="phaseLabel"></b></div></div><div class="hud-score"><span data-t="score"></span><b id="scoreValue"></b></div></div>
 <div id="inset" class="inset" hidden><div class="inset-label"><i></i><span data-t="live"></span></div><canvas id="mini"></canvas><div id="fieldCue"></div></div>
-<div id="liveHint" class="live-hint" hidden></div><div id="compareDock" class="compare-dock" hidden><button class="paper-chip" data-a="compare"><svg><use href="#i-eye"/></svg><span data-t="compare"></span></button></div>
+<aside id="signalStrip" class="signal-strip" hidden></aside><div id="liveHint" class="live-hint" hidden></div><div id="compareDock" class="compare-dock" hidden><button class="paper-chip" data-a="compare"><svg><use href="#i-eye"/></svg><span data-t="compare"></span></button></div>
 <div id="flipStrip" class="flip-strip" hidden></div>
 <div id="result" class="result-card" hidden></div>
 </section>
@@ -40,4 +40,4 @@
 <div id="matchBar" class="match-bar" hidden></div>
 </main><footer><span>© <a href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener">Helder Nakaya</a> <span class="foot-dot">/</span> CSBL</span><button data-a="credits" data-t="credits"></button></footer>
 </div><dialog id="modal"><div class="dialog-inner"><div class="dialog-tools"><div class="languages" aria-label="Language / Idioma"><button data-a="en" lang="en">EN</button><button data-a="pt" lang="pt-BR">PT-BR</button></div><button data-a="close" class="icon-button" data-aria="close"><svg><use href="#i-close"/></svg></button></div><div id="modalBody"></div></div></dialog>
-<p id="announce" class="sr" aria-live="polite"></p><noscript>This game needs JavaScript. Este jogo requer JavaScript.</noscript><script type="module" src="game.js"></script></body></html>
+<p id="announce" class="sr" aria-live="polite"></p><noscript>This game needs JavaScript. Este jogo requer JavaScript.</noscript><script type="module" src="game.js?v=2"></script></body></html>
