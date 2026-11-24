@@ -24,28 +24,40 @@ export function makeShot(seed, slot = 0) {
   return {seed:seed >>> 0, side, x, y, curve, loft, pace, pressure, targets, sweeps};
 }
 
-export function jumpGeometry(shot, day, stage, age, held = null) {
+// These are margins in a timing game. Lesion location never changes controller latency
+// or the anatomy/spacing of the nodes. A narrower bracket represents less room for error.
+export function releaseMargin(day, eye, stage) {
+  if (day === 1 && eye === 'left' && stage === 0) return .60;
+  if (day === 2 && stage === 1) return .55;
+  return 1;
+}
+
+export function jumpGeometry(shot, day, stage, age, held = null, eye = day === 1 ? 'left' : 'right') {
   const launchX = .163 + .075 * clamp(age / 2.3);
   // A single outward sweep. The release, the ghost and the replay use the same coordinates.
   const power = held === null ? .39 : clamp(held / shot.sweeps[stage]);
   const span = .131 + .601 * power;
-  const targetRadius = [.031, .028, .027][stage] * (1 - .19 * shot.pressure);
+  const referenceRadius = [.031, .028, .027][stage] * (1 - .19 * shot.pressure);
+  const targetRadius = referenceRadius * releaseMargin(day, eye, stage);
   return {launchX, targetX:shot.targets[stage], landingX:launchX + span, launchY:.69, targetY:.66,
-    arcHeight:.14 + span * .13, targetRadius, power};
+    arcHeight:.14 + span * .13, targetRadius, referenceRadius, power};
 }
+
+function landingQuality(widths){return clamp(1 - Math.max(0,widths-.54)/3.12)}
 
 export function judge(g, timeout = false) {
   const delta = g.landingX - g.targetX;
   const widths = Math.abs(delta) / g.targetRadius;
   const perfect = !timeout && widths <= 1;
-  const quality = timeout ? 0 : clamp(1 - Math.max(0, widths - .54) / 3.12);
+  const quality = timeout ? 0 : landingQuality(widths);
+  const referenceQuality = timeout ? 0 : landingQuality(Math.abs(delta)/(g.referenceRadius??g.targetRadius));
   const band = timeout ? 'timeout' : perfect ? 'perfect' : widths <= 2.10 ? 'edge' : 'miss';
-  return {quality, delta, perfect, band, timeout, geometry:{...g}};
+  return {quality, referenceQuality, delta, perfect, band, timeout, geometry:{...g}};
 }
 
 export function signalDelay(day, eye, stage) {
-  if (stage === 0 && day === 1 && eye === 'left') return .118;
-  if (stage === 1 && day === 2) return .091;
+  if (stage === 0 && day === 1 && eye === 'left') return .195;
+  if (stage === 1 && day === 2) return .128;
   return 0;
 }
 
@@ -57,7 +69,9 @@ export function readAt(shot, marks, day, eye) {
 }
 
 export function diveAt(shot, marks, day, eye) {
-  const quality = marks[1]?.quality ?? .56;
+  // A cerebellar correction error affects the endpoint after the same initial take-off.
+  const motor=marks[1];
+  const quality = motor?.referenceQuality ?? motor?.quality ?? .56;
   return readAt(shot, marks, day, eye) + .115 + (1 - quality) * .148;
 }
 
@@ -66,8 +80,8 @@ export function reachError(shot, marks, day, eye) {
   const motorError = 1 - (marks[1]?.quality ?? .56);
   const stretch = (Math.abs(shot.x) - 3.03) / .88;
   const base = .032 + stretch * .012 + shot.pressure * .008;
-  const visual = readError * (.172 + .027 * stretch) + signalDelay(day, eye, 0) * .24;
-  const motor = motorError * (.276 + .040 * shot.pressure) + signalDelay(day, eye, 1) * (.23 + 1.26 * motorError);
+  const visual = readError * (.172 + .027 * stretch) + signalDelay(day, eye, 0) * (.33 + .50 * readError);
+  const motor = motorError * (.276 + .040 * shot.pressure) + signalDelay(day, eye, 1) * (.35 + 1.64 * motorError);
   return base + visual + motor + .27 * readError * motorError;
 }
 
@@ -98,6 +112,36 @@ export function finish(shot, marks, day, eye) {
   const bonus = base ? potential : 0;
   return {outcome, saved:base > 0, base, bonus, score:base + bonus, combo:best, miss};
 }
+// Re-score the same launch, release and signed landing under the selected circuit.
+export function replayLanding(mark, day, eye, stage) {
+  const g = mark.geometry;
+  const referenceRadius=g.referenceRadius??g.targetRadius;
+  const geometry = {...g,referenceRadius,targetRadius:referenceRadius * releaseMargin(day, eye, stage)};
+  return {...judge(geometry, mark.timeout), age:mark.age, held:mark.held};
+}
+
+export function matchedTrial(shot, recorded, day, eye = day === 1 ? 'left' : 'right') {
+  const marks = recorded.map((mark, stage) => replayLanding(mark, day, eye, stage));
+  const touches = reachesBall(shot, marks, day, eye);
+  if (!touches) marks.splice(2);
+  // If the recorded glove missed, a different circuit may reach the ball.
+  // A tactile response that was never played cannot be inferred.
+  const result = !touches || marks[2] ? finish(shot, marks, day, eye) : null;
+  return {day, eye, marks, touches, result, read:readAt(shot, marks, day, eye),
+    dive:diveAt(shot, marks, day, eye), gap:reachError(shot, marks, day, eye)};
+}
+
+export function exampleLandings(shot) {
+  const age = .20;
+  return [0,1,2].map(stage => {
+    const g = jumpGeometry(shot, 0, stage, age, 0);
+    // One fixed set of near-edge releases is reused across all three pathways.
+    const offset = [.86,.89,.48][stage] * g.referenceRadius;
+    const held = (g.targetX+offset-g.landingX)/.601*shot.sweeps[stage];
+    return {...judge(jumpGeometry(shot,0,stage,age,held)),age,held};
+  });
+}
+
 export function incoming(shot,t){
   const p=clamp(t/CONTACT),curve=Math.sin(Math.PI*p);
   return {x:shot.x*Math.pow(p,1.13)+shot.curve*curve,y:lerp(.265,shot.y,p)+shot.loft*curve,z:lerp(3.8,-3.06,p)};

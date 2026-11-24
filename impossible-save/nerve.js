@@ -673,7 +673,8 @@ export function drawNerve(ctx, width, height, frame = {}) {
   const perfect = Math.max(2, (frame.targetRadius ?? .032) * width);
   const centerY = (x) => levelAt(x, launch, target, fromY, toY) + r * .27;
   const span = Math.max(r * 2.3, target - launch);
-  const gap = Math.max(perfect * 1.06, r * .84);
+  const reference = Math.max(perfect,(frame.referenceRadius ?? frame.targetRadius ?? .032)*width);
+  const gap = Math.max(reference * 1.06, r * .84);
   const p = STOCK[stage];
   const key = [stage, Math.round(width), Math.round(height)].join('/');
   if (store.backdropKey !== key) {
@@ -714,6 +715,15 @@ export function drawNerve(ctx, width, height, frame = {}) {
     ctx.globalAlpha=1;
     ctx.beginPath();ctx.arc(x,centerY(x),Math.max(2.8,r*.16),0,TAU);
     ctx.fillStyle='#fff2c2';ctx.fill();stroke(ctx,INK,Math.max(1,r*.038));ctx.restore();
+  }
+  if(reference>perfect+1) {
+    const y=toY+r*.42;
+    ctx.save();ctx.lineWidth=Math.max(1.4,r*.05);ctx.strokeStyle='#efe3bc';ctx.setLineDash([3,3]);
+    for(const direction of [-1,1]) {
+      const side=target+reference*direction;
+      ctx.beginPath();ctx.moveTo(side,y-r*.27);ctx.lineTo(side,y);ctx.lineTo(target+perfect*direction,y);ctx.stroke();
+    }
+    ctx.restore();
   }
   nodeTarget(ctx, target, toY, perfect, r, time, frame.feedback ?? 0, frame.quality ?? 0);
   if (frame.prediction !== false) {

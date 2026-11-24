@@ -63,3 +63,49 @@ for(const copy of Object.values(coaching)){
   }
 }
 console.log('12,000 kicks per policy (all three days), all six outcomes, contact geometry, recovery and matched circuits:',totals);
+
+// Identical hand timings across all conditions, with no tuning to any one lesion.
+const {releaseMargin,matchedTrial,exampleLandings}=await import('../impossible-save/rules.js');
+const {immuneFrame,immuneStops,immuneStage,immuneCopy,immuneSources}=await import('../impossible-save/immune.js');
+const pairedRandom=randomStream(0x23a91),saves=[0,0,0,0];
+for(let i=0;i<10000;i++){
+  const shot=makeShot(Math.floor(pairedRandom()*4294967296),i%5);
+  const inputs=[0,1,2].map(stage=>{
+    const age=pairedRandom()*.65;
+    const held=centered(shot,0,stage,age)+(pairedRandom()*2-1)*.100;
+    return {...judge(jumpGeometry(shot,0,stage,age,held)),age,held};
+  });
+  const [ref,optic,motor,right]=[[0,'right'],[1,'left'],[2,'right'],[1,'right']].map(
+    ([d,e])=>matchedTrial(shot,inputs,d,e));
+  for(const [k,trial] of [ref,optic,motor,right].entries()){
+    saves[k]+=Number(trial.result.saved);
+    for(const [stage,m] of trial.marks.entries()){
+      const g=jumpGeometry(shot,trial.day,stage,m.age,m.held,trial.eye);
+      assert.equal(m.geometry.landingX,g.landingX);
+      assert.equal(m.quality,judge(g).quality);
+      assert.equal(m.geometry.targetRadius,g.referenceRadius*releaseMargin(trial.day,trial.eye,stage));
+    }
+  }
+  assert.equal(ref.result.outcome,right.result.outcome);
+  assert.equal(ref.read,motor.read);assert.equal(ref.dive,motor.dive);
+  assert.ok(optic.read>ref.read);
+}
+assert.equal(saves[0],saves[3]);assert.ok(saves[0]>6500&&saves[0]<8500);
+assert.ok(saves[1]<saves[0]*.65 && saves[1]>1800);
+assert.ok(saves[2]<saves[0]*.65 && saves[2]>1500);
+const example=exampleLandings(shot),copies=[0,1,2].map(day=>matchedTrial(shot,example,day));
+assert.deepEqual(copies.map(c=>c.result.outcome),['catch','tip','beaten']);
+assert.equal(copies[0].dive,copies[2].dive);
+assert.equal(matchedTrial(shot,example.slice(0,2),0).result,null);
+for(let k=0;k<=100;k++){
+  const untreated=immuneFrame(k/100,false),treated=immuneFrame(k/100,true);
+  assert.ok(treated.bound && !treated.inTissue && treated.priorLesion && untreated.priorLesion);
+  assert.equal(untreated.bound,false);
+}
+assert.ok(immuneFrame(1,false).inTissue);
+assert.deepEqual(immuneStops.map(immuneStage),[0,1,2]);
+for(const copy of Object.values(immuneCopy)){
+  assert.equal(copy.refs.length,immuneSources.length);assert.equal(copy.phases.length,2);
+  assert.ok(copy.phases.every(p=>p.length===3));assert.equal(copy.questions.length,2);
+}
+console.log('Identical kick and release errors up to 100 ms; 10,000 saves tested per pathway:',saves);
