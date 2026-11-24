@@ -477,6 +477,41 @@ const CATALOGO = {
           "Relate the site of a central lesion to symptoms in MS"
         ]
       }
+    },
+    {
+      "id": "a-shape-to-remember",
+      "url": "a-shape-to-remember/",
+      "capa": "a-shape-to-remember/art/catalog.webp",
+      "publicado": "2026-11",
+      "nivel": "graduacao",
+      "duracao": 10,
+      "temas": [
+        "adaptativa",
+        "infeccao"
+      ],
+      "autores": [
+        "Helder Nakaya"
+      ],
+      "pt": {
+        "nome": "Uma Forma para Lembrar",
+        "subtitulo": "Uma viagem pop-up com uma célula B",
+        "resumo": "Dê nome a uma célula B e abra um linfonodo de cartolina. Siga uma família pelo centro germinativo, visite uma irmã na medula e tente reconhecer a mesma forma anos depois.",
+        "aprende": [
+          "Relacionar o contorno reconhecido pelo BCR ao antígeno intacto",
+          "Acompanhar a apresentação de peptídeo no MHC II e a seleção no centro germinativo",
+          "Distinguir células B de memória de plasmócitos de longa vida"
+        ]
+      },
+      "en": {
+        "nome": "A Shape to Remember",
+        "subtitulo": "A pop-up journey with a B cell",
+        "resumo": "Name a B cell and unfold a paper lymph node. Follow a family through a germinal center, visit a sister in the marrow, and recognize the same shape years later.",
+        "aprende": [
+          "Connect B-cell receptor specificity with recognition of intact antigen",
+          "Follow peptide presentation on MHC II and selection in the germinal center",
+          "Distinguish memory B cells from long-lived plasma cells"
+        ]
+      }
     }
   ]
 };
