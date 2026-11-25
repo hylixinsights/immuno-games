@@ -481,7 +481,7 @@ const CATALOGO = {
     {
       "id": "a-shape-to-remember",
       "url": "a-shape-to-remember/",
-      "capa": "a-shape-to-remember/art/catalog.webp",
+      "capa": "a-shape-to-remember/art/journey-cover.webp",
       "publicado": "2026-11",
       "nivel": "graduacao",
       "duracao": 10,
@@ -494,8 +494,8 @@ const CATALOGO = {
       ],
       "pt": {
         "nome": "Uma Forma para Lembrar",
-        "subtitulo": "Uma viagem pop-up com uma célula B",
-        "resumo": "Dê nome a uma célula B e abra um linfonodo de cartolina. Siga uma família pelo centro germinativo, visite uma irmã na medula e tente reconhecer a mesma forma anos depois.",
+        "subtitulo": "Uma célula B pelo mapa dos tecidos",
+        "resumo": "Guie sua célula B pela corrente sanguínea. Toque nos encontros de papel, encaixe um peptídeo no MHC II e procure a forma que sua família reconhece anos depois.",
         "aprende": [
           "Relacionar o contorno reconhecido pelo BCR ao antígeno intacto",
           "Acompanhar a apresentação de peptídeo no MHC II e a seleção no centro germinativo",
@@ -504,8 +504,8 @@ const CATALOGO = {
       },
       "en": {
         "nome": "A Shape to Remember",
-        "subtitulo": "A pop-up journey with a B cell",
-        "resumo": "Name a B cell and unfold a paper lymph node. Follow a family through a germinal center, visit a sister in the marrow, and recognize the same shape years later.",
+        "subtitulo": "A B cell’s journey through the tissues",
+        "resumo": "Guide your B cell up the bloodstream. Meet folded-paper cells, fit a peptide into MHC II, and look for the shape your family remembers years later.",
         "aprende": [
           "Connect B-cell receptor specificity with recognition of intact antigen",
           "Follow peptide presentation on MHC II and selection in the germinal center",
