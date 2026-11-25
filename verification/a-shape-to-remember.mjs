@@ -2,6 +2,10 @@
 import assert from 'node:assert/strict';
 import { newJourney, restore, visit, act, objects, sceneConfig, chapters, line } from '../a-shape-to-remember/story.js';
 
+import { stations, pathEnd, validPosition, startPosition } from '../a-shape-to-remember/route.js';
+import { stagePrompt, momentText, stationName, actionName } from '../a-shape-to-remember/words.js';
+import { peptidePuzzler } from '../a-shape-to-remember/peptide.js';
+
 for (const target of [0, 1, 2]) {
   for (const sideStory of [true, false]) {
     let state = newJourney();
@@ -11,15 +15,25 @@ for (const target of [0, 1, 2]) {
     function checkpoint() {
       for (const lang of ['en', 'pt']) {
         assert.ok(line(state)[lang]);
+        assert.ok(stagePrompt(state)[lang]);
+        for (const stop of stations(state)) {
+          assert.ok(stop.at >= 0 && stop.at <= pathEnd[state.stage]);
+          assert.ok(Number.isFinite(stop.lane) && stop.height > 0 && stop.art);
+          assert.ok(stationName(stop, state)[lang] && actionName(stop, state)[lang]);
+        }
         assert.ok(sceneConfig(state,lang,true).objects.every(o => o.label && Number.isFinite(o.x) && Number.isFinite(o.z)));
       }
+      assert.deepEqual(validPosition(state.stage, startPosition(state)), startPosition(state));
       const copy = restore(JSON.parse(JSON.stringify(state)));
       assert.deepEqual(copy,state);
       state = copy;
     }
     function touch(id) {
       assert.ok(id.startsWith('@') || objects(state).some(o=>o.id===id),state.stage+' lacks '+id);
+      const from=state.stage;
       const result=act(state,id);
+      const words=momentText(id,from,state,result);
+      if(words)assert.ok(words.en && words.pt);
       checkpoint();
       return result;
     }
@@ -52,3 +66,34 @@ for (const target of [0, 1, 2]) {
 }
 assert.equal(restore({version:1,started:true,order:[]}),null);
 console.log('Six complete journeys, both languages, all recognition contours, optional EBV, both selection outcomes, chapter revisits and save/restore passed.');
+
+// Two taps and a drag must load the same peptide, exactly once. A miss leaves the
+// vesicle open, so slow and one-handed input have the same biological outcome.
+function verifyDock(gesture) {
+  const parts = new Map();
+  function control(name) {
+    if (!parts.has(name)) {
+      const listeners = {};
+      parts.set(name, {listeners, classList:{add(){}}, style:{removeProperty(){}},
+        setAttribute(){}, addEventListener(id,fn){listeners[id]=fn;},
+        getBoundingClientRect(){return {left:90,right:145,top:40,bottom:100};}
+      });
+    }
+    return parts.get(name);
+  }
+  let loaded=0;
+  peptidePuzzler({querySelector:control}, 'pt', ()=>loaded++);
+  const strip=control('.peptide-strip').listeners, socket=control('.mhc-socket').listeners;
+  socket.click(); assert.equal(loaded,0);
+  if(gesture==='tap') { strip.click(); socket.click(); }
+  else {
+    const event=(x,y)=>({pointerId:1,isPrimary:true,button:0,clientX:x,clientY:y});
+    strip.pointerdown(event(10,30));strip.pointermove(event(28,30));strip.pointerup(event(28,30));assert.equal(loaded,0);
+    strip.pointerdown(event(10,30));strip.pointermove(event(115,65));strip.pointerup(event(115,65));
+  }
+  socket.click();assert.equal(loaded,1);
+}
+verifyDock('tap'); verifyDock('drag');
+assert.equal(validPosition('river', {at:NaN,lane:0}),null);
+assert.deepEqual(validPosition('garden',{at:-4,lane:9}),{at:0,lane:2.15});
+console.log('Route locations, bilingual contact controls, restored positions and both MHC II gestures passed.');

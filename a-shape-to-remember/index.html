@@ -3,54 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#112f29">
-<meta name="description" content="An interactive pop-up book about a B cell, the shape it recognizes, and the family that remembers. Play in English or Brazilian Portuguese.">
+<meta name="theme-color" content="#143b36">
+<meta name="description" content="Guide a B cell along an illustrated tissue map. Meet folded-paper cells and find the shape you will remember. Play in English or Brazilian Portuguese.">
 <meta property="og:title" content="A Shape to Remember · immuno.games">
-<meta property="og:description" content="A tiny B cell, a paper world, and one shape to remember. An illustrated immunology game in English and Brazilian Portuguese.">
-<meta property="og:image" content="art/cover.webp">
+<meta property="og:description" content="Follow the bloodstream through a pop-up world of cells. An interactive immunology journey.">
+<meta property="og:image" content="art/journey-cover.webp">
 <title>A Shape to Remember · immuno.games</title>
 <link rel="icon" href="./art/mark.svg" type="image/svg+xml">
 <link rel="preload" href="./fonts/instrument-regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="./fonts/instrument-italic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="./art/cover.webp" as="image">
-<link rel="stylesheet" href="./book.css">
+<link rel="preload" href="./art/ground/river.webp" as="image">
+<link rel="stylesheet" href="./journey.css">
 </head>
 <body>
-<div class="site-shell">
-<header class="mast">
-  <a class="brand" href="https://immuno.games/" aria-label="immuno.games"><span id="brand-mark"></span><span>immuno<span class="brand-dot">.</span>games</span></a>
-  <div class="tools"><button class="tool journal-top" id="journal-button" hidden></button><button class="tool sound" id="sound"></button>
-    <div class="language" role="group" aria-label="Language / Idioma"><button id="en" lang="en" aria-label="English">EN</button><span></span><button id="pt" lang="pt-BR" aria-label="Português do Brasil">PT-BR</button></div>
+<main id="shell" class="at-title">
+  <div id="map-window">
+    <div id="tissue" aria-hidden="true"></div>
+    <canvas id="map" tabindex="-1" aria-label="Interactive tissue map"></canvas>
   </div>
-</header>
-<main id="cover">
-  <div class="cover-hero">
-    <div class="cover-text">
-      <div class="eyebrow"><i></i><span id="eyebrow">An interactive pop-up book</span></div>
-      <h1 id="title">A Shape<br>to <em>Remember</em></h1>
-      <p id="intro">Somewhere in these pages is a shape your B cell knows. Follow it through a world of folded paper, from its first encounter to a memory that lasts.</p>
-      <div class="hero-actions"><button id="open" class="button gold">Open the book</button><button id="how" class="quiet">How to play</button></div>
+  <section id="welcome" aria-labelledby="title">
+    <header class="welcome-top">
+      <a href="https://immuno.games/" class="brand" aria-label="immuno.games"><span id="brand-mark"></span>immuno.games</a>
+      <div class="switch" role="group" aria-label="Language / Idioma"><button id="en" lang="en" aria-label="English">EN</button><button id="pt" lang="pt-BR" aria-label="Português do Brasil">PT-BR</button></div>
+    </header>
+    <div class="welcome-copy">
+      <h1 id="title">A Shape<br><em>to Remember</em></h1>
+      <p id="intro"></p>
+      <div class="start-actions"><button id="open" class="primary"></button><button id="how" class="text-button"></button></div>
     </div>
-    <figure class="jacket"><div class="orbits" aria-hidden="true"></div><img id="jacket-img" src="./art/cover.webp" width="1300" height="868" alt="An open pop-up book. A winding red river flows across one leaf and a layered green lymph node rises from the other." fetchpriority="high"></figure>
-  </div>
-  <section class="contents" aria-labelledby="contents-label"><div class="shelf-heading"><h2 id="contents-label">Inside the book</h2><i></i><span id="chapter-count">Six chapters</span></div><div id="chapter-list" class="chapter-list"></div></section>
+    <div class="welcome-foot"><button id="about" class="text-button"></button><button class="text-button" id="title-sound"></button></div>
+  </section>
+  <section id="hud" hidden>
+    <div class="top-row">
+      <button class="location" id="places"><span class="place-icon" id="place-symbol"></span><span><small id="chapter-kicker"></small><strong id="place"></strong></span></button>
+      <div class="corner-tools"><button class="round" id="journal-button"></button><button class="round" id="menu"></button></div>
+    </div>
+    <div id="cue" class="cue" hidden><div id="cue-icon"></div><span id="cue-text" role="status" aria-live="polite"></span><button id="cue-close"></button></div>
+    <div class="dock">
+      <div id="context-row" hidden><button id="interact" class="context-act"></button><button id="other-near" class="context-more" hidden></button></div>
+      <div class="travel-controls">
+        <button id="receptor-button" class="receptor-control"></button>
+        <div class="travel-buttons"><button id="back-step" class="back-step"></button><button id="forward" class="primary advance"></button></div>
+      </div>
+    </div>
+  </section>
 </main>
-<main id="reader" hidden>
-  <div class="bookbar"><button id="cover-button" class="quiet small"></button><div id="ribbon-title"></div><button id="view-button" class="quiet small"></button></div>
-  <div class="game-layout">
-    <section class="stage-column" aria-label="Scenery"><div id="stage-wrap"><div id="stage-flat"></div><div id="stage-3d"></div><div class="turn-effect" aria-hidden="true"></div></div>
-      <div class="stage-caption"><span id="stage-caption"></span><button class="quiet small" id="receptor-button"></button></div>
-    </section>
-    <article class="reader-paper" aria-labelledby="chapter-title"><div class="eyebrow"><i></i><span id="chapter-kicker"></span></div><h1 id="chapter-title"></h1>
-      <div id="moment" role="status" aria-live="polite"><div id="motif" hidden></div><p id="story-line"></p><p id="observation" hidden></p></div>
-      <div class="actions-label" id="actions-label"></div><div id="act-list" class="action-list"></div>
-    </article>
-  </div>
-</main>
-<footer><span id="byline"></span><button id="about" class="quiet small"></button></footer>
-</div>
 <dialog id="overlay" aria-labelledby="dialog-title"><div id="dialog-inner"></div></dialog>
-<noscript><p class="nojs">Enable JavaScript to open the interactive book. Ative o JavaScript para abrir o livro interativo.</p></noscript>
-<script type="module" src="./book.js"></script>
+<noscript><p>Enable JavaScript to explore. Ative o JavaScript para explorar.</p></noscript>
+<script type="module" src="./journey.js"></script>
 </body>
 </html>
