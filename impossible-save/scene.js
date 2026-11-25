@@ -47,7 +47,24 @@ export function makeWorld(mount){
     sheet.updateMatrixWorld(true);keeper.glove(f.side).getWorldPosition(finger);keeper.eye.localToWorld(eye.set(f.eye==='right'?-.18:0,0,0));
     const a=w/h,wideScale=Math.max(1,1.12/a);
     target.set(0,1.12,-1.0);wide.set(6.7,8.35,18.6).multiplyScalar(wideScale).add(target);p.copy(wide);at.copy(target);camera.fov=34;
-    if(f.camera==='eye'){
+    if(f.camera==='duel'||f.camera==='duelExit'||f.camera==='duelMiss'){
+      // Centre the goal in the same frame for both halves, also in portrait.
+      p.set(.08,3.35,10.9);at.set(0,.61,-3.2);
+      camera.fov=2*Math.atan(Math.max(2.73,5.08/a)/14.12)*180/Math.PI;
+      if(f.camera==='duelExit'){
+        const t=f.cameraT, far=smooth((t-.11)/.69);
+        anchor.copy(finger);
+        const near=-.085+1.45*smooth(t/.28);
+        wide.copy(p);target.copy(at);
+        p.copy(anchor).add(v.set(-f.side*.16,.15,1).multiplyScalar(near)).lerp(wide,far);
+        at.copy(anchor);at.z-=.32*(1-smooth(t/.24));at.lerp(target,far);
+        tunnel.position.copy(anchor);tunnel.visible=t<.20;
+      }else if(f.camera==='duelMiss'){
+        const near=.56*Math.sin(Math.PI*clamp(f.cameraT));
+        anchor.copy(ball.position).lerp(finger,.24);
+        p.lerp(v.copy(anchor).add(new THREE.Vector3(0,.53,3.2)),near);at.lerp(anchor,near);
+      }
+    }else if(f.camera==='eye'){
       const u=smooth(f.cameraT);p.lerp(v.copy(eye).add(new THREE.Vector3(.015,.002,.035)),u);at.lerp(eye,u);
     }else if(f.camera==='contact'){
       const u=smooth(f.cameraT);p.lerp(v.copy(finger).add(new THREE.Vector3(f.side*.55,.38,1.75)),u*.98);at.lerp(finger,u);

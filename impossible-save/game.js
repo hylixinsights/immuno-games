@@ -61,6 +61,7 @@ function applyLanguage(){
   const aud=$('audioBtn');aud.innerHTML=icon(audio.enabled?'volume':'mute');aud.setAttribute('aria-label',audio.enabled?t.soundOn:t.soundOff);aud.title=aud.getAttribute('aria-label');aud.setAttribute('aria-pressed',String(audio.enabled));
   el.tickets.innerHTML=t.practices.map((title,i)=>`<button class="ticket" style="--ticket-color:${['#f5c363','#9ed4c9','#f1a089'][i]}" data-a="day${i}" aria-pressed="${S.day===i}"><img width="76" height="70" src="assets/day-${i+1}.webp" alt=""><span><small>${t.day} 0${i+1}</small><b>${title}</b><em>${P().tickets[i]}</em></span><span class="tick">${icon('check')}</span></button>`).join('');
   $('heroCompareBtn').querySelector('span').textContent=P().homeCompare;
+  $('arcadeBack').textContent=S.lang==='pt'?'Disputa de pênaltis':'Penalty shootout';
   $('studyLinks').innerHTML=button('immune',P().immune,'study-link','book');
   el.dayDialogue.innerHTML=`<b>${t.goalkeeper}</b><span>${t.quotes[S.day]}</span><span class="day-context">${P().home[S.day]}</span>${S.day===1?button('compare',t.compare,'flat-link'):''}`;
   el.homeRecord.textContent=nf(records[S.day]);el.view.title='';drawUI();if(S.modal)dialogContent();
@@ -140,21 +141,11 @@ function readComparison(pair) {
   }).join('')}</div>`;
 }
 function liveScience(neural) {
-  const c=C(), stage=S.stage, eye=eyeForRun(), land=S.mode==='land';
-  const showNote=neural && S.mode!=='switch' && !(stage===0&&S.day===0&&S.slot===0&&S.attempt===1&&!land);
-  show(el.signalStrip,showNote);
-  if(!showNote)return;
-  let label=stage===2?W().circuits[2]:c.intact, message=c.live[stage];
-  if(S.day===1&&stage===0){
-    label=eye==='left'?c.optic:W().rightNerve;
-    message=eye==='right'?c.right:land?c.slowOptic:c.left;
-  }else if(S.day===2&&stage===1){
-    label=c.cerebellum;message=land?c.slowMotor:c.coord;
-  }
-  const affected=signalDelay(S.day,eye,stage)>0;
-  const margin=affected?(stage===0?P().opticBracket:P().motorBracket):'';
-  el.signalStrip.classList.toggle('localized',affected);
-  el.signalStrip.innerHTML=`<b>${label}</b><span>${message}</span>${margin?`<strong>${margin}</strong>`:''}`;
+  const c=C(),stage=S.stage,affected=signalDelay(S.day,eyeForRun(),stage)>0;
+  show(el.signalStrip,neural&&affected&&S.mode!=='switch');
+  if(el.signalStrip.hidden)return;
+  el.signalStrip.classList.add('localized');
+  el.signalStrip.textContent=stage===0?c.optic:c.cerebellum;
 }
 function resultCard() {
   const t=W(),c=C(),a=S.summary, stages=[t.visual,t.motor,t.tactile];
@@ -166,11 +157,13 @@ function resultCard() {
   const pair=pairOf(S.shot,S.marks,S.lessonDay),p=P(),next=opposingDay();
   const reason=a.outcome==='catch'&&!preserved()?p.catches[S.day]:c.reason[coachingReason(pair[0])];
   el.result.innerHTML=`<div class="outcome-label">${status} · ${pathwayLabel()}</div><div class="result-head"><h2>${t.outcomes[a.outcome]}</h2><div class="earned">+${nf(a.score)}<small>${t.points}</small></div></div>
-    <p class="match-reason">${reason}</p><div class="landing-strip">${steps}</div>
-    <section class="paired-result"><b>${p.pairTitle}</b>${pairTable(pair,t,p)}<p class="pair-margin">${S.lessonDay===1?p.opticBracket:p.motorBracket+'. '+p.maxDiff(nf(maxHandDifference(S.shot,pair)))}</p>${button('paired-'+next,p.test[next],'pair-play','play')}</section>
-    <div class="result-buttons">${button('same',t.same,'secondary','repeat')}${button('new',S.slot===SERIES-1?t.nextSeries:t.next,'secondary','ball')}</div>
-    <section class="result-evidence"><b>${c.match}</b><p>${playedEvidence()}</p>${a.bonus?`<small>${c.combo} ×${a.combo} · +${a.bonus} ${t.points}</small>`:''}</section>
-    <div class="minor-actions">${button('replay',c.labTitle,'','play')}${button('immune',p.immune,'','book')}${button('flip',t.flip,'','flip')}${button('case',c.caseLink,'','book')}${S.day===1?button('compare',t.compare,'','eye'):''}</div>`;
+    <p class="match-reason">${reason}</p>
+    <div class="result-buttons">${button('new',S.slot===SERIES-1?t.nextSeries:t.next,'primary','ball')}${button('same',t.same,'secondary','repeat')}</div>
+    <div class="minor-actions">${button('flip',t.flip,'','flip')}${button('replay',c.labTitle,'','play')}</div>
+    <details class="training-notes"><summary>${c.match}</summary><div class="landing-strip">${steps}</div>
+    <section class="paired-result"><b>${p.pairTitle}</b>${pairTable(pair,t,p)}${button('paired-'+next,p.test[next],'pair-play','play')}</section>
+    <p>${playedEvidence()}</p>${a.bonus?`<small>${c.combo} ×${a.combo} · +${a.bonus} ${t.points}</small>`:''}
+    <div class="minor-actions">${button('immune',p.immune,'','book')}${button('case',c.caseLink,'','book')}${S.day===1?button('compare',t.compare,'','eye'):''}</div></details>`;
 
 }
 function drawUI(){const t=W(),home=S.mode==='home',neural=['surf','flight','land','switch'].includes(S.mode),res=S.mode==='result',flipped=S.mode==='flip';

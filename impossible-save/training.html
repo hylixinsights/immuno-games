@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#10272b">
+<title>The Impossible Save · immuno.games</title><meta name="description" content="Ride the nerve signals of a Brazilian goalkeeper in a paper stadium. A free one-button penalty arcade, in English and Portuguese.">
+<meta property="og:title" content="The Impossible Save · immuno.games"><meta property="og:description" content="One goalkeeper. Three jumps. A penalty in the top corner."><meta property="og:image" content="https://immuno.games/capas/impossible-save.webp">
+<link rel="icon" href="../favicon.svg"><link rel="preload" href="assets/display-italic.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="style.css?v=4">
+<script type="importmap">{"imports":{"three":"./vendor/three.js","papercraft/":"./paper/"}}</script>
+</head>
+<body data-mode="home">
+<svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-mark" viewBox="0 0 40 40"><path d="m20 1 4.8 5.8L32 6l.1 7.5 6 4.7-4.8 5.8 1.2 7.4-7.4 1.1-4.8 6.3-5.9-4.8L9 35l-1.1-7.4-6-4.6 4.6-6.1L5.3 9.6l7.4-1.4Z" fill="currentColor" stroke="none"/><path d="m13 21 5 4 9-12M11 15l3-3m10 16 3-3" fill="none" stroke="#173031" stroke-width="3.3"/></symbol>
+<symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.4 3.4-1.7 5.1H9.3l-1.7-5.1L12 7zm0 0V3m4.4 7.4 4.3-1.3m-6 6.4 2.8 3.8m-8.2-3.8-2.8 3.8m1.1-8.9L3.3 9"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M3 4.5c3-.8 6-.6 9 1.4 3-2 6-2.2 9-1.4v14c-3-.8-6-.6-9 1.4-3-2-6-2.2-9-1.4zm9 1.4v14"/></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol><symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zm13 0 5 6m0-6-5 6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5v14m10-14v14" stroke-width="4"/></symbol>
+<symbol id="i-cup" viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 0 1-10 0zm0 2H3c0 4 1 6 5 6m9-6h4c0 4-1 6-5 6m-4 2v5m-4 3h8m-7-3h6"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+<symbol id="i-flip" viewBox="0 0 24 24"><path d="m3 11 9-5 9 5-9 5zm0 4 9 5 9-5M16 3l3-1 2 2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12m0-12L6 18"/></symbol><symbol id="i-tap" viewBox="0 0 24 24"><path d="M9 13V6a2 2 0 0 1 4 0v5l1-1 5 1c1 1 1 4 0 6l-2 4h-7l-5-7c-1-2 1-3 2-2l2 1zM5 6a6 6 0 0 1 9-5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" stroke-width="3"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h1m-1 6h1m-1 6h1"/></symbol>
+</defs></svg>
+<div class="shell">
+<header><a class="brand" href="https://immuno.games/" data-aria="back"><svg aria-hidden="true"><use href="#i-mark"/></svg><span>immuno<span class="brand-dot">.</span>games</span></a><div class="head-tools"><a id="arcadeBack" href="./?v=4">Penalty shootout</a><button class="nav-guide" data-a="guide" data-aria="guide"><svg><use href="#i-book"/></svg><span data-t="guide"></span></button><button class="icon-button" id="audioBtn" data-a="audio"></button><div class="languages" aria-label="Language / Idioma"><button data-a="en" lang="en">EN</button><button data-a="pt" lang="pt-BR">PT-BR</button></div></div></header>
+<main>
+<section id="arena" class="arena" aria-label="The Impossible Save">
+<div class="hero-copy home-only"><div class="eyebrow gold"><span class="speed-bars" aria-hidden="true"></span><span data-t="gameType"></span></div><h1 id="heroTitle"><small>The</small><span>Impossible</span><strong>Save</strong></h1><p data-t="intro" class="intro"></p><button id="startBtn" class="primary" data-a="start"><svg><use href="#i-play"/></svg><span data-t="play"></span></button><button id="heroCompareBtn" class="hero-compare" data-a="replay"><svg><use href="#i-flip"/></svg><span></span></button><div class="control-note"><svg><use href="#i-tap"/></svg><span data-t="controls"></span></div></div>
+<div id="view" class="view" tabindex="0"><div id="fieldWrap" class="field-wrap"><canvas id="field"></canvas><div id="gl"></div></div><canvas id="neural"></canvas><canvas id="cinema"></canvas><div class="frame-grain" aria-hidden="true"></div></div>
+<div class="venue home-only"><span class="flag-br" aria-hidden="true"></span><span data-t="br"></span><b>•</b><span data-t="session"></span></div>
+<div class="home-best home-only"><svg><use href="#i-cup"/></svg><span data-t="record"></span><strong id="homeRecord">0</strong></div>
+<div id="matchHud" class="match-hud" hidden><div class="live-stats"><button class="dark-icon" data-a="pause" data-aria="pause"><svg><use href="#i-pause"/></svg></button><div class="hud-kick"><small id="kickLabel"></small><b id="phaseLabel"></b><small id="pathwayLabel" class="pathway-label"></small></div></div><div class="hud-score"><span data-t="score"></span><b id="scoreValue"></b></div></div>
+<div id="inset" class="inset" hidden><div class="inset-label"><i></i><span data-t="live"></span></div><canvas id="mini"></canvas><div id="fieldCue"></div></div>
+<aside id="signalStrip" class="signal-strip" hidden></aside><div id="liveHint" class="live-hint" hidden></div><div id="compareDock" class="compare-dock" hidden><button class="paper-chip" data-a="compare"><svg><use href="#i-eye"/></svg><span data-t="compare"></span></button></div>
+<div id="flipStrip" class="flip-strip" hidden></div>
+<div id="result" class="result-card" hidden></div>
+</section>
+<section id="training" class="training home-only"><div class="section-line"><h2 data-t="days"></h2><span class="rule"></span><span class="edition">01 — 03</span></div><div class="tickets" id="tickets"></div><div id="dayDialogue" class="dialogue"></div><div id="studyLinks" class="study-links"></div></section>
+<div id="matchBar" class="match-bar" hidden></div>
+</main><footer><span>© <a href="https://www.instagram.com/helder_nakaya/" target="_blank" rel="noopener">Helder Nakaya</a> <span class="foot-dot">/</span> CSBL</span><button data-a="credits" data-t="credits"></button></footer>
+</div><dialog id="modal"><div class="dialog-inner"><div class="dialog-tools"><div class="languages" aria-label="Language / Idioma"><button data-a="en" lang="en">EN</button><button data-a="pt" lang="pt-BR">PT-BR</button></div><button data-a="close" class="icon-button" data-aria="close"><svg><use href="#i-close"/></svg></button></div><div id="modalBody"></div></div></dialog>
+<p id="announce" class="sr" aria-live="polite"></p><noscript>This game needs JavaScript. Este jogo requer JavaScript.</noscript><script type="module" src="game.js?v=4"></script></body></html>

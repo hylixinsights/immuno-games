@@ -52,3 +52,5 @@ body:not([data-mode=home]) .home-only{display:none!important}body:not([data-mode
   .result-card{width:min(560px,78%)}.paired-result{margin:2px 0 4px}.pair-table{margin:3px 0;gap:5px}.pair-cell{padding:3px 6px}.pair-cell b{font-size:16px;display:inline;margin-right:6px}.pair-cell span{display:inline;font-size:9px}.pair-cell small{font-size:8px}.paired-result .pair-play{min-height:25px;font-size:11px;padding:4px}.paired-result>b{font-size:8px}
 }
 .result-card .pair-margin{font:600 11px/1.3 DM,system-ui,sans-serif;color:#43574b;margin:1px 0 6px}
+
+#arcadeBack{font-size:13px;text-underline-offset:3px;color:var(--paper)}.training-notes{border-top:1px dashed #99a78d;margin-top:7px;padding-top:6px}.training-notes summary{cursor:pointer;font-size:13px;font-weight:700;color:#36584f}.training-notes p{font-size:14px}.training-notes[open]{text-align:left}.signal-strip.localized{width:auto;font-weight:700}

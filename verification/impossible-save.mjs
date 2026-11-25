@@ -109,3 +109,58 @@ for(const copy of Object.values(immuneCopy)){
   assert.ok(copy.phases.every(p=>p.length===3));assert.equal(copy.questions.length,2);
 }
 console.log('Identical kick and release errors up to 100 ms; 10,000 saves tested per pathway:',saves);
+
+// The football-first shootout runs on a continuous ball clock in both halves.
+const duel=await import('../impossible-save/duel-model.js');
+const saved=score=>({saved:true,score}), lost={saved:false,score:0};
+assert.equal(duel.shootoutScore([lost,lost,lost,lost,lost]),0);
+assert.equal(duel.shootoutScore([saved(500),saved(300),lost,saved(180),lost]),1025);
+assert.equal(duel.shootoutScore([saved(600),saved(600),saved(600),saved(600),saved(600)]),3450);
+const ds=duel.penalty(0x5e21b3);
+const wind=ds.idealPower*ds.sweep, press=duel.readTime(ds,'clear')+.19, release=press+wind;
+const match=c=>duel.verdict(ds,c,duel.jump(ds,c,press,release),.28);
+assert.equal(match('clear').outcome,'catch');
+assert.deepEqual([match('optic').outcome,match('optic').reason],['beaten','optic']);
+assert.deepEqual([match('motor').outcome,match('motor').reason],['beaten','overshoot']);
+// Betting on a corner before the visual cue helps only if the guess is right.
+assert.equal(duel.verdict(ds,'optic',duel.jump(ds,'optic',press,release,ds.side,press),.28).outcome,'catch');
+const returnHold=wind*1.31;
+assert.ok(duel.reachRatio(ds,'motor',wind)>1.35);
+assert.ok(Math.abs(duel.reachRatio(ds,'motor',returnHold)-1)<.12);
+assert.ok(duel.reachRatio(ds,'motor',wind*1.53)<.85);
+assert.equal(duel.jump(ds,'clear',0,ds.air+.01),null);
+assert.equal(duel.readTime(ds,'clear'),duel.readTime(ds,'motor'));
+assert.ok(duel.readTime(ds,'optic')-duel.readTime(ds,'clear')>.65);
+for(const c of ['clear','optic','motor']){
+  assert.equal(duel.verdict(ds,c,null,null).saved,false);
+  assert.equal(duel.verdict(ds,c,duel.jump(ds,c,press,release,-ds.side),.28).reason,'wrong');
+}
+const opts=['clear','optic','motor'],reacting=[0,0,0],adapted=[0,0,0],pairedOutcomes=new Set(),samples=5000;
+const rng=randomStream(63217);
+for(let n=0;n<samples;n++){
+  const shot=duel.penalty(Math.floor(rng()*4294967296),n%5);
+  const reaction=.14+rng()*.36, jitter=(rng()*2-1)*.13, touch=rng()<.19?null:rng()*.50;
+  for(const [k,c] of opts.entries()){
+    const down=duel.readTime(shot,c)+reaction, held=shot.idealPower*shot.sweep+jitter;
+    const m=duel.jump(shot,c,down,down+held);
+    const v=duel.verdict(shot,c,m,touch);reacting[k]+=Number(v.saved);pairedOutcomes.add(v.outcome);
+    const f=duel.pitchFrame(shot,c,m,shot.air);
+    const hand=f.hand??duel.gloveAt(shot,c,m,shot.air);
+    assert.ok(Math.abs(Math.hypot(f.ball.x-hand.x,f.ball.y-hand.y)-v.gap)<1e-6);
+    assert.equal(v.touches,duel.contact(shot,c,m).touches);
+    assert.ok(v.saved||v.score===0);
+    // A player who reads the new trajectory can still reach and catch every shot.
+    let lo=0,hi=shot.idealPower*shot.sweep*1.01;
+    for(let j=0;j<18;j++){const mid=(lo+hi)/2;if(duel.reachRatio(shot,c,mid)>1)hi=mid;else lo=mid;}
+    const early=duel.readTime(shot,c)+.05, perfect=duel.jump(shot,c,early,early+hi);
+    adapted[k]+=Number(duel.verdict(shot,c,perfect,.28).outcome==='catch');
+    assert.equal(duel.verdict(shot,c,perfect,null).outcome,'parry');
+    assert.deepEqual(duel.pitchFrame(shot,c,null,shot.air*.6).ball,duel.pitchFrame(shot,'clear',null,shot.air*.6).ball);
+  }
+}
+assert.equal(pairedOutcomes.size,6);
+assert.ok(reacting[0]>samples*.55&&reacting[0]<samples*.93);
+assert.ok(reacting[1]<reacting[0]*.66&&reacting[1]>samples*.12);
+assert.ok(reacting[2]<reacting[0]*.55&&reacting[2]>0);
+assert.deepEqual(adapted,[samples,samples,samples]);
+console.log('Continuous-clock pairs, same human reaction and hold error:',reacting,'of',samples,'per circuit; adapted:',adapted);
