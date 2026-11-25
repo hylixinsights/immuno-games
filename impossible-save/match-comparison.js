@@ -1,4 +1,4 @@
-import {BALL_RADIUS, CONTACT, lerp, smooth, fieldState, matchedTrial, handAt, ballAt} from './rules.js?v=3';
+import {BALL_RADIUS, CONTACT, lerp, smooth, fieldState, matchedTrial, handAt, ballAt} from './rules.js?v=5';
 import {drawField, fieldProject} from './field-print.js?v=2';
 
 export const matchCopy = {

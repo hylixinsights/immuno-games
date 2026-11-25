@@ -446,7 +446,7 @@ const CATALOGO = {
     },
     {
       "id": "impossible-save",
-      "url": "impossible-save/?v=4",
+      "url": "impossible-save/?v=5",
       "capa": "capas/impossible-save.webp",
       "publicado": "2026-11",
       "nivel": "medio",
@@ -459,8 +459,8 @@ const CATALOGO = {
       ],
       "pt": {
         "nome": "A Defesa Impossível",
-        "subtitulo": "Arcade de pênaltis",
-        "resumo": "Defenda o mesmo pênalti em duas condições. Na simulação sem EM, Joana lê o canto cedo. Com a lesão óptica, a pista aparece tarde. Com a lesão cerebelar, é a luva que passa do ponto.",
+        "subtitulo": "Surf nos impulsos nervosos",
+        "resumo": "Surfe de nó em nó nas vias nervosas de Joana, goleira que vive com EM. A mielina muda o tempo que o impulso leva para chegar. A bola continua a caminho do gol.",
         "aprende": [
           "Relacionar mielina, nós de Ranvier e condução saltatória",
           "Distinguir uma alteração visual de uma dificuldade de coordenação",
@@ -469,8 +469,8 @@ const CATALOGO = {
       },
       "en": {
         "nome": "The Impossible Save",
-        "subtitulo": "Penalty arcade",
-        "resumo": "Defend the same penalty twice. In the simulation without MS, Joana reads the corner early. The optic lesion delays the cue. A cerebellar lesion makes her glove overshoot.",
+        "subtitulo": "Ride the nerve signal",
+        "resumo": "Ride from node to node along the nerve pathways of Joana, a goalkeeper living with MS. Myelin changes how quickly the signal travels as the ball flies toward goal.",
         "aprende": [
           "Connect myelin and nodes of Ranvier to saltatory conduction",
           "Distinguish a visual change from a reaching difficulty",

@@ -62,6 +62,8 @@ export function signalDelay(day, eye, stage) {
 }
 
 export function readAt(shot, marks, day, eye) {
+  const visual=marks[0];
+  if(visual?.clock)return .063+.322*visual.clock.signal+.043*(1-visual.quality);
   // An intact visual pathway can still be played late on the coordination day.
   // Identical landings always produce the same read on that day and the reference day.
   const quality = marks[0]?.quality ?? .56;
@@ -71,11 +73,16 @@ export function readAt(shot, marks, day, eye) {
 export function diveAt(shot, marks, day, eye) {
   // A cerebellar correction error affects the endpoint after the same initial take-off.
   const motor=marks[1];
+  if(motor?.clock)return readAt(shot,marks,day,eye)+.061+.073*motor.clock.firstRelease;
   const quality = motor?.referenceQuality ?? motor?.quality ?? .56;
   return readAt(shot, marks, day, eye) + .115 + (1 - quality) * .148;
 }
 
 export function reachError(shot, marks, day, eye) {
+  if(marks[0]?.clock){
+    const vision=marks[0],motor=marks[1],v=1-vision.quality,m=1-(motor?.quality??.56);
+    return .032+.010*shot.pressure+.195*v+.301*m+.19*v*m+.146*vision.clock.late+.165*(motor?.clock.late??0);
+  }
   const readError = 1 - (marks[0]?.quality ?? .56);
   const motorError = 1 - (marks[1]?.quality ?? .56);
   const stretch = (Math.abs(shot.x) - 3.03) / .88;
@@ -103,7 +110,7 @@ export function finish(shot, marks, day, eye) {
     else outcome = contact < .62 ? 'spill' : 'inside';
   }
   let combo = 0, best = 0, potential = 0;
-  for (const mark of marks) {
+  for (const mark of marks.flatMap(mark=>mark.nodes??[mark])) {
     combo = mark.perfect ? combo + 1 : 0;
     best = Math.max(best, combo);
     potential += 45 * combo;

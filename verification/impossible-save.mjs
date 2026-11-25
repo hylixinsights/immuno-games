@@ -164,3 +164,102 @@ assert.ok(reacting[1]<reacting[0]*.66&&reacting[1]>samples*.12);
 assert.ok(reacting[2]<reacting[0]*.55&&reacting[2]>0);
 assert.deepEqual(adapted,[samples,samples,samples]);
 console.log('Continuous-clock pairs, same human reaction and hold error:',reacting,'of',samples,'per circuit; adapted:',adapted);
+
+// One schedule for the ball and identical nodes in both copies of Joana's axon.
+const chain = await import('../impossible-save/conduction.js');
+const originalCommands = chain.exampleCommands(shot);
+const opening = [0, 1, 2].map((day) => chain.pairedRun(shot, originalCommands, day));
+assert.deepEqual(
+  opening.map((x) => x.result.outcome),
+  ['catch', 'tip', 'beaten'],
+);
+assert.equal(opening[0].read, opening[2].read);
+assert.equal(opening[0].dive, opening[2].dive);
+assert.ok(opening[1].read > opening[0].read);
+assert.ok(opening[1].dive > opening[0].dive);
+assert.deepEqual(chain.pairedRun(shot, originalCommands, 1, 'right').marks, opening[0].marks);
+const completeSignals = (shot, wait, offset = 0) =>
+  [0, 1, 2].map((stage) => {
+    const t = chain.route(shot, stage);
+    return Array.from({ length: chain.nodeCount(stage) }, (_, hop) => ({
+      wait,
+      held: chain.centeredHold(t, hop, wait) + offset,
+    }));
+  });
+const relayRng = randomStream(44211),
+  nShots = 3500,
+  scored = [0, 0, 0],
+  polished = [0, 0, 0],
+  seenOutcomes = new Set();
+for (let i = 0; i < nShots; i++) {
+  const s = makeShot(Math.floor(relayRng() * 4294967296), i % 5);
+  const commands = [0, 1, 2].map((stage) => {
+    const track = chain.route(s, stage);
+    return Array.from({ length: chain.nodeCount(stage) }, (_, hop) => {
+      const wait = 0.16 + 0.57 * relayRng(),
+        held = chain.centeredHold(track, hop, wait) + (relayRng() * 2 - 1) * 0.1;
+      return { wait, held };
+    });
+  });
+  const [ref, vision, coord] = [0, 1, 2].map((day) => chain.pairedRun(s, commands, day));
+  assert.equal(ref.read, coord.read);
+  assert.equal(ref.dive, coord.dive);
+  assert.deepEqual(ref.marks[0], coord.marks[0]);
+  assert.deepEqual(ref.marks[1], vision.marks[1]);
+  for (const [stage, impacted] of [
+    [0, vision],
+    [1, coord],
+  ]) {
+    const a = ref.marks[stage].nodes,
+      b = impacted.marks[stage].nodes;
+    assert.deepEqual(a[0], b[0]);
+    assert.equal(a[1].geometry.targetRadius, b[1].geometry.targetRadius);
+    assert.equal(a[1].geometry.targetX, b[1].geometry.targetX);
+    assert.ok(b[1].ready > a[1].ready + 0.8);
+    const intact = chain.transit(0, 'right', stage, a[0]),
+      damaged = chain.transit(impacted.day, impacted.eye, stage, a[0]);
+    assert.equal(chain.pulseAt(intact, intact, intact), 1);
+    assert.ok(chain.pulseAt(intact, damaged, intact) < 0.57);
+    assert.equal(chain.pulseAt(damaged, damaged, intact), 1);
+  }
+  for (const trial of [ref, vision, coord]) {
+    const day = trial.day,
+      r = trial.result;
+    assert.ok(r);
+    scored[day] += Number(r.saved);
+    seenOutcomes.add(r.outcome);
+    const ball = incoming(s, CONTACT),
+      hand = handAt(s, trial.marks, day, trial.eye, CONTACT);
+    assert.ok(Math.abs(r.miss - Math.hypot(ball.x - hand.x, ball.y - hand.y, ball.z - hand.z)) < 1e-8);
+    assert.equal(trial.touches, r.miss <= BALL_RADIUS);
+    if (!r.saved) assert.equal(r.score, 0);
+    const clean = chain.pairedRun(s, completeSignals(s, 0.105), day);
+    polished[day] += Number(clean.result.outcome === 'catch');
+    assert.equal(clean.marks.flatMap((m) => m.nodes).length, 5);
+    assert.ok(clean.marks.every((m) => m.perfect));
+    assert.equal(clean.result.score, 1175);
+    assert.deepEqual(chain.pairedRun(s, commands.slice(0, 2), day).result, trial.touches ? null : r);
+  }
+}
+assert.ok(scored[0] > nShots * 0.55 && scored[0] < nShots * 0.9);
+assert.ok(scored[1] > nShots * 0.09 && scored[1] < scored[0] * 0.59);
+assert.ok(scored[2] > nShots * 0.07 && scored[2] < scored[0] * 0.59);
+assert.deepEqual(polished, [nShots, nShots, nShots]);
+assert.equal(seenOutcomes.size, 6);
+for (const day of [0, 1, 2]) {
+  const idle = completeSignals(shot, 0).map((nodes) => nodes.map(() => ({ wait: 5, held: 0, idle: true })));
+  assert.equal(chain.pairedRun(shot, idle, day).result.outcome, 'beaten');
+}
+const comeback = completeSignals(shot, 0.14);
+comeback[0][0].held = 0;
+assert.equal(chain.pairedRun(shot, comeback, 0).result.saved, true);
+comeback[2][0].held = 0;
+assert.equal(chain.pairedRun(shot, comeback, 0).result.saved, false);
+console.log(
+  'Node relay, identical recorded gestures over',
+  nShots,
+  'penalties: saves',
+  scored,
+  'clean fast catches',
+  polished,
+);

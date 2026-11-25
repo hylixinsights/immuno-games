@@ -1,0 +1,472 @@
+/* A folded corner reveals the cable underneath the printed pitch. */
+.icons,
+.sr {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.shell {
+  max-width: 1400px;
+}
+.home-slice {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 62%;
+  height: 30%;
+  z-index: 2;
+  pointer-events: none;
+  background: #d8cfad;
+  clip-path: polygon(
+    0 76%,
+    12% 65%,
+    22% 67%,
+    32% 55%,
+    50% 49%,
+    64% 31%,
+    77% 29%,
+    88% 12%,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+}
+.home-slice canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  clip-path: polygon(
+    0 80%,
+    12% 69%,
+    22% 71%,
+    32% 59%,
+    50% 53%,
+    64% 35%,
+    77% 33%,
+    88% 16%,
+    100% 4%,
+    100% 100%,
+    0 100%
+  );
+}
+.home-slice + .hero-copy {
+  min-height: clamp(366px, 34vw, 480px);
+}
+.hero-copy .intro {
+  max-width: 28ch;
+}
+.training {
+  margin-top: 18px;
+}
+.tickets {
+  gap: 8px;
+}
+.ticket {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 5px 12px;
+  color: #c9d9c8;
+  font-weight: 700;
+  font-size: 16px;
+}
+.ticket img {
+  width: 51px;
+  height: 42px;
+  object-fit: contain;
+}
+.ticket::before {
+  display: none;
+}
+.ticket[aria-pressed='true'] {
+  color: #ffdf93;
+  border-color: #d4ba7f;
+  background: #264441;
+  box-shadow: inset 0 -3px #e4bc66;
+}
+.dialogue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+.dialogue b {
+  color: #f1cf86;
+  font-family: DM, sans-serif;
+  text-transform: none;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+footer {
+  gap: 18px;
+}
+footer button:first-of-type {
+  margin-left: auto;
+}
+footer [data-a='settings'] {
+  display: none;
+}
+body:not([data-mode='home']) .arena {
+  height: clamp(340px, calc(100svh - 135px), 795px);
+  margin-top: 11px;
+}
+body:not([data-mode='home']) footer {
+  display: none;
+}
+.match-hud {
+  top: 13px;
+  left: 14px;
+  right: 14px;
+}
+.hud-score {
+  min-height: 0;
+  padding: 7px 10px;
+}
+.hud-score b {
+  font-size: 18px;
+}
+.hud-kick b {
+  font-size: 20px;
+}
+.inset {
+  top: 56px;
+  right: 15px;
+  width: clamp(144px, 19%, 248px);
+  box-shadow: 2px 4px #10262c;
+  transform: none;
+}
+.inset canvas {
+  aspect-ratio: 1.95;
+}
+#fieldCue {
+  font:
+    700 12px DM,
+    sans-serif;
+  letter-spacing: 0.02em;
+  justify-content: center;
+  text-transform: none;
+}
+.signal-clock {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: clamp(130px, 20%, 236px);
+  height: 18px;
+  pointer-events: none;
+}
+.signal-clock svg {
+  width: 18px;
+  height: 18px;
+  color: #ffefa9;
+  stroke: currentColor;
+  fill: #224148;
+  stroke-width: 1.5;
+}
+.signal-clock > span {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background: #10282b;
+  border: 1px solid #a0aa8e;
+}
+.signal-clock i {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--time, 1));
+  background: #efcb75;
+}
+.signal-clock[data-urgent='true'] i {
+  background: repeating-linear-gradient(120deg, #f9bf76 0 6px, #ad7049 6px 9px);
+}
+.live-hint {
+  bottom: 47px;
+  padding: 8px 15px;
+  min-width: 0;
+  width: max-content;
+  box-shadow: none;
+  line-height: 1.08;
+  font: 800 clamp(18px, 2.15vw, 27px) / 1.1 var(--display);
+  letter-spacing: 0.02em;
+}
+.live-hint[data-tone='ready'] {
+  color: #153835;
+  background: #f7d47a;
+  border-color: #ffe8ac;
+}
+.live-hint[data-tone='delayed'] {
+  color: #ffe1b1;
+  border: 1px dashed #e9b88a;
+  background: #422f3c;
+}
+.little-path span {
+  font-family: DM, sans-serif;
+  font-size: 14px;
+}
+.match-bar {
+  min-height: 40px;
+  padding: 9px 1px 0;
+}
+.match-bar > b {
+  font:
+    700 13px DM,
+    sans-serif;
+  color: var(--mint);
+}
+.compare-dock {
+  bottom: 13px;
+}
+.result-card {
+  width: min(385px, 48%);
+  padding: 16px 18px;
+}
+.result-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.result-buttons .primary {
+  grid-column: 1/-1;
+}
+.result-buttons button {
+  padding: 10px;
+  min-height: 39px;
+}
+.result-card .minor-actions {
+  justify-content: space-between;
+}
+.result-card .minor-actions button {
+  font-size: 14px;
+  min-height: 32px;
+}
+.flip-strip .action-row button {
+  min-height: 34px;
+}
+.dialog-inner details > summary {
+  cursor: pointer;
+  font-weight: bold;
+  min-height: 38px;
+  padding-top: 7px;
+}
+.dialog-inner details:not([open]) {
+  border-top: 1px solid #adad92;
+  margin-top: 10px;
+}
+.dialog-inner .race-art {
+  width: 100%;
+  height: clamp(138px, 25vh, 200px);
+  display: block;
+  border: 1px solid #698479;
+  border-radius: 3px;
+}
+.view-choices {
+  margin-block: 9px;
+}
+.trace-note {
+  font-weight: 700;
+}
+@media (max-width: 650px) and (orientation: portrait) {
+  .shell {
+    padding: 0 10px;
+  }
+  header {
+    height: 51px;
+  }
+  .home-slice {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: clamp(174px, 58vw, 299px);
+    clip-path: polygon(0 90%, 20% 86%, 42% 88%, 67% 80%, 84% 78%, 100% 69%, 100% 100%, 0 100%);
+  }
+  .home-slice canvas {
+    position: absolute;
+    bottom: 0;
+    height: 32%;
+    clip-path: polygon(0 76%, 20% 62%, 42% 68%, 67% 43%, 84% 37%, 100% 9%, 100% 100%, 0 100%);
+  }
+  .home-slice + .hero-copy {
+    min-height: 0;
+    padding: 14px 16px 15px;
+  }
+  .hero-copy .intro {
+    max-width: 100%;
+    font-size: 16px;
+    line-height: 1.35;
+    margin: 6px 0 12px;
+  }
+  .hero-copy .primary {
+    min-height: 43px;
+    font-size: 16px;
+  }
+  .tickets {
+    gap: 5px;
+  }
+  .ticket {
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 3px 9px;
+    min-height: 65px;
+    font-size: 14px;
+    flex-direction: column;
+  }
+  .ticket img {
+    width: 38px;
+    height: 29px;
+  }
+  .training {
+    margin-top: 13px;
+  }
+  .dialogue {
+    display: flex;
+    font-size: 14px;
+    line-height: 1.35;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .dialogue .flat-link {
+    margin: 0;
+    min-height: 34px;
+    padding: 0;
+    font-size: 14px;
+  }
+  body:not([data-mode='home']) .arena {
+    height: calc(100svh - 117px);
+    min-height: 332px;
+    margin-top: 7px;
+  }
+  .match-hud {
+    top: 9px;
+    left: 8px;
+    right: 8px;
+  }
+  .hud-kick b {
+    font-size: 18px;
+  }
+  .hud-kick small {
+    font-size: 10px;
+  }
+  .inset {
+    top: 53px;
+    right: 8px;
+    width: 37%;
+    min-width: 100px;
+  }
+  .live-hint {
+    bottom: 53px;
+    max-width: 91%;
+    white-space: normal;
+    text-align: center;
+    font-size: 21px;
+  }
+  .signal-clock {
+    bottom: 24px;
+    width: 41%;
+  }
+  .little-path span {
+    font-size: 12px;
+  }
+  .match-bar .little-path {
+    gap: 7px;
+  }
+  .match-bar > b {
+    font-size: 12px;
+  }
+  .result-card {
+    left: 9px;
+    right: 9px;
+    width: auto;
+    bottom: 10px;
+  }
+  .compare-dock {
+    bottom: 11px;
+    left: 8px;
+  }
+  .compare-dock .paper-chip {
+    font-size: 13px;
+    min-height: 35px;
+    padding: 7px;
+  }
+}
+@media (max-height: 530px) and (orientation: landscape) {
+  .home-slice + .hero-copy {
+    min-height: 205px;
+  }
+  .home-slice {
+    height: 36%;
+  }
+  header {
+    height: 39px;
+  }
+  body:not([data-mode='home']) .arena {
+    height: calc(100svh - 75px);
+    min-height: 150px;
+    margin-top: 3px;
+  }
+  .match-hud {
+    top: 5px;
+    left: 8px;
+    right: 8px;
+  }
+  .inset {
+    top: 38px;
+    width: 18%;
+    min-width: 80px;
+  }
+  .inset canvas {
+    aspect-ratio: 2.45;
+  }
+  .match-bar {
+    min-height: 27px;
+    padding-top: 4px;
+  }
+  .live-hint {
+    bottom: 27px;
+    padding: 4px 11px;
+    font-size: 18px;
+  }
+  .signal-clock {
+    bottom: 6px;
+  }
+  .result-card {
+    width: min(380px, 56%);
+    padding: 8px 12px;
+    max-height: calc(100% - 10px);
+    left: 8px;
+    bottom: 5px;
+  }
+  .result-buttons {
+    display: flex;
+  }
+  .result-buttons button {
+    flex: 1;
+    min-height: 30px;
+    padding: 6px;
+    font-size: 12px;
+  }
+  .result-buttons .primary {
+    flex: 2;
+  }
+  .result-card .minor-actions button {
+    min-height: 25px;
+  }
+}
+@media (max-width: 348px) {
+  .little-path span {
+    font-size: 11px;
+  }
+  .ticket {
+    font-size: 13px;
+  }
+}

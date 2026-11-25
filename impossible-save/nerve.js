@@ -665,16 +665,16 @@ export function drawNerve(ctx, width, height, frame = {}) {
   const stage = clamp(frame.stage | 0, 0, 2);
   const day = frame.day | 0;
   const time = Number.isFinite(frame.time) ? frame.time : 0;
-  const launch = (frame.launchX ?? .23) * width;
-  const target = (frame.targetX ?? .71) * width;
-  const fromY = (frame.launchY ?? .68) * height;
-  const toY = (frame.targetY ?? .68) * height;
-  const r = clamp(Math.min(width * .068, height * .068), 6, 54);
-  const perfect = Math.max(2, (frame.targetRadius ?? .032) * width);
-  const centerY = (x) => levelAt(x, launch, target, fromY, toY) + r * .27;
+  const launch = (frame.launchX ?? 0.23) * width;
+  const target = (frame.targetX ?? 0.71) * width;
+  const fromY = (frame.launchY ?? 0.68) * height;
+  const toY = (frame.targetY ?? 0.68) * height;
+  const r = clamp(Math.min(width * 0.068, height * 0.068), 6, 54);
+  const perfect = Math.max(2, (frame.targetRadius ?? 0.032) * width);
+  const centerY = (x) => levelAt(x, launch, target, fromY, toY) + r * 0.27;
   const span = Math.max(r * 2.3, target - launch);
-  const reference = Math.max(perfect,(frame.referenceRadius ?? frame.targetRadius ?? .032)*width);
-  const gap = Math.max(reference * 1.06, r * .84);
+  const reference = Math.max(perfect, (frame.referenceRadius ?? frame.targetRadius ?? 0.032) * width);
+  const gap = Math.max(reference * 1.06, r * 0.84);
   const p = STOCK[stage];
   const key = [stage, Math.round(width), Math.round(height)].join('/');
   if (store.backdropKey !== key) {
@@ -686,16 +686,85 @@ export function drawNerve(ctx, width, height, frame = {}) {
   // The far sheet moves less than the live current. Its small overscan keeps
   // the paper continuous during a running approach, a jump and a replay.
   const drift = clamp(frame.travel ?? 0, 0, 1);
-  const bleed = width * .014;
-  ctx.drawImage(store.background, -bleed * (.25 + .7 * drift), 0, width + bleed, height);
+  const bleed = width * 0.014;
+  ctx.drawImage(store.background, -bleed * (0.25 + 0.7 * drift), 0, width + bleed, height);
   ribbonCord(ctx, width, centerY, r, p);
   const injured = (day === 1 && stage === 0) || (day === 2 && stage === 1);
-  const startId = Math.floor((-r * 2 - launch) / span);
-  const endId = Math.ceil((width + r * 2 - launch) / span);
-  for (let id = startId; id < endId; id++) {
-    const start = launch + id * span + gap;
-    const end = launch + (id + 1) * span - gap;
-    drawSleeve(ctx, start, end, centerY, r, stage, injured && id === 0, Math.abs(id) % 3, store);
+  if (frame.track) {
+    // The camera follows the same piece of cable. The repair-free gap stays put
+    // while the spark and the optional hollow reference travel forward.
+    const pins = frame.track.map((x) => x * width);
+    const stops = [
+      pins[0] - width * 0.88,
+      pins[0] - width * 0.45,
+      ...pins,
+      pins.at(-1) + width * 0.45,
+      pins.at(-1) + width * 0.91,
+    ];
+    const tissueGap = Math.max(r * 0.51, width * 0.017);
+    for (let i = 0; i < stops.length - 1; i++) {
+      if (stops[i + 1] < -r || stops[i] > width + r) continue;
+      drawSleeve(
+        ctx,
+        stops[i] + tissueGap,
+        stops[i + 1] - tissueGap,
+        centerY,
+        r,
+        stage,
+        injured && i === 3,
+        i % 3,
+        store,
+      );
+    }
+    for (const x of pins) {
+      if (x < 0 || x > width) continue;
+      const y = centerY(x) + r * 0.03;
+      ctx.beginPath();
+      ctx.ellipse(x, y, Math.max(3, r * 0.28), Math.max(1.8, r * 0.1), 0, 0, TAU);
+      ctx.strokeStyle = '#e6ce9b';
+      ctx.lineWidth = Math.max(1.2, r * 0.045);
+      ctx.stroke();
+    }
+    const hintX = frame.nextX;
+    if (hintX != null && hintX * width < width - r * 0.2) {
+      ctx.save();
+      ctx.globalAlpha = 0.4;
+      nodeTarget(ctx, hintX * width, toY, perfect * 0.72, r * 0.72, time, 0, 0);
+      ctx.restore();
+    }
+  } else {
+    const startId = Math.floor((-r * 2 - launch) / span);
+    const endId = Math.ceil((width + r * 2 - launch) / span);
+    for (let id = startId; id < endId; id++) {
+      const start = launch + id * span + gap;
+      const end = launch + (id + 1) * span - gap;
+      drawSleeve(ctx, start, end, centerY, r, stage, injured && id === 0, Math.abs(id) % 3, store);
+    }
+  }
+  if (frame.referenceX != null) {
+    const x = frame.referenceX * width,
+      y = centerY(x) - r * 0.7,
+      size = Math.max(4, r * 0.22);
+    ctx.save();
+    ctx.lineWidth = Math.max(1.6, r * 0.071);
+    ctx.lineCap = 'round';
+    ctx.setLineDash([3, 4]);
+    ctx.strokeStyle = '#eae6c4';
+    ctx.beginPath();
+    ctx.moveTo(x - r * 0.94, y);
+    ctx.lineTo(x - size, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x + size, y);
+    ctx.lineTo(x, y + size);
+    ctx.lineTo(x - size, y);
+    ctx.closePath();
+    ctx.fillStyle = '#203b43';
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
   // A separate axial pulse follows the same piece of cord after the landing.
   // The injured segment visibly delays transmission irrespective of the player's grade.
@@ -704,31 +773,108 @@ export function drawNerve(ctx, width, height, frame = {}) {
     const x = launch + (target - launch) * relay;
     ctx.save();
     ctx.lineCap = 'round';
-    for (let k=3;k>=0;k--) {
-      const tail=Math.max(launch, x - r * (.16 + k*.19));
-      ctx.globalAlpha = 1-k*.19;
+    for (let k = 3; k >= 0; k--) {
+      const tail = Math.max(launch, x - r * (0.16 + k * 0.19));
+      ctx.globalAlpha = 1 - k * 0.19;
       ctx.beginPath();
       ctx.moveTo(tail, centerY(tail));
       ctx.lineTo(x, centerY(x));
-      stroke(ctx, '#ffdc84', Math.max(2,r*.14));
+      stroke(ctx, '#ffdc84', Math.max(2, r * 0.14));
     }
-    ctx.globalAlpha=1;
-    ctx.beginPath();ctx.arc(x,centerY(x),Math.max(2.8,r*.16),0,TAU);
-    ctx.fillStyle='#fff2c2';ctx.fill();stroke(ctx,INK,Math.max(1,r*.038));ctx.restore();
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(x, centerY(x), Math.max(2.8, r * 0.16), 0, TAU);
+    ctx.fillStyle = '#fff2c2';
+    ctx.fill();
+    stroke(ctx, INK, Math.max(1, r * 0.038));
+    ctx.restore();
   }
-  if(reference>perfect+1) {
-    const y=toY+r*.42;
-    ctx.save();ctx.lineWidth=Math.max(1.4,r*.05);ctx.strokeStyle='#efe3bc';ctx.setLineDash([3,3]);
-    for(const direction of [-1,1]) {
-      const side=target+reference*direction;
-      ctx.beginPath();ctx.moveTo(side,y-r*.27);ctx.lineTo(side,y);ctx.lineTo(target+perfect*direction,y);ctx.stroke();
+  if (reference > perfect + 1) {
+    const y = toY + r * 0.42;
+    ctx.save();
+    ctx.lineWidth = Math.max(1.4, r * 0.05);
+    ctx.strokeStyle = '#efe3bc';
+    ctx.setLineDash([3, 3]);
+    for (const direction of [-1, 1]) {
+      const side = target + reference * direction;
+      ctx.beginPath();
+      ctx.moveTo(side, y - r * 0.27);
+      ctx.lineTo(side, y);
+      ctx.lineTo(target + perfect * direction, y);
+      ctx.stroke();
     }
     ctx.restore();
   }
-  nodeTarget(ctx, target, toY, perfect, r, time, frame.feedback ?? 0, frame.quality ?? 0);
+  if (!frame.noTarget)
+    nodeTarget(ctx, target, toY, perfect, r, time, frame.feedback ?? 0, frame.quality ?? 0);
   if (frame.prediction !== false) {
-    trajectory(ctx, launch, fromY, (frame.landingX ?? .55) * width, (frame.landingY ?? frame.targetY ?? .68) * height, (frame.arcHeight ?? .24) * height, r, frame.holding);
+    trajectory(
+      ctx,
+      launch,
+      fromY,
+      (frame.landingX ?? 0.55) * width,
+      (frame.landingY ?? frame.targetY ?? 0.68) * height,
+      (frame.arcHeight ?? 0.24) * height,
+      r,
+      frame.holding,
+    );
   }
-  spark(ctx, (frame.sparkX ?? frame.launchX ?? .23) * width, (frame.sparkY ?? frame.launchY ?? .68) * height, r, time, frame.prediction === false, frame.holding);
+  spark(
+    ctx,
+    (frame.sparkX ?? frame.launchX ?? 0.23) * width,
+    (frame.sparkY ?? frame.launchY ?? 0.68) * height,
+    r,
+    time,
+    frame.prediction === false,
+    frame.holding,
+  );
   ctx.restore();
+}
+
+// Two sections of the same length, seen at a single instant in slow motion.
+export function drawRelayRace(ctx, w, h, { stage, age, injured, position, normalPosition, blocked, labels }) {
+  if (w < 2 || h < 2) return;
+  let store = stores.get(ctx);
+  if (!store) {
+    store = { grain: grainTile(), sleeves: new Map(), background: null, backdropKey: '' };
+    stores.set(ctx, store);
+  }
+  ctx.fillStyle = '#193840';
+  ctx.fillRect(0, 0, w, h);
+  const left = w * 0.12,
+    right = w * 0.9,
+    r = Math.min(17, h * 0.081, w * 0.04);
+  [normalPosition, position].forEach((u, i) => {
+    const top = i * h * 0.5,
+      y = top + h * 0.32,
+      mid = w * 0.52;
+    ctx.font = 'bold ' + Math.max(13, Math.min(16, w * 0.039)) + 'px DM, sans-serif';
+    ctx.fillStyle = '#f4e8c5';
+    ctx.fillText(labels[i], w * 0.06, top + h * 0.147);
+    ctx.lineWidth = r * 0.45;
+    ctx.strokeStyle = '#c58d72';
+    ctx.beginPath();
+    ctx.moveTo(left - r * 1.4, y);
+    ctx.lineTo(right + r * 1.4, y);
+    ctx.stroke();
+    const border = (right - left) * 0.48;
+    drawSleeve(ctx, mid - border, mid + border, () => y, r, stage, !!i && injured, 0, store);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#e7dbb9';
+    ctx.beginPath();
+    ctx.moveTo(right + 2, y - r * 1.16);
+    ctx.lineTo(right + 2, y + r * 1.24);
+    ctx.stroke();
+    const x = lerp(left, right, clamp(u));
+    if (i && blocked) {
+      ctx.strokeStyle = '#ffe2b2';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x - 4, y - r * 0.8 - 4);
+      ctx.lineTo(x + 4, y - r * 0.8 + 4);
+      ctx.moveTo(x + 4, y - r * 0.8 - 4);
+      ctx.lineTo(x - 4, y - r * 0.8 + 4);
+      ctx.stroke();
+    } else spark(ctx, x, y - r * 0.55, r * 1.15, age, true, false);
+  });
 }
