@@ -446,7 +446,7 @@ const CATALOGO = {
     },
     {
       "id": "impossible-save",
-      "url": "impossible-save/?v=5",
+      "url": "impossible-save/?v=7",
       "capa": "capas/impossible-save.webp",
       "publicado": "2026-11",
       "nivel": "medio",
@@ -459,22 +459,24 @@ const CATALOGO = {
       ],
       "pt": {
         "nome": "A Defesa Impossível",
-        "subtitulo": "Surf nos impulsos nervosos",
-        "resumo": "Surfe de nó em nó nas vias nervosas de Joana, goleira que vive com EM. A mielina muda o tempo que o impulso leva para chegar. A bola continua a caminho do gol.",
+        "subtitulo": "Da barreira ao gol",
+        "resumo": "Joana, goleira que vive com esclerose múltipla, tem cinco pênaltis pela frente. Acompanhe o sinal nervoso até a luva e use o natalizumabe para bloquear a passagem de linfócitos T. A meta é defender três cobranças.",
         "aprende": [
           "Relacionar mielina, nós de Ranvier e condução saltatória",
           "Distinguir uma alteração visual de uma dificuldade de coordenação",
-          "Entender como o local de uma lesão central influencia os sintomas da EM"
+          "Entender como o local de uma lesão central influencia os sintomas da EM",
+          "Explicar como o natalizumabe dificulta a entrada de linfócitos T no sistema nervoso central"
         ]
       },
       "en": {
         "nome": "The Impossible Save",
-        "subtitulo": "Ride the nerve signal",
-        "resumo": "Ride from node to node along the nerve pathways of Joana, a goalkeeper living with MS. Myelin changes how quickly the signal travels as the ball flies toward goal.",
+        "subtitulo": "From the barrier to the goal",
+        "resumo": "Joana, a goalkeeper living with multiple sclerosis, faces five penalties. Follow the nerve signal to her glove and use natalizumab to stop T cells from crossing the blood–brain barrier. Can you save three shots?",
         "aprende": [
           "Connect myelin and nodes of Ranvier to saltatory conduction",
           "Distinguish a visual change from a reaching difficulty",
-          "Relate the site of a central lesion to symptoms in MS"
+          "Relate the site of a central lesion to symptoms in MS",
+          "Explain how natalizumab limits T cell entry into the central nervous system"
         ]
       }
     },

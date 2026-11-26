@@ -7,12 +7,13 @@ export const SERIES=5;
 export function randomStream(seed){let n=seed>>>0;return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296}}
 export const BALL_RADIUS = .25;
 
-export function makeShot(seed, slot = 0) {
+export function makeShot(seed, slot = 0, level = 0) {
   const next = randomStream(seed);
   const side = next() < .5 ? -1 : 1;
   const x = side * (3.03 + next() * .88), y = 1.48 + next() * 1.28;
   const curve = (next() - .5) * 1.65, loft = .27 + next() * .63;
-  const pressure = clamp(slot / (SERIES - 1));
+  // A won series raises the level. Each level tightens the nodes and the clock a little more.
+  const pressure = clamp(slot / (SERIES - 1)) + .2 * clamp(level, 0, 3);
   const pace = .88 + next() * .23 + .08 * pressure;
   // Each kick asks for a short, middle and long jump, in a seeded order.
   const targets = [.478 + next() * .093, .608 + next() * .088, .741 + next() * .098];

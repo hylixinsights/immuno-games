@@ -4,7 +4,9 @@ export const immuneSources = [
   'https://www.nature.com/articles/s41392-025-02415-4',
   'https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=c5fdde91-1989-4dd2-9129-4f3323ea2962',
   'https://pubmed.ncbi.nlm.nih.gov/16510744/',
-  'https://pubmed.ncbi.nlm.nih.gov/33503348/'
+  'https://pubmed.ncbi.nlm.nih.gov/33503348/',
+  'https://doi.org/10.1126/science.abj8222',
+  'https://doi.org/10.1056/NEJMoa1601277'
 ];
 
 export const immuneCopy = {
@@ -33,8 +35,19 @@ export const immuneCopy = {
       ['Which cell can show antigens to T cells and help sustain this response?', ['A red blood cell','A B cell','A muscle fibre'],1,'B cells can present antigens to T cells and release inflammatory signals.'],
       ['Where does natalizumab act in the scene?', ['On α4 integrin on the immune cell','On the ball','On the damaged myelin wrap'],0,'Binding α4 limits adhesion to the vessel lining and the entry of inflammatory cells into the CNS. The drug does not directly replace lost myelin.']
     ],
-    safety:'Natalizumab is a disease-modifying treatment for relapsing forms of MS. It requires clinical monitoring, including for the risk of progressive multifocal leukoencephalopathy (PML).',
-    refs:['Review · immune cells and MS lesions','Prescribing information · natalizumab and α4 integrin','AFFIRM trial · relapses and new MRI lesions','B cells · antigen presentation to T cells']
+    safety:'Natalizumab is a disease-modifying treatment for relapsing forms of MS. It requires clinical monitoring, including for the risk of progressive multifocal leukoencephalopathy (PML). It is one of several available therapies. The choice is individual and made with a neurologist.',
+    refs:['Review · immune cells and MS lesions','Prescribing information · natalizumab and α4 integrin','AFFIRM trial · relapses and new MRI lesions','B cells · antigen presentation to T cells','Cohort study · Epstein–Barr virus and MS risk','OPERA trials · anti-CD20 therapy in relapsing MS'],
+    quiz:[
+      ['Before they reach my brain, where are the lymphocytes involved in MS usually activated?', ['Inside the myelin','In lymph nodes and other lymphoid organs','In my glove'],1,'In the most accepted model, self-reactive lymphocytes are activated outside the central nervous system and only then migrate into it.'],
+      ['What do regulatory T cells (Tregs) do?', ['They restrain immune responses against the body itself','They make myelin','They carry the nerve impulse'],0,'Tregs help maintain tolerance. In MS there is evidence that this brake works less well.'],
+      ['Which cell makes myelin in my brain and optic nerve?', ['The Schwann cell','The B cell','The oligodendrocyte'],2,'Oligodendrocytes wrap axons in the central nervous system. Schwann cells do this in peripheral nerves, which MS does not target directly.'],
+      ['Can damaged myelin be rebuilt?', ['Never','Partly. Precursor cells can form new oligodendrocytes','Yes, T cells rebuild it'],1,'Remyelination does happen, especially early on. It is often incomplete and varies between people. Promoting it is an active research field.'],
+      ['Which infection is the strongest known risk factor for MS?', ['Epstein–Barr virus','Seasonal flu','Dengue'],0,'A large cohort study showed that MS risk rises sharply after EBV infection. Almost everyone carries EBV and the vast majority never develop MS. The virus seems necessary, yet far from sufficient.'],
+      ['Anti-CD20 therapies such as ocrelizumab mainly remove which cells?', ['Red blood cells','Neurons','B cells'],2,'Depleting B cells reduces relapses and new lesions. This showed how much B cells matter in MS, partly because they present antigens to T cells.'],
+      ['Can someone catch MS from me?', ['No','Yes, by touch','Yes, through blood'],0,'MS is immune-mediated. It is not contagious. It arises from a combination of genetic and environmental factors.'],
+      ['Doctors found “oligoclonal bands” in spinal fluid. What are they?', ['Fragments of myelin','Antibodies produced inside the central nervous system','T cells'],1,'They are immunoglobulins made by B-lineage cells within the CNS. They are found in most people with MS and support the diagnosis.'],
+      ['Which helper T cells are most associated with inflammation in MS?', ['Th1 and Th17','Th2 only','None. T cells are not involved'],0,'Th1 and Th17 cells release cytokines such as IFN-γ and IL-17, which promote inflammation and make the barrier more permeable.']
+    ]
   },
   pt: {
     title:'Do sangue à mielina', section:'Células imunes e natalizumabe',
@@ -61,8 +74,19 @@ export const immuneCopy = {
       ['Que célula pode apresentar antígenos aos linfócitos T e sustentar essa resposta?', ['Uma hemácia','Um linfócito B','Uma fibra muscular'],1,'Linfócitos B podem apresentar antígenos aos T e liberar sinais inflamatórios.'],
       ['Onde o natalizumabe atua na cena?', ['Na integrina α4 da célula imune','Na bola','Na bainha de mielina lesada'],0,'A ligação à α4 dificulta a adesão à parede do vaso e a entrada de células inflamatórias no SNC. O medicamento não repõe diretamente a mielina perdida.']
     ],
-    safety:'O natalizumabe modifica a atividade inflamatória nas formas recorrentes da EM. O tratamento exige acompanhamento clínico, inclusive pelo risco de leucoencefalopatia multifocal progressiva (LEMP).',
-    refs:['Revisão · células imunes e lesões na EM','Bula · natalizumabe e integrina α4','Ensaio AFFIRM · surtos e lesões novas na ressonância','Células B · apresentação de antígenos a linfócitos T']
+    safety:'O natalizumabe modifica a atividade inflamatória nas formas recorrentes da EM. O tratamento exige acompanhamento clínico, inclusive pelo risco de leucoencefalopatia multifocal progressiva (LEMP). É uma entre várias terapias disponíveis. A escolha é individual e feita com o neurologista.',
+    refs:['Revisão · células imunes e lesões na EM','Bula · natalizumabe e integrina α4','Ensaio AFFIRM · surtos e lesões novas na ressonância','Células B · apresentação de antígenos a linfócitos T','Estudo de coorte · vírus Epstein-Barr e risco de EM','Ensaios OPERA · terapia anti-CD20 na EM recorrente'],
+    quiz:[
+      ['Antes de chegarem ao meu cérebro, onde costumam ser ativados os linfócitos envolvidos na EM?', ['Dentro da mielina','Nos linfonodos e em outros órgãos linfoides','Na minha luva'],1,'No modelo mais aceito, linfócitos autorreativos são ativados fora do sistema nervoso central e só depois migram para ele.'],
+      ['O que fazem os linfócitos T reguladores (Tregs)?', ['Freiam respostas imunes contra o próprio organismo','Produzem mielina','Conduzem o impulso nervoso'],0,'As Tregs ajudam a manter a tolerância. Na EM, há evidências de que esse freio funciona pior.'],
+      ['Que célula produz a mielina no meu cérebro e no nervo óptico?', ['A célula de Schwann','O linfócito B','O oligodendrócito'],2,'Os oligodendrócitos envolvem os axônios no sistema nervoso central. As células de Schwann fazem isso nos nervos periféricos, que não são o alvo direto da EM.'],
+      ['A mielina lesada pode ser refeita?', ['Nunca','Em parte. Células precursoras podem formar novos oligodendrócitos','Sim, pelos linfócitos T'],1,'A remielinização acontece, principalmente no início da doença. Costuma ser incompleta e varia de pessoa para pessoa. Estimulá-la é uma área ativa de pesquisa.'],
+      ['Qual infecção é o fator de risco mais forte já identificado para a EM?', ['Vírus Epstein-Barr','Gripe','Dengue'],0,'Um grande estudo de coorte mostrou que o risco de EM sobe muito depois da infecção pelo EBV. Quase todo mundo tem o vírus e a imensa maioria nunca terá EM. O vírus parece necessário, mas está longe de ser suficiente.'],
+      ['Terapias anti-CD20, como o ocrelizumabe, removem principalmente quais células?', ['Hemácias','Neurônios','Linfócitos B'],2,'A depleção de linfócitos B reduz surtos e lesões novas. Isso mostrou a importância dessas células na EM, em parte porque apresentam antígenos aos linfócitos T.'],
+      ['Alguém pode pegar EM de mim?', ['Não','Sim, pelo contato','Sim, pelo sangue'],0,'A EM é imunomediada e não é contagiosa. Ela surge de uma combinação de fatores genéticos e ambientais.'],
+      ['Acharam “bandas oligoclonais” no líquor. O que são?', ['Pedaços de mielina','Anticorpos produzidos dentro do sistema nervoso central','Linfócitos T'],1,'São imunoglobulinas produzidas por células da linhagem B dentro do SNC. Aparecem na maioria das pessoas com EM e ajudam no diagnóstico.'],
+      ['Quais linfócitos T auxiliares são mais associados à inflamação na EM?', ['Th1 e Th17','Apenas Th2','Nenhum. Linfócitos T não participam'],0,'Células Th1 e Th17 liberam citocinas como IFN-γ e IL-17, que favorecem a inflamação e deixam a barreira mais permeável.']
+    ]
   }
 };
 
@@ -73,12 +97,13 @@ export const immuneStops=[.29,.61,.94];
 export const immuneStage=t=>t<.41?0:t<.75?1:2;
 
 // Motion is qualitative. Treatment affects adhesion/entry of the illustrated incoming cell.
-export function immuneFrame(time, treated) {
+// boundAt is used by the playable barrier: the antibody attaches mid-approach and the cell eases onto the treated path.
+export function immuneFrame(time, treated, boundAt = null) {
   const t=cap(time), approach=ease(t/.32);
   let x=mix(118,295,approach),y=mix(57,83,approach);
   if(treated){
     x=mix(x,548,ease((t-.30)/.63));
-    y=mix(57,69,approach)-13*ease((t-.34)/.28);
+    y=mix(y,mix(57,69,approach)-13*ease((t-.34)/.28),boundAt==null?1:ease((t-boundAt)/.07));
   }else{
     x+=81*ease((t-.56)/.37);
     y+=95*ease((t-.39)/.33);
@@ -137,17 +162,17 @@ function microglia(c,x,y,active,highlight){
   if(highlight){c.setLineDash([3,4]);c.beginPath();c.ellipse(0,0,38,30,0,0,Math.PI*2);c.strokeStyle='#ffdda3';c.lineWidth=1.3;c.stroke();c.setLineDash([])}
   c.restore();
 }
-function sleeve(c,x,len,broken=false) {
-  const y=239,h=18,points=broken?[[x,y-h],[x+len-5,y-h-1],[x+len-10,y-8],[x+len+2,y-2],[x+len-11,y+3],[x+len-3,y+h],[x,y+h]]:
+function sleeve(c,x,len,broken=false,thin=false) {
+  const y=239,h=thin?11:18,points=broken?[[x,y-h],[x+len-5,y-h-1],[x+len-10,y-8],[x+len+2,y-2],[x+len-11,y+3],[x+len-3,y+h],[x,y+h]]:
     [[x,y-h],[x+len-6,y-h-1],[x+len,y-h+6],[x+len,y+h-5],[x+len-7,y+h],[x,y+h]];
-  shape(c,points,'#a4c1a1','#496e64');
-  oval(c,x,y,6,h,'#698d7e');oval(c,x+1,y,3.8,11,'#ddc998');oval(c,x+1,y,2.2,6,'#a76658');
+  shape(c,points,thin?'#bdd0b2':'#a4c1a1','#496e64');
+  oval(c,x,y,6,h,'#698d7e');oval(c,x+1,y,3.8,thin?7:11,'#ddc998');oval(c,x+1,y,2.2,thin?4:6,'#a76658');
   for(let j=10;j<len-12;j+=13)line(c,[[x+j,y-h+2],[x+j+4,y-9],[x+j+6,y+4],[x+j+4,y+h-2]],'#739a88',1.6);
   if(broken)shape(c,[[x+len-8,y-9],[x+len-1,y-26],[x+len+12,y-31],[x+len+5,y-17]],'#e3d3a8','#537a6c');
 }
 
 export function drawImmune(c,w,h,state,copy){
-  const t=state.time,treated=state.treated,frame=immuneFrame(t,treated);
+  const t=state.time,treated=state.treated,frame=immuneFrame(t,treated,state.boundAt??null);
   c.save();c.scale(w/620,h/290);c.lineJoin='round';c.lineCap='round';
   c.fillStyle='#754a52';c.fillRect(0,0,620,113);c.fillStyle='#305354';c.fillRect(0,128,620,162);
   for(let j=0;j<200;j++){
@@ -199,5 +224,63 @@ export function drawImmune(c,w,h,state,copy){
   else if(treated&&t<.42)tag(c,610,23,copy.bound,'right',true);
   line(c,[[374,244],[387,265],[400,265]],'#e5caa3',1);tag(c,402,271,copy.old,'left',true);
   tag(c,12,272,copy.myelin,'left',true);
+  c.restore();
+}
+
+
+// ---- Playable barrier for the season. Same paper pieces, laid out for any arena size. ----
+export const sleeveX=k=>21+67*k;
+export function barrierView(w,h){
+  let s=Math.max(w/620,Math.min(h/330,1.25));
+  if(290*s>h)s=h/290;
+  return {s,width:w/s,top:Math.max(0,(h-290*s)/2)};
+}
+function label(c,x,y,text,align,k){c.save();c.translate(x,y);c.scale(k,k);tag(c,0,0,text,align,true);c.restore();}
+export function drawBarrier(c,w,h,g,copy){
+  const {s,width,top}=barrierView(w,h),k=Math.max(.85,Math.min(1.2,s))/s;
+  c.save();c.fillStyle='#754a52';c.fillRect(0,0,w,top+121*s);c.fillStyle='#305354';c.fillRect(0,top+121*s,w,h);
+  c.translate(0,top);c.scale(s,s);c.lineJoin='round';c.lineCap='round';
+  for(let j=0;j<200*Math.ceil(width/620);j++){
+    const x=(j*157+21)%(620*Math.ceil(width/620)),y=(j*73+9)%290;
+    c.fillStyle=j%3?'#f3dfb918':'#143d401d';c.fillRect(x,y,1.6+(j%4),1);
+  }
+  for(let i=0;i<Math.ceil(width/160)+1;i++){
+    const x=(46+i*161+g.t*70)%(width+55)-24,y=37+(i%2)*41;
+    c.save();c.translate(x,y);c.rotate(-.21);oval(c,0,0,17,7,'#aa7070');oval(c,0,0,8,3,'#805252');c.restore();
+  }
+  for(let i=-1;i*81+12<width+10;i++){
+    const x=i*81+12;
+    shape(c,[[x,111],[x+69,109],[x+80,114],[x+73,128],[x+8,130],[x-3,122]],'#cb9b82','#805f57');
+    oval(c,x+38,119,11,3.4,'#9c726e');line(c,[[x+7,113],[x+61,112]],'#eac6a3',1.5);
+  }
+  line(c,[[0,132],[width,132]],'#c2b38e',3);
+  for(const x of g.sites){
+    line(c,[[x,111],[x-1,104],[x-1,101],[x-5,99]],'#434e49',6);
+    line(c,[[x,110],[x-1,103],[x-5,99]],'#f2d8a2',3);
+  }
+  // The axon runs under every sleeve. Where a sleeve is missing, it is exposed.
+  line(c,[[0,239],[width,239]],'#8a5c55',10);line(c,[[0,236],[width,236]],'#d29175',4);
+  for(let n=0;sleeveX(n)<width;n++){
+    const state=n===5?'gone':g.sleeves[n]??(n===4?'old':'ok');
+    if(state!=='gone')sleeve(c,sleeveX(n),56,state==='old',state==='thin');
+  }
+  for(const a of g.attacks){
+    const u=ease(a.age/.8);
+    for(let i=0;i<5;i++){const x=a.x-12+i*6,y=228-u*(9+(i%3)*7);shape(c,[[x-3,y],[x+1,y-3],[x+4,y-1],[x+1,y+2]],'#c1cba7')}
+  }
+  microglia(c,Math.min(465,width-70),188,g.attacks.some(a=>a.age<1.6),false);
+  for(const cellNow of g.cells){
+    if(cellNow.state==='wait'||cellNow.state==='out')continue;
+    const {x,y}=cellNow,bound=cellNow.state==='bound';
+    cell(c,x,y,'T',1,false);
+    line(c,[[x-9,y+15],[x-6,y+21],[x-4,y+20]],'#a9dec7',3);line(c,[[x,y+15],[x-2,y+21],[x-4,y+20]],'#e7f4c7',2.7);
+    if(bound)antibody(c,x+1,y+27,.74);
+  }
+  // Antibody charges. A recharging one is drawn faint.
+  for(let i=0;i<g.maxCharges;i++){
+    c.save();c.globalAlpha=i<g.charges?1:i===g.charges?.22+.5*g.recharge:.18;antibody(c,width-22-i*24,26,.95);c.restore();
+  }
+  label(c,9,22,copy.blood,'left',k);label(c,9,155,copy.brain,'left',k);label(c,9,207,copy.myelin,'left',k);
+  if(g.sites.length)label(c,g.sites[0]+10,97,'VCAM-1','left',k);
   c.restore();
 }

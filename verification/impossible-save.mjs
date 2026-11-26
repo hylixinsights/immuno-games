@@ -168,6 +168,16 @@ console.log('Continuous-clock pairs, same human reaction and hold error:',reacti
 // One schedule for the ball and identical nodes in both copies of Joana's axon.
 const chain = await import('../impossible-save/conduction.js');
 const originalCommands = chain.exampleCommands(shot);
+// Fixed pathway comparisons must work even before the first lesion of a season.
+chain.setLesionDelay(0, 0);
+for (const [stage, day] of [[0, 1], [1, 2]]) {
+  const baseline = chain.pairedRun(shot, originalCommands, 0).marks[stage];
+  const comparison = chain.pairedRun(shot, originalCommands, day).marks[stage];
+  const live = chain.section(shot, day, 'left', stage, originalCommands[stage]);
+  assert.equal(live.nodes[1].ready, baseline.nodes[1].ready);
+  assert.ok(Math.abs(comparison.nodes[1].ready - baseline.nodes[1].ready - chain.LESION_DEFAULT[stage]) < 1e-8);
+}
+chain.setLesionDelay();
 const opening = [0, 1, 2].map((day) => chain.pairedRun(shot, originalCommands, day));
 assert.deepEqual(
   opening.map((x) => x.result.outcome),

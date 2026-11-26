@@ -1,5 +1,5 @@
 // Five playable nodes on three pathways. Seconds, distances, and deadlines are arcade units.
-import { clamp, lerp, smooth, judge, finish, readAt, diveAt, reachesBall, reachError } from './rules.js?v=5';
+import { clamp, lerp, smooth, judge, finish, readAt, diveAt, reachesBall, reachError } from './rules.js?v=7';
 
 export const FLIGHT = 0.32;
 export const JOIN = 0.22;
@@ -16,7 +16,7 @@ export function route(shot, stage) {
   const bridge = 0.247 + 0.025 * pick((stage + 2) % 3);
   const nodes = [TAKEOFF, TAKEOFF + first, TAKEOFF + first + bridge, TAKEOFF + first + bridge + second];
   const sweep = shot.sweeps[stage] * 0.87;
-  const ring = (stage === 0 ? 0.038 : stage === 1 ? 0.035 : 0.034) * (1 - 0.17 * shot.pressure);
+  const ring = (stage === 0 ? 0.038 : stage === 1 ? 0.035 : 0.034) * (1 - 0.17 * shot.pressure) * tuning.ring;
   const ideal = (span) => (sweep * (span - 0.112)) / 0.602;
   const wind = [ideal(first), ideal(second)];
   // The ball uses the same schedule whatever happens to the signal.
@@ -56,9 +56,19 @@ export function centeredHold(track, hop, wait = 0) {
   const g = geometry(track, hop, wait, 0);
   return ((g.targetX - g.landingX) / 0.602) * track.sweep;
 }
-export function transit(day, eye, stage, firstMark) {
+// Extra transit across a damaged segment, in seconds, for the visual and motor stages.
+// The season changes these values as lesions appear and partly remyelinate. Training days use the defaults.
+// The game narrows the landing rings. The default of 1 keeps the reference model used by the verification script.
+export const tuning = { ring: 1 };
+export const LESION_DEFAULT = [0.94, 0.86];
+export const lesionDelay = [...LESION_DEFAULT];
+export function setLesionDelay(visual = LESION_DEFAULT[0], motor = LESION_DEFAULT[1]) {
+  lesionDelay[0] = visual;
+  lesionDelay[1] = motor;
+}
+export function transit(day, eye, stage, firstMark, delay = lesionDelay[stage]) {
   const settle = 0.13 * (1 - (firstMark?.quality ?? 1));
-  return PASS + settle + (affected(day, eye, stage) ? (stage === 0 ? 0.94 : 0.86) : 0);
+  return PASS + settle + (affected(day, eye, stage) ? delay : 0);
 }
 export function pulseAt(elapsed, duration, preservedDuration) {
   if (duration - preservedDuration < 0.01) return clamp(elapsed / duration);
@@ -86,11 +96,11 @@ export function nodeMark(track, hop, ready, command) {
 }
 // Rebuild the same gestures from their wait and hold at each playable node.
 // A replay with a different pathway never invents a missing touch at the glove.
-export function section(shot, day, eye, stage, commands) {
+export function section(shot, day, eye, stage, commands, delay = lesionDelay[stage]) {
   const track = route(shot, stage),
     nodes = [];
   for (const [hop, cmd] of commands.slice(0, nodeCount(stage)).entries()) {
-    const ready = hop ? nodes[0].up + FLIGHT + transit(day, eye, stage, nodes[0]) : 0;
+    const ready = hop ? nodes[0].up + FLIGHT + transit(day, eye, stage, nodes[0], delay) : 0;
     nodes.push(nodeMark(track, hop, ready, cmd));
   }
   if (!nodes.length) return null;
@@ -118,7 +128,8 @@ export function pairedRun(shot, commands, day, eye = day === 1 ? 'left' : 'right
   const marks = [];
   for (let stage = 0; stage < 3; stage++) {
     if (!commands[stage]?.length || (stage === 2 && !reachesBall(shot, marks, day, eye))) break;
-    marks.push(section(shot, day, eye, stage, commands[stage]));
+    // A matched trial compares the fixed training pathways, including when opened during a season.
+    marks.push(section(shot, day, eye, stage, commands[stage], LESION_DEFAULT[stage]));
   }
   const touches = reachesBall(shot, marks, day, eye);
   const result =
